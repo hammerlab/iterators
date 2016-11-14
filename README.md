@@ -1,7 +1,7 @@
 # iterator
 
 [![Build Status](https://travis-ci.org/hammerlab/iterator.svg?branch=master)](https://travis-ci.org/hammerlab/iterator)
-[![Coverage Status](https://coveralls.io/repos/github/hammerlab/iterator/badge.svg?branch=master)](https://coveralls.io/github/hammerlab/iterator?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/hammerlab/iterator/badge.svg?branch=badge)](https://coveralls.io/github/hammerlab/iterator?branch=badge)
 [![Maven Central](https://img.shields.io/maven-central/v/org.hammerlab/iterator_2.11.svg?maxAge=1800)](http://search.maven.org/#search%7Cga%7C1%7Citerator)
 
 - Some Scala `Iterator`s and useful `Iterator`-related abstractions; see [`org.hammerlab.iterator`]().
