@@ -1,8 +1,8 @@
 package org.hammerlab.iterator
 
-import org.scalatest.{FunSuite, Matchers}
+import org.hammerlab.test.Suite
 
-class GroupRunsIteratorTest extends FunSuite with Matchers {
+class GroupRunsIteratorTest extends Suite {
 
   def check(ints: Int*)(strs: String*): Unit = {
     GroupRunsIterator[Int](

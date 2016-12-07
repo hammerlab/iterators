@@ -1,11 +1,12 @@
 package org.hammerlab.iterator
 
-import org.scalatest.{FunSuite, Matchers}
+import org.hammerlab.iterator.Sliding3OptIterator._
+import org.hammerlab.test.Suite
 
-class Sliding3OptIteratorTest extends FunSuite with Matchers {
+class Sliding3OptIteratorTest extends Suite {
 
   def slidingList[T](elems: T*): List[(Option[T], T, Option[T])] =
-    Sliding3OptIterator(Iterator(elems: _*).buffered).toList
+    Iterator(elems: _*).buffered.sliding3.toList
 
   test("empty") {
     slidingList() should be(Nil)

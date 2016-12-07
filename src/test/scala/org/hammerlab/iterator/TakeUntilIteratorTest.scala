@@ -1,8 +1,8 @@
 package org.hammerlab.iterator
 
-import org.scalatest.{FunSuite, Matchers}
+import org.hammerlab.test.Suite
 
-class TakeUntilIteratorTest extends FunSuite with Matchers {
+class TakeUntilIteratorTest extends Suite {
   test("simple") {
     new TakeUntilIterator("abc defg hij".toIterator, ' ').map(_.mkString("")).toList should be(
       List(

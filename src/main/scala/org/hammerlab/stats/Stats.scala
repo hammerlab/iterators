@@ -1,6 +1,6 @@
 package org.hammerlab.stats
 
-import org.hammerlab.iterator.RunLengthIterator
+import org.hammerlab.iterator.RunLengthIterator._
 import spire.implicits._
 import spire.math.{Integral, Numeric}
 
@@ -98,7 +98,7 @@ object Stats {
       val vBuilder = Vector.newBuilder[(K, V)]
       var prevOpt: Option[K] = None
       for {
-        (value, num) <- RunLengthIterator.reencode[K, V](v.iterator.buffered)
+        (value, num) <- reencode[K, V](v.iterator.buffered)
       } {
         if (alreadySorted) {
           if (prevOpt.exists(_ > value))
@@ -435,7 +435,7 @@ object Stats {
     var sum = 0
     var i = 0
     val runs = ArrayBuffer[(K, Int)]()
-    val runLengthIterator = RunLengthIterator[K](it)
+    val runLengthIterator = it.runLengthEncode
     while (i < N && runLengthIterator.hasNext) {
       val (elem, count) = runLengthIterator.next()
 

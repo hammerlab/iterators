@@ -3,32 +3,38 @@ package org.hammerlab.iterator
 /**
  * Given an [[Iterator[T]]], emit each element sandwiched between its preceding and succeeding elements.
  */
-case class Sliding3OptIterator[T](it: BufferedIterator[T])
-  extends SimpleBufferedIterator[(Option[T], T, Option[T])] {
+class Sliding3OptIterator[T](it: BufferedIterator[T]) {
 
-  private var lastOpt: Option[T] = None
+  def sliding3: SimpleBufferedIterator[(Option[T], T, Option[T])] =
+    new SimpleBufferedIterator[(Option[T], T, Option[T])] {
+      private var lastOpt: Option[T] = None
 
-  override protected def _advance: Option[(Option[T], T, Option[T])] = {
-    if (!it.hasNext)
-      return None
+      override protected def _advance: Option[(Option[T], T, Option[T])] = {
+        if (!it.hasNext)
+          return None
 
-    val cur = it.next()
+        val cur = it.next()
 
-    val prevOpt = lastOpt
-    lastOpt = Some(cur)
+        val prevOpt = lastOpt
+        lastOpt = Some(cur)
 
-    val nextOpt =
-      if (it.hasNext)
-        Some(it.head)
-      else
-        None
+        val nextOpt =
+          if (it.hasNext)
+            Some(it.head)
+          else
+            None
 
-    Some(
-      (
-        prevOpt,
-        cur,
-        nextOpt
-      )
-    )
-  }
+        Some(
+          (
+            prevOpt,
+            cur,
+            nextOpt
+          )
+        )
+      }
+    }
+}
+
+object Sliding3OptIterator {
+  implicit def make[T](it: Iterator[T]): Sliding3OptIterator[T] = new Sliding3OptIterator(it.buffered)
 }
