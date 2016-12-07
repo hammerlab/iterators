@@ -1,6 +1,6 @@
 package org.hammerlab.stats
 
-import org.scalatest.{FunSuite, Matchers}
+import org.hammerlab.test.Suite
 import spire.implicits._
 import spire.math.Integral
 
@@ -11,7 +11,7 @@ import scala.util.Random
  * with an associated repetition count, which allows the total number of elements represented to be much larger
  * ([[Long]] vs. [[Int]]).
  */
-class StatsHistSuite extends FunSuite with Matchers {
+class StatsHistSuite extends Suite {
 
   Random.setSeed(123L)
 

@@ -3,9 +3,9 @@ package org.hammerlab.math
 import java.io.ByteArrayOutputStream
 
 import com.esotericsoftware.kryo.io.{Input, Output}
-import org.scalatest.{FunSuite, Matchers}
+import org.hammerlab.test.Suite
 
-class VarNumTest extends FunSuite with Matchers {
+class VarNumTest extends Suite {
 
   // [0,8]
   testBytes(0, List(0))

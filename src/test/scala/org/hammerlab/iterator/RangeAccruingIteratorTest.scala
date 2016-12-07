@@ -1,8 +1,8 @@
 package org.hammerlab.iterator
 
-import org.scalatest.{FunSuite, Matchers}
+import org.hammerlab.test.Suite
 
-class RangeAccruingIteratorTest extends FunSuite with Matchers {
+class RangeAccruingIteratorTest extends Suite {
   test("empty") {
     new RangeAccruingIterator(Iterator()).toList should be(Nil)
   }

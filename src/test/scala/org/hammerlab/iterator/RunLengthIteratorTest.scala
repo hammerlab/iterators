@@ -1,11 +1,12 @@
 package org.hammerlab.iterator
 
-import org.scalatest.{FunSuite, Matchers}
+import org.hammerlab.iterator.RunLengthIterator._
+import org.hammerlab.test.Suite
 
-class RunLengthIteratorTest extends FunSuite with Matchers {
+class RunLengthIteratorTest extends Suite {
 
   def check[T](elems: T*)(expected: (T, Int)*): Unit = {
-    RunLengthIterator(elems.iterator).toSeq should be(expected)
+    elems.iterator.runLengthEncode.toSeq should be(expected)
   }
 
   test("empty") {
