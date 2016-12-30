@@ -1,12 +1,9 @@
-
 name := "iterator"
 
-version := "1.1.0"
+version := "1.1.1-SNAPSHOT"
 
-libraryDependencies ++= Seq(
-  libraries.value('kryo),
-  libraries.value('spire),
-  "org.apache.commons" % "commons-math3" % "3.6.1"
+deps ++= Seq(
+  libs.value('commons_math),
+  libs.value('kryo),
+  libs.value('spire)
 )
-
-testDeps += libraries.value('test_utils)

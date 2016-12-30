@@ -29,12 +29,11 @@ case class Stats[K: Numeric, V: Integral](n: V,
                                           sortedSamplesOpt: Option[Samples[K, V]],
                                           percentiles: Seq[(Double, Double)]) {
 
-  def prettyDouble(d: Double): String = {
+  def prettyDouble(d: Double): String =
     if (math.floor(d).toInt == math.ceil(d).toInt)
       d.toInt.toString
     else
       "%.1f".format(d)
-  }
 
   override def toString: String = {
     if (n == 0)
