@@ -1,6 +1,6 @@
 name := "iterator"
 
-version := "1.1.1-SNAPSHOT"
+version := "1.1.1"
 
 deps ++= Seq(
   libs.value('commons_math),
