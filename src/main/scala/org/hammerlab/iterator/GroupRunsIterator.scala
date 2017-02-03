@@ -9,26 +9,49 @@ package org.hammerlab.iterator
  *
  * See GroupRunsIteratorTest for more examples.
  */
-class GroupRunsIterator[T](it: BufferedIterator[T], pred: T => Boolean) extends Iterator[Iterator[T]] {
-  override def hasNext: Boolean = it.hasNext
+object GroupRunsIteratorObj {
+  implicit class GroupRunsIterator[T](val it: BufferedIterator[T]) {
 
-  override def next(): Iterator[T] = {
-    if (!pred(it.head))
-      Iterator(it.next())
-    else
-      new Iterator[T] {
-        override def hasNext: Boolean = it.hasNext && pred(it.head)
+    def groupBy(pred: T => Boolean): Iterator[Iterator[T]] =
+      new Iterator[Iterator[T]] {
 
-        override def next(): T =
+        override def hasNext: Boolean = it.hasNext
+
+        override def next(): Iterator[T] = {
           if (!pred(it.head))
-            throw new NoSuchElementException
+            Iterator(it.next())
           else
-            it.next()
+            new SimpleBufferedIterator[T] {
+              override protected def _advance: Option[T] =
+                if (it.hasNext && pred(it.head))
+                  Some(it.next())
+                else
+                  None
+            }
+        }
       }
+
+    def groupRuns(implicit ord: Ordering[T]): Iterator[Iterator[T]] = {
+      new Iterator[Iterator[T]] {
+        var prevOpt: Option[T] = None
+        override def hasNext: Boolean = it.hasNext
+        override def next(): Iterator[T] = {
+          val n = it.next()
+          Iterator(n) ++
+            new SimpleBufferedIterator[T] {
+              override protected def _advance: Option[T] =
+                if (it.hasNext && ord.compare(n, it.head) == 0)
+                  Some(it.next)
+                else
+                  None
+            }
+        }
+      }
+    }
   }
 }
 
 object GroupRunsIterator {
-  def apply[T](it: Iterable[T], pred: T => Boolean): GroupRunsIterator[T] =
-    new GroupRunsIterator[T](it.iterator.buffered, pred)
+  implicit def groupRunsFromIterable[T](it: Iterable[T]): GroupRunsIterator[T] = new GroupRunsIterator(it.iterator.buffered)
+  implicit def groupRunsFromIterator[T](it: Iterator[T]): GroupRunsIterator[T] = new GroupRunsIterator(it.buffered)
 }
