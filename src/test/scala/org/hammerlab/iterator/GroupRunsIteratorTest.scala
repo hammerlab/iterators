@@ -1,17 +1,16 @@
 package org.hammerlab.iterator
 
 import org.hammerlab.test.Suite
+import GroupRunsIterator._
 
-class GroupRunsIteratorTest extends Suite {
+class GroupRunsIteratorPredicateTest extends Suite {
 
-  def check(ints: Int*)(strs: String*): Unit = {
-    GroupRunsIterator[Int](
-      ints,
-      _ % 2 == 0
-    ).map(
-      _.mkString(",")
-    ).toList should be(strs)
-  }
+  def check(ints: Int*)(strs: String*): Unit =
+    ints
+      .iterator
+      .groupBy((_: Int) % 2 == 0)
+      .map(_.mkString(","))
+      .toList should be(strs)
 
   test("end with run") {
     check(
@@ -55,5 +54,54 @@ class GroupRunsIteratorTest extends Suite {
 
   test ("false singleton") {
     check(3)("3")
+  }
+}
+
+class GroupRunsIteratorTest extends Suite {
+
+  implicit val ord = Ordering.by[(Int, Int), Int](_._1)
+
+  def check(tuples: (Int, Int)*)(strs: String*): Unit = {
+    tuples
+      .iterator
+      .groupRuns
+      .map(_.map(t ⇒ s"${t._1},${t._2}").mkString(" "))
+      .toList should be(strs.toList)
+  }
+
+  test("empty") {
+    check()()
+  }
+
+  test("one") {
+    check(1 → 2)("1,2")
+  }
+
+  test("two same") {
+    check(1 → 2, 1 → 3)("1,2 1,3")
+  }
+
+  test("two different") {
+    check(1 → 2, 4 → 1)("1,2", "4,1")
+  }
+
+  test("three same") {
+    check(1 → 2, 1 → 3, 1 → 0)("1,2 1,3 1,0")
+  }
+
+  test("two same one different") {
+    check(1 → 2, 1 → 3, 4 → 1)("1,2 1,3", "4,1")
+  }
+
+  test("three same skip one") {
+    check(1 → 2, 1 → 3, 4 → 1, 1 → 0)("1,2 1,3", "4,1", "1,0")
+  }
+
+  test("two same two same") {
+    check(1 → 2, 1 → 3, 4 → 1, 4 → 5)("1,2 1,3", "4,1 4,5")
+  }
+
+  test("one then three") {
+    check(1 → 2, 4 → 6, 4 → 1, 4 → 2)("1,2", "4,6 4,1 4,2")
   }
 }
