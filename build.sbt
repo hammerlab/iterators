@@ -1,6 +1,8 @@
 name := "iterator"
 
-version := "1.1.3-SNAPSHOT"
+version := "1.2.0-SNAPSHOT"
+
+addScala212
 
 deps ++= Seq(
   libs.value('commons_math),
