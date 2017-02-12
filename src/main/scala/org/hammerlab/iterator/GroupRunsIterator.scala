@@ -9,8 +9,12 @@ package org.hammerlab.iterator
  *
  * See GroupRunsIteratorTest for more examples.
  */
-object GroupRunsIteratorObj {
-  implicit class GroupRunsIterator[T](val it: BufferedIterator[T]) {
+object GroupRunsIterator {
+  implicit def groupRunsFromIterable[T](it: Iterable[T]): GroupRunsIterator[T] = new GroupRunsIterator(it.iterator.buffered)
+  implicit def groupRunsFromIterator[T](it: Iterator[T]): GroupRunsIterator[T] = new GroupRunsIterator(it.buffered)
+
+  implicit class GroupRunsIterator[T](val it: BufferedIterator[T])
+    extends AnyVal {
 
     def groupBy(pred: T => Boolean): Iterator[Iterator[T]] =
       new Iterator[Iterator[T]] {
@@ -49,9 +53,4 @@ object GroupRunsIteratorObj {
       }
     }
   }
-}
-
-object GroupRunsIterator {
-  implicit def groupRunsFromIterable[T](it: Iterable[T]): GroupRunsIterator[T] = new GroupRunsIterator(it.iterator.buffered)
-  implicit def groupRunsFromIterator[T](it: Iterator[T]): GroupRunsIterator[T] = new GroupRunsIterator(it.buffered)
 }
