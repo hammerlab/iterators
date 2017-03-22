@@ -10,14 +10,17 @@ import spire.implicits._
  * See RunLengthIteratorTest for examples.
  */
 class RunLengthIterator[K](val it: BufferedIterator[K]) {
-  def runLengthEncode: Iterator[(K, Int)] =
+  def runLengthEncode(implicit ord: Ordering[K]): Iterator[(K, Int)] =
+    runLengthEncode(ord.compare(_, _) == 0)
+
+  def runLengthEncode(cmpFn: (K, K) => Boolean = (_ == _)): Iterator[(K, Int)] =
     new Iterator[(K, Int)] {
       override def hasNext: Boolean = it.hasNext
 
       override def next(): (K, Int) = {
         val elem = it.head
         var count = 0
-        while (it.hasNext && it.head == elem) {
+        while (it.hasNext && cmpFn(it.head, elem)) {
           it.next()
           count += 1
         }

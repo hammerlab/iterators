@@ -434,7 +434,7 @@ object Stats {
     var sum = 0
     var i = 0
     val runs = ArrayBuffer[(K, Int)]()
-    val runLengthIterator = it.runLengthEncode
+    val runLengthIterator = it.runLengthEncode()
     while (i < N && runLengthIterator.hasNext) {
       val (elem, count) = runLengthIterator.next()
 
