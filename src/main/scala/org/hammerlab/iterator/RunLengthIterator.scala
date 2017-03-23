@@ -11,7 +11,7 @@ import spire.implicits._
  */
 class RunLengthIterator[K](val it: BufferedIterator[K]) {
   def runLengthEncode(implicit ord: Ordering[K]): Iterator[(K, Int)] =
-    runLengthEncode(ord.compare(_, _) == 0)
+    runLengthEncode(ord.equiv(_, _))
 
   def runLengthEncode(cmpFn: (K, K) => Boolean = (_ == _)): Iterator[(K, Int)] =
     new Iterator[(K, Int)] {
