@@ -13,26 +13,38 @@ package org.hammerlab.iterator
  */
 trait SimpleBufferedIterator[+T] extends BufferedIterator[T] {
 
-  private[this] var _next: Option[T] = None
+  /**
+   * null when not initialized, [[Some]] when there is a next value cached, and [[None]] when there are no more values.
+   */
+  private[this] var _next: Option[T] = _
 
   protected final def clear(): Unit = {
-    _next = None
+    _next = null
   }
 
+  /**
+   * Compute and return the next element
+   */
   protected def _advance: Option[T]
 
+  /**
+   * Compute the next element, if it hasn't already been computed; the result is stored in [[_next]].
+   */
   override final def hasNext: Boolean = {
-    if (_next.isEmpty) {
+    if (_next == null) {
       _next = _advance
     }
     _next.nonEmpty
   }
 
   override final def head: T = {
-    if (!hasNext) throw new NoSuchElementException
+    if (!hasNext)
+      throw new NoSuchElementException
+
     _next.get
   }
 
+  /** Hook for subclasses to update books after each element is consumed. */
   protected def postNext(): Unit = {}
 
   override final def next(): T = {
@@ -40,5 +52,13 @@ trait SimpleBufferedIterator[+T] extends BufferedIterator[T] {
     clear()
     postNext()
     r
+  }
+
+  override def toString(): String = {
+    _next match {
+      case null ⇒ s"$getClass"
+      case Some(next) ⇒ s"$getClass (head: $head)"
+      case None ⇒ s"$getClass (empty)"
+    }
   }
 }

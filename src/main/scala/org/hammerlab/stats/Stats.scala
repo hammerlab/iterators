@@ -2,10 +2,11 @@ package org.hammerlab.stats
 
 import org.hammerlab.iterator.RunLengthIterator._
 import spire.implicits._
-import spire.math.{Integral, Numeric}
+import spire.math.{ Integral, Numeric }
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
+import scala.math.log10
 
 /**
  * Wrapper for some computed statistics about a dataset of [[Numeric]] elements.
@@ -34,6 +35,12 @@ case class Stats[K: Numeric, V: Integral](n: V,
       d.toInt.toString
     else
       "%.1f".format(d)
+
+  def prettyPercentile(d: Double): String =
+    if (math.floor(d).toInt == math.ceil(d).toInt)
+      d.toInt.toString
+    else
+      d.toString
 
   override def toString: String = {
     if (n == 0)
@@ -65,7 +72,11 @@ case class Stats[K: Numeric, V: Integral](n: V,
         }
       }
 
-      strings ++= percentiles.map(t => s"${prettyDouble(t._1)}:\t${prettyDouble(t._2)}")
+      strings ++=
+        percentiles.map {
+          case (k, v) ⇒
+            s"${prettyPercentile(k)}:\t${prettyDouble(v)}"
+        }
 
       strings.mkString("\n")
     }

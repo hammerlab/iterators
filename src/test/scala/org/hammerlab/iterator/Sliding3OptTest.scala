@@ -3,10 +3,12 @@ package org.hammerlab.iterator
 import org.hammerlab.iterator.Sliding3OptIterator._
 import org.hammerlab.test.Suite
 
-class Sliding3OptIteratorTest extends Suite {
+class Sliding3OptTest extends Suite {
 
   def slidingList[T](elems: T*): List[(Option[T], T, Option[T])] =
-    Iterator(elems: _*).buffered.sliding3.toList
+    Iterator(elems: _*)
+      .sliding3Opt
+      .toList
 
   test("empty") {
     slidingList() should be(Nil)

@@ -11,7 +11,7 @@ import scala.util.Random
  * with an associated repetition count, which allows the total number of elements represented to be much larger
  * ([[Long]] vs. [[Int]]).
  */
-class StatsHistSuite extends Suite {
+class StatsHistTest extends Suite {
 
   Random.setSeed(123L)
 
@@ -166,7 +166,7 @@ class StatsHistSuite extends Suite {
       "num:	12000000100,	mean:	1.2,	stddev:	0.4,	mad:	0",
       "elems:	1×10000000000, 2×1000000000, 1×100, 2×1000000000",
       "sorted:	1×10000000100, 2×2000000000",
-      "0.0:	1",
+      "0.01:	1",
       "0.1:	1",
       "1:	1",
       "5:	1",
@@ -178,7 +178,7 @@ class StatsHistSuite extends Suite {
       "95:	2",
       "99:	2",
       "99.9:	2",
-      "100.0:	2"
+      "99.99:	2"
     )
   }
 }

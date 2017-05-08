@@ -10,7 +10,7 @@ import scala.util.Random.shuffle
 /**
  * Test constructing [[Stats]] instances.
  */
-class StatsSuite extends Suite {
+class StatsTest extends Suite {
 
   Random.setSeed(123L)
 
