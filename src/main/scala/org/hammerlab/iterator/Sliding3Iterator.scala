@@ -1,11 +1,9 @@
 package org.hammerlab.iterator
 
-import HeadOptionIterator._
-
 /**
  * Given an [[Iterator[T]]], emit each element sandwiched between its preceding and succeeding elements.
  */
-class Sliding3OptIterator[T](it: BufferedIterator[T]) {
+case class Sliding3Iterator[T](it: BufferedIterator[T]) {
 
   def sliding3: Iterator[(T, T, T)] =
     sliding3Opt
@@ -20,29 +18,27 @@ class Sliding3OptIterator[T](it: BufferedIterator[T]) {
     new SimpleBufferedIterator[(Option[T], T, Option[T])] {
       private var lastOpt: Option[T] = None
 
-      override protected def _advance: Option[(Option[T], T, Option[T])] = {
-        if (!it.hasNext)
-          return None
+      override protected def _advance: Option[(Option[T], T, Option[T])] =
+        it
+          .nextOption
+          .map {
+            cur ⇒
 
-        val cur = it.next()
+              val prevOpt = lastOpt
+              lastOpt = Some(cur)
 
-        val prevOpt = lastOpt
-        lastOpt = Some(cur)
+              val nextOpt =
+                if (it.hasNext)
+                  Some(it.head)
+                else
+                  None
 
-        val nextOpt =
-          if (it.hasNext)
-            Some(it.head)
-          else
-            None
-
-        Some(
-          (
-            prevOpt,
-            cur,
-            nextOpt
-          )
-        )
-      }
+              (
+                prevOpt,
+                cur,
+                nextOpt
+              )
+          }
     }
 
   def sliding3NextOpts: Iterator[(T, Option[T], Option[T])] =
@@ -65,7 +61,7 @@ class Sliding3OptIterator[T](it: BufferedIterator[T]) {
     }
 }
 
-object Sliding3OptIterator {
-  implicit def make[T](it: Iterator[T]): Sliding3OptIterator[T] = new Sliding3OptIterator(it.buffered)
-  implicit def make[T](it: Iterable[T]): Sliding3OptIterator[T] = new Sliding3OptIterator(it.iterator.buffered)
+object Sliding3Iterator {
+  implicit def makeSliding3Iterator[T](it: Iterator[T]): Sliding3Iterator[T] = Sliding3Iterator(it.buffered)
+  implicit def makeSliding3Iterator[T](it: Iterable[T]): Sliding3Iterator[T] = Sliding3Iterator(it.iterator.buffered)
 }

@@ -8,7 +8,7 @@ case class CountIteratorByKey[K, V](it: Iterator[(K, V)]) {
     for {
       (k, _) ← it
     } {
-      counts.update(k, counts.getOrElse(k, 0))
+      counts.update(k, counts.getOrElse(k, 0) + 1)
     }
     counts.toMap
   }

@@ -11,21 +11,23 @@ package org.hammerlab.iterator
  * It also exposes protected `clear` and `postNext` methods for [[None]]ing the internal state and responding to
  * `next()` having been called, respectively.
  */
-trait SimpleBufferedIterator[+T] extends BufferedIterator[T] {
+trait SimpleBufferedIterator[+T]
+  extends BufferedIterator[T]
+    with Closeable {
+
+  /**
+   * Compute and return the next element
+   */
+  protected def _advance: Option[T]
 
   /**
    * null when not initialized, [[Some]] when there is a next value cached, and [[None]] when there are no more values.
    */
   private[this] var _next: Option[T] = _
 
-  protected final def clear(): Unit = {
+  def clear(): Unit = {
     _next = null
   }
-
-  /**
-   * Compute and return the next element
-   */
-  protected def _advance: Option[T]
 
   /**
    * Compute the next element, if it hasn't already been computed; the result is stored in [[_next]].
@@ -34,7 +36,7 @@ trait SimpleBufferedIterator[+T] extends BufferedIterator[T] {
     if (_next == null) {
       _next = _advance
     }
-    _next.nonEmpty
+    _next.nonEmpty || { done(); false }
   }
 
   override final def head: T = {
@@ -59,6 +61,35 @@ trait SimpleBufferedIterator[+T] extends BufferedIterator[T] {
       case null ⇒ s"$getClass"
       case Some(next) ⇒ s"$getClass (head: $head)"
       case None ⇒ s"$getClass (empty)"
+    }
+  }
+
+  /** Called exactly once, when the iterator is empty */
+  protected def done(): Unit = {}
+
+  /** Optional hook for additional cleanup/teardown logic */
+  override def close(): Unit = {}
+}
+
+object SimpleBufferedIterator {
+  implicit class Bufferer[T](it: Iterator[T]) {
+    def buffer: SimpleBufferedIterator[T] = {
+      it match {
+        case sbi: SimpleBufferedIterator[T] ⇒ sbi
+        case _ ⇒
+          val buf = it.buffered
+          new SimpleBufferedIterator[T] {
+            override protected def _advance: Option[T] = {
+              buf
+                .headOption
+                .map {
+                  elem ⇒
+                    buf.next()
+                    elem
+                }
+            }
+          }
+      }
     }
   }
 }

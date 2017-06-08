@@ -1,0 +1,33 @@
+package org.hammerlab.iterator
+
+case class ExpandLastElementIterator[T](it: Iterator[T]) {
+  def expandLastElement(fn: T ⇒ Iterator[T]): Iterator[T] = {
+    val main =
+      new SimpleBufferedIterator[T] {
+        var lastOpt: Option[T] = None
+
+        override protected def _advance: Option[T] =
+          if (it.hasNext) {
+            lastOpt = Some(it.next)
+            lastOpt
+          } else
+            None
+      }
+
+    main ++
+      new Iterator[T] {
+        lazy val rest =
+          main
+            .lastOpt
+            .map(fn)
+            .getOrElse(Iterator())
+
+        override def hasNext: Boolean = rest.hasNext
+        override def next(): T = rest.next
+      }
+  }
+}
+
+object ExpandLastElementIterator {
+  implicit def makeExpandLastElementIterator[T](it: Iterator[T]): ExpandLastElementIterator[T] = ExpandLastElementIterator(it)
+}

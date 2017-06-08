@@ -17,10 +17,10 @@ scala> import org.hammerlab.stats.Stats
 scala> :paste
 Stats.fromHist(
     List[(Int, Long)](
-        1 ->  10000000000L,
-        2 ->   1000000000,
-        1 ->          100,
-        2 ->   1000000000
+        1 →  10000000000L,
+        2 →   1000000000,
+        1 →          100,
+        2 →   1000000000
     )
 )
 

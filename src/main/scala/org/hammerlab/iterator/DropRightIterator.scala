@@ -2,7 +2,7 @@ package org.hammerlab.iterator
 
 import scala.collection.mutable
 
-class DropRightIterator[T](it: Iterator[T]) {
+case class DropRightIterator[T](it: Iterator[T]) {
   def dropRight(n: Int): Iterator[T] =
     if (n == 0)
       it
@@ -30,5 +30,5 @@ class DropRightIterator[T](it: Iterator[T]) {
 }
 
 object DropRightIterator {
-  implicit def make[T](it: Iterator[T]): DropRightIterator[T] = new DropRightIterator(it)
+  implicit def makeDropRightIterator[T](it: Iterator[T]): DropRightIterator[T] = DropRightIterator(it)
 }

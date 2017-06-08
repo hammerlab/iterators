@@ -8,7 +8,7 @@ case class CountIteratorElems[T](it: Iterator[T]) {
     for {
       elem ← it
     } {
-      counts.update(elem, counts.getOrElse(elem, 0))
+      counts.update(elem, counts.getOrElse(elem, 0) + 1)
     }
     counts.toMap
   }

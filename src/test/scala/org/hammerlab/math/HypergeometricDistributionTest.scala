@@ -3,7 +3,7 @@ package org.hammerlab.math
 import org.scalactic.Equality
 import org.hammerlab.test.Suite
 
-import org.apache.commons.math3.distribution.{HypergeometricDistribution => ApacheHyperGeometricDistribution}
+import org.apache.commons.math3.distribution.{HypergeometricDistribution ⇒ ApacheHyperGeometricDistribution}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -15,8 +15,8 @@ class HypergeometricDistributionTest extends Suite {
     new Equality[Double] {
       override def areEqual(a: Double, b: Any): Boolean =
         b match {
-          case d: Double => a === d +- epsilon
-          case _ => false
+          case d: Double ⇒ a === d +- epsilon
+          case _ ⇒ false
         }
     }
 
@@ -24,8 +24,8 @@ class HypergeometricDistributionTest extends Suite {
     new Equality[ArrayBuffer[Double]] {
       override def areEqual(a: ArrayBuffer[Double], b: Any): Boolean =
         b match {
-          case s: ArrayBuffer[Double] => a.size == s.size && a.zip(s).forall(t => t._1 === t._2)
-          case _ => false
+          case s: ArrayBuffer[Double] ⇒ a.size == s.size && a.zip(s).forall(t ⇒ t._1 === t._2)
+          case _ ⇒ false
         }
     }
 

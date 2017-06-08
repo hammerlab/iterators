@@ -26,6 +26,12 @@ case class Sliding2Iterator[T](it: BufferedIterator[T]) {
           )
     }
 
+  def sliding2(pad: T): Iterator[(T, T)] =
+    for {
+      (elem, succOpt) ← sliding2Opt
+    } yield
+      elem → succOpt.getOrElse(pad)
+
   def sliding2: Iterator[(T, T)] =
     new SimpleBufferedIterator[(T, T)] {
       var curOpt: Option[T] = None
@@ -49,6 +55,7 @@ case class Sliding2Iterator[T](it: BufferedIterator[T]) {
 }
 
 object Sliding2Iterator {
-  implicit def makeSliding2OptIterator[T](it: Iterator[T]): Sliding2Iterator[T] = Sliding2Iterator(it.buffered)
-  implicit def makeSliding2OptIterator[T](seq: Seq[T]): Sliding2Iterator[T] = Sliding2Iterator(seq.iterator.buffered)
+  implicit def makeSliding2Iterator[T](it: Iterator[T]): Sliding2Iterator[T] = Sliding2Iterator(it.buffered)
+  implicit def makeSliding2Iterable[T](it: Iterable[T]): Sliding2Iterator[T] = Sliding2Iterator(it.iterator.buffered)
+  implicit def makeSliding2Array[T](it: Array[T]): Sliding2Iterator[T] = Sliding2Iterator(it.iterator.buffered)
 }

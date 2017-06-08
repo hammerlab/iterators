@@ -16,7 +16,7 @@ object GroupRunsIterator {
   implicit class GroupRunsIterator[T](val it: BufferedIterator[T])
     extends AnyVal {
 
-    def groupBy(pred: T => Boolean): Iterator[Iterator[T]] =
+    def groupBy(pred: T ⇒ Boolean): Iterator[Iterator[T]] =
       new Iterator[Iterator[T]] {
 
         override def hasNext: Boolean = it.hasNext

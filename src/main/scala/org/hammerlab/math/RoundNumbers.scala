@@ -9,8 +9,8 @@ import spire.implicits._
  * of `base`.
  */
 class RoundNumbers[I: Integral] private(steps: Seq[Int],
-                                               base: Int = 10,
-                                               limitOpt: Option[I])
+                                        base: Int = 10,
+                                        limitOpt: Option[I])
   extends SimpleBufferedIterator[I] {
 
   private var idx = 0
