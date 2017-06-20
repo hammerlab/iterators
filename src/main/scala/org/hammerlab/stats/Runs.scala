@@ -8,7 +8,7 @@ import spire.math.Integral
 case class Runs[K, V: Integral](elems: Seq[(K, V)]) {
   override def toString: String =
     (
-      for ((elem, count) <- elems) yield
+      for ((elem, count) ← elems) yield
         if (count == 1)
           elem.toString
         else

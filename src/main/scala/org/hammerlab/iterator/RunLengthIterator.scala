@@ -13,7 +13,7 @@ class RunLengthIterator[K](val it: BufferedIterator[K]) {
   def runLengthEncode(implicit ord: Ordering[K]): Iterator[(K, Int)] =
     runLengthEncode(ord.equiv(_, _))
 
-  def runLengthEncode(cmpFn: (K, K) => Boolean = (_ == _)): Iterator[(K, Int)] =
+  def runLengthEncode(cmpFn: (K, K) ⇒ Boolean = (_ == _)): Iterator[(K, Int)] =
     new Iterator[(K, Int)] {
       override def hasNext: Boolean = it.hasNext
 
@@ -33,6 +33,7 @@ object RunLengthIterator {
 
   implicit def make[K](it: Iterator[K]): RunLengthIterator[K] = new RunLengthIterator(it.buffered)
 
+  def reencode[K, V: Integral](it: Iterator[(K, V)]): Iterator[(K, V)] = reencode(it.buffered)
   def reencode[K, V: Integral](it: BufferedIterator[(K, V)]): Iterator[(K, V)] =
     new Iterator[(K, V)] {
       override def hasNext: Boolean = it.hasNext

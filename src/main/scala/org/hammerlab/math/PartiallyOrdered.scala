@@ -24,22 +24,22 @@ trait PartiallyOrdered[+A] extends Any {
 
   def <  [B >: A : PartiallyOrdered](that: B): Boolean =
     this tryCompareTo that match {
-      case Some(x) if x < 0 => true
-      case _ => false
+      case Some(x) if x < 0 ⇒ true
+      case _ ⇒ false
     }
   def >  [B >: A : PartiallyOrdered](that: B): Boolean =
     this tryCompareTo that match {
-      case Some(x) if x > 0 => true
-      case _ => false
+      case Some(x) if x > 0 ⇒ true
+      case _ ⇒ false
     }
   def <= [B >: A : PartiallyOrdered](that: B): Boolean =
     this tryCompareTo that match {
-      case Some(x) if x <= 0 => true
-      case _ => false
+      case Some(x) if x <= 0 ⇒ true
+      case _ ⇒ false
     }
   def >= [B >: A : PartiallyOrdered](that: B): Boolean =
     this tryCompareTo that match {
-      case Some(x) if x >= 0 => true
-      case _ => false
+      case Some(x) if x >= 0 ⇒ true
+      case _ ⇒ false
     }
 }

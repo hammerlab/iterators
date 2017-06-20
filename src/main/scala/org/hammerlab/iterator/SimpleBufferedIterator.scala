@@ -11,28 +11,41 @@ package org.hammerlab.iterator
  * It also exposes protected `clear` and `postNext` methods for [[None]]ing the internal state and responding to
  * `next()` having been called, respectively.
  */
-trait SimpleBufferedIterator[+T] extends BufferedIterator[T] {
+trait SimpleBufferedIterator[+T]
+  extends BufferedIterator[T] {
 
-  private[this] var _next: Option[T] = None
-
-  protected final def clear(): Unit = {
-    _next = None
-  }
-
+  /**
+   * Compute and return the next element
+   */
   protected def _advance: Option[T]
 
+  /**
+   * null when not initialized, [[Some]] when there is a next value cached, and [[None]] when there are no more values.
+   */
+  private[this] var _next: Option[T] = _
+
+  def clear(): Unit = {
+    _next = null
+  }
+
+  /**
+   * Compute the next element, if it hasn't already been computed; the result is stored in [[_next]].
+   */
   override final def hasNext: Boolean = {
-    if (_next.isEmpty) {
+    if (_next == null) {
       _next = _advance
     }
-    _next.nonEmpty
+    _next.nonEmpty || { done(); false }
   }
 
   override final def head: T = {
-    if (!hasNext) throw new NoSuchElementException
+    if (!hasNext)
+      throw new NoSuchElementException
+
     _next.get
   }
 
+  /** Hook for subclasses to update books after each element is consumed. */
   protected def postNext(): Unit = {}
 
   override final def next(): T = {
@@ -40,5 +53,39 @@ trait SimpleBufferedIterator[+T] extends BufferedIterator[T] {
     clear()
     postNext()
     r
+  }
+
+  override def toString(): String = {
+    _next match {
+      case null ⇒ s"${getClass.getSimpleName}"
+      case Some(next) ⇒ s"${getClass.getSimpleName} (head: $head)"
+      case None ⇒ s"${getClass.getSimpleName} (empty)"
+    }
+  }
+
+  /** Called exactly once, when the iterator is empty */
+  protected def done(): Unit = {}
+}
+
+object SimpleBufferedIterator {
+  implicit class Bufferer[T](it: Iterator[T]) {
+    def buffer: SimpleBufferedIterator[T] = {
+      it match {
+        case sbi: SimpleBufferedIterator[T] ⇒ sbi
+        case _ ⇒
+          val buf = it.buffered
+          new SimpleBufferedIterator[T] {
+            override protected def _advance: Option[T] = {
+              buf
+                .headOption
+                .map {
+                  elem ⇒
+                    buf.next()
+                    elem
+                }
+            }
+          }
+      }
+    }
   }
 }

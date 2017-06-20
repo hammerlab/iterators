@@ -21,7 +21,7 @@ case class Samples[K, V: Integral](n: V, first: Runs[K, V], numFirst: V, last: R
     val lastIt = last.iterator.buffered
     var dropped = Integral[V].zero
     Runs(
-      first ++ lastIt.dropWhile(t => {
+      first ++ lastIt.dropWhile(t ⇒ {
         val (_, count) = t
         val drop = dropped < num
         dropped += count

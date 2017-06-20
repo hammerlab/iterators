@@ -2,10 +2,11 @@ package org.hammerlab.stats
 
 import org.hammerlab.iterator.RunLengthIterator._
 import spire.implicits._
-import spire.math.{Integral, Numeric}
+import spire.math.{ Integral, Numeric }
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
+import scala.math.{log10, floor, ceil, abs, sqrt}
 
 /**
  * Wrapper for some computed statistics about a dataset of [[Numeric]] elements.
@@ -30,10 +31,16 @@ case class Stats[K: Numeric, V: Integral](n: V,
                                           percentiles: Seq[(Double, Double)]) {
 
   def prettyDouble(d: Double): String =
-    if (math.floor(d).toInt == math.ceil(d).toInt)
+    if (floor(d).toInt == ceil(d).toInt)
       d.toInt.toString
     else
       "%.1f".format(d)
+
+  def prettyPercentile(d: Double): String =
+    if (floor(d).toInt == ceil(d).toInt)
+      d.toInt.toString
+    else
+      d.toString
 
   override def toString: String = {
     if (n == 0)
@@ -49,23 +56,25 @@ case class Stats[K: Numeric, V: Integral](n: V,
           s"mad:\t${prettyDouble(mad)}"
         ).mkString(",\t")
 
-      if (n > 0) {
-        for {
-          samples <- samplesOpt
-          if samples.nonEmpty
-        } {
-          strings += s"elems:\t$samples"
-        }
-
-        for {
-          sortedSamples <- sortedSamplesOpt
-          if sortedSamples.nonEmpty
-        } {
-          strings += s"sorted:\t$sortedSamples"
-        }
+      for {
+        samples ← samplesOpt
+        if samples.nonEmpty
+      } {
+        strings += s"elems:\t$samples"
       }
 
-      strings ++= percentiles.map(t => s"${prettyDouble(t._1)}:\t${prettyDouble(t._2)}")
+      for {
+        sortedSamples ← sortedSamplesOpt
+        if sortedSamples.nonEmpty
+      } {
+        strings += s"sorted:\t$sortedSamples"
+      }
+
+      strings ++=
+        percentiles.map {
+          case (k, v) ⇒
+            s"${prettyPercentile(k)}:\t${prettyDouble(v)}"
+        }
 
       strings.mkString("\n")
     }
@@ -97,7 +106,7 @@ object Stats {
       val vBuilder = Vector.newBuilder[(K, V)]
       var prevOpt: Option[K] = None
       for {
-        (value, num) <- reencode[K, V](v.iterator.buffered)
+        (value, num) ← reencode[K, V](v.iterator)
       } {
         if (alreadySorted) {
           if (prevOpt.exists(_ > value))
@@ -105,7 +114,7 @@ object Stats {
           else
             prevOpt = Some(value)
         }
-        vBuilder += value -> num
+        vBuilder += value → num
         n += num
         hist.update(value, hist.getOrElse(value, Integral[V].zero) + num)
       }
@@ -121,9 +130,10 @@ object Stats {
       if (alreadySorted)
         values
       else
-        for { key <- hist.keys.toVector.sorted }
-          yield
-            key -> hist(key)
+        for {
+          key ← hist.keys.toVector.sorted
+        } yield
+          key → hist(key)
 
     val ps = histPercentiles(n, sorted)
 
@@ -133,11 +143,11 @@ object Stats {
 
     var sum = 0.0
     var sumSquares = 0.0
-    for ((value, num) <- sorted) {
+    for ((value, num) ← sorted) {
       val d = value.toDouble
       sum += d * num.toDouble()
       sumSquares += d * d * num.toDouble()
-      medianDeviationsBuilder += math.abs(d - median) -> num
+      medianDeviationsBuilder += abs(d - median) → num
     }
 
     val medianDeviations = medianDeviationsBuilder.result().sortBy(_._1)
@@ -145,11 +155,16 @@ object Stats {
     val mad =
       getRunPercentiles(
         medianDeviations,
-        Seq(50.0 -> (n.toDouble() - 1) / 2.0)
-      ).head._2
+        Seq(
+          50.0 →
+            ((n.toDouble() - 1) / 2.0)
+        )
+      )
+      .head
+      ._2
 
     val mean = sum / n.toDouble()
-    val stddev = math.sqrt(sumSquares / n.toDouble() - mean * mean)
+    val stddev = sqrt(sumSquares / n.toDouble() - mean * mean)
 
     val samplesOpt =
       if (alreadySorted || !onlySampleSorted) {
@@ -198,7 +213,7 @@ object Stats {
     val vBuilder = Vector.newBuilder[K]
     var alreadySorted = true
     var prevOpt: Option[K] = None
-    for (value <- v) {
+    for (value ← v) {
       if (alreadySorted) {
         if (prevOpt.exists(_ > value))
           alreadySorted = false
@@ -224,18 +239,18 @@ object Stats {
 
     var sum = 0.0
     var sumSquares = 0.0
-    for (value <- sorted) {
+    for (value ← sorted) {
       val d = value.toDouble
       sum += d
       sumSquares += d * d
-      medianDeviationsBuilder += math.abs(d - median)
+      medianDeviationsBuilder += abs(d - median)
     }
 
     val medianDeviations = medianDeviationsBuilder.result().sorted
     val mad = getMedian(medianDeviations)
 
     val mean = sum / n
-    val stddev = math.sqrt(sumSquares / n - mean * mean)
+    val stddev = sqrt(sumSquares / n - mean * mean)
 
     val samplesOpt: Option[Samples[K, Int]] =
       if (alreadySorted || !onlySampleSorted) {
@@ -326,7 +341,7 @@ object Stats {
 
         val distancePast = elemsPast - idx
 
-        percentile ->
+        percentile →
           (
             if (distancePast < 1)
               curK.get * distancePast + values.head._1.toDouble() * (1 - distancePast)
@@ -347,8 +362,8 @@ object Stats {
     val nd = n.toDouble
     val percentileIdxs =
       denominators
-        .takeWhile(d => d <= n || d == 2)  // Always take the median (denominator 2 aka 50th percentile).
-        .flatMap(d => {
+        .takeWhile(d ⇒ d <= n || d == 2)  // Always take the median (denominator 2 aka 50th percentile).
+        .flatMap(d ⇒ {
           val loPercentile = 100.0 / d
           val hiPercentile = 100.0 - loPercentile
 
@@ -357,11 +372,11 @@ object Stats {
 
           if (d == 2)
           // Median (50th percentile, denominator 2) only emits one tuple.
-            Iterator(loPercentile -> loIdx)
+            Iterator(loPercentile → loIdx)
           else
           // In general, we emit two tuples per "denominator", one on the high side and one on the low. For example, for
           // denominator 4, we emit the 25th and 75th percentiles.
-            Iterator(loPercentile -> loIdx, hiPercentile -> hiIdx)
+            Iterator(loPercentile → loIdx, hiPercentile → hiIdx)
         })
         .toArray
         .sortBy(_._1)
@@ -382,14 +397,14 @@ object Stats {
     }
 
     val nd = n.toDouble
-    denominators.takeWhile(_ <= n).flatMap(d => {
+    denominators.takeWhile(_ <= n).flatMap(d ⇒ {
       val loPercentile = 100.0 / d
       val hiPercentile = 100.0 - loPercentile
 
       val loFrac = nd / d
 
-      val loFloor = math.floor(loFrac).toInt
-      val loCeil = math.ceil(loFrac).toInt
+      val loFloor = floor(loFrac).toInt
+      val loCeil = ceil(loFrac).toInt
 
       val hiFloor = n - loFloor
       val hiCeil = n - loCeil
@@ -406,11 +421,11 @@ object Stats {
 
       if (d == 2)
         // Median (50th percentile, denominator 2) only emits one tuple.
-        Iterator(loPercentile -> lo)
+        Iterator(loPercentile → lo)
       else
         // In general, we emit two tuples per "denominator", one on the high side and one on the low. For example, for
         // denominator 4, we emit the 25th and 75th percentiles.
-        Iterator(loPercentile -> lo, hiPercentile -> hi)
+        Iterator(loPercentile → lo, hiPercentile → hi)
 
     }).toVector.sortBy(_._1)
   }
@@ -439,13 +454,13 @@ object Stats {
       val (elem, count) = runLengthIterator.next()
 
       if (reverse)
-        runs.prepend(elem -> count)
+        runs.prepend(elem → count)
       else
         runs += ((elem, count))
 
       sum += count
       i += 1
     }
-    runs -> sum
+    runs → sum
   }
 }

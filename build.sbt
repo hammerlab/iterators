@@ -1,11 +1,12 @@
 name := "iterator"
 
-version := "1.2.1"
+version := "1.2.2"
 
 addScala212
 
 deps ++= Seq(
   libs.value('commons_math),
-  libs.value('kryo),
+  kryo.value,
+  "com.chuusai" %% "shapeless" % "2.3.2",
   libs.value('spire)
 )

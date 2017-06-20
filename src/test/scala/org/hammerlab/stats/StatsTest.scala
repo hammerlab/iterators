@@ -10,7 +10,7 @@ import scala.util.Random.shuffle
 /**
  * Test constructing [[Stats]] instances.
  */
-class StatsSuite extends Suite {
+class StatsTest extends Suite {
 
   Random.setSeed(123L)
 
@@ -271,7 +271,7 @@ class StatsSuite extends Suite {
     )
   }
 
-  val shuffledDigits = (0 until 100).map(_ => Random.nextInt(10))
+  val shuffledDigits = (0 until 100).map(_ ⇒ Random.nextInt(10))
 
   test("100 digits") {
     check(

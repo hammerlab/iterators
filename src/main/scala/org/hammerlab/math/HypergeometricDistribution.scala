@@ -31,7 +31,7 @@ case class HypergeometricDistribution(N: Long, K: Long, n: Int) {
   val logBinomPartialSumsNK = ArrayBuffer[Double]()
 
   // Compute log-arrays described above.
-  (0 to n).foreach(k => {
+  (0 to n).foreach(k ⇒ {
     if (k == 0) {
       logBinomPartialSumsLo += 0
       logBinomPartialSumsK += 0
@@ -47,7 +47,7 @@ case class HypergeometricDistribution(N: Long, K: Long, n: Int) {
   })
 
   // Compute PDF and CDF.
-  (0 to n).foreach(k => {
+  (0 to n).foreach(k ⇒ {
     val p1 = logBinomPartialSumsK(k) - logBinomPartialSumsLo(k)
     val p2 = logBinomPartialSumsNK(n - k) - logBinomPartialSumsLo(n - k)
     val v = FastMath.exp(p1 + p2 - d)
