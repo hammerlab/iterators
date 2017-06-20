@@ -3,7 +3,7 @@ package org.hammerlab.math
 import shapeless._
 
 /**
- * Copied from
+ * Copied/Adapted from
  * https://github.com/milessabin/shapeless/blob/shapeless-2.3.2/examples/src/main/scala/shapeless/examples/monoids.scala
  */
 
@@ -23,11 +23,21 @@ trait Monoid[T] {
 }
 
 object Monoid extends ProductTypeClassCompanion[Monoid] {
-  def mzero[T](implicit mt: Monoid[T]) = mt.zero
+  def zero[T](implicit mt: Monoid[T]) = mt.zero
 
   implicit def longMonoid: Monoid[Long] = new Monoid[Long] {
     def zero = 0
-    def append(a: Long, b: Long) = a+b
+    def append(a: Long, b: Long) = a + b
+  }
+
+  implicit def intMonoid: Monoid[Int] = new Monoid[Int] {
+    override def zero: Int = 0
+    override def append(a: Int, b: Int): Int = a + b
+  }
+
+  implicit def stringMonoid: Monoid[String] = new Monoid[String] {
+    override def zero: String = ""
+    override def append(a: String, b: String): String = a + b
   }
 
   object typeClass extends ProductTypeClass[Monoid] {

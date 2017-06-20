@@ -16,8 +16,4 @@ package object iterator {
       else
         None
   }
-
-  type CloseableIterator[T] =
-    Iterator[T]
-      with Closeable
 }

@@ -56,20 +56,18 @@ case class Stats[K: Numeric, V: Integral](n: V,
           s"mad:\t${prettyDouble(mad)}"
         ).mkString(",\t")
 
-      if (n > 0) {
-        for {
-          samples ← samplesOpt
-          if samples.nonEmpty
-        } {
-          strings += s"elems:\t$samples"
-        }
+      for {
+        samples ← samplesOpt
+        if samples.nonEmpty
+      } {
+        strings += s"elems:\t$samples"
+      }
 
-        for {
-          sortedSamples ← sortedSamplesOpt
-          if sortedSamples.nonEmpty
-        } {
-          strings += s"sorted:\t$sortedSamples"
-        }
+      for {
+        sortedSamples ← sortedSamplesOpt
+        if sortedSamples.nonEmpty
+      } {
+        strings += s"sorted:\t$sortedSamples"
       }
 
       strings ++=

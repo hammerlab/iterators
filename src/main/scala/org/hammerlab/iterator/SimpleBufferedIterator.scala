@@ -12,8 +12,7 @@ package org.hammerlab.iterator
  * `next()` having been called, respectively.
  */
 trait SimpleBufferedIterator[+T]
-  extends BufferedIterator[T]
-    with Closeable {
+  extends BufferedIterator[T] {
 
   /**
    * Compute and return the next element
@@ -58,17 +57,14 @@ trait SimpleBufferedIterator[+T]
 
   override def toString(): String = {
     _next match {
-      case null ⇒ s"$getClass"
-      case Some(next) ⇒ s"$getClass (head: $head)"
-      case None ⇒ s"$getClass (empty)"
+      case null ⇒ s"${getClass.getSimpleName}"
+      case Some(next) ⇒ s"${getClass.getSimpleName} (head: $head)"
+      case None ⇒ s"${getClass.getSimpleName} (empty)"
     }
   }
 
   /** Called exactly once, when the iterator is empty */
   protected def done(): Unit = {}
-
-  /** Optional hook for additional cleanup/teardown logic */
-  override def close(): Unit = {}
 }
 
 object SimpleBufferedIterator {
