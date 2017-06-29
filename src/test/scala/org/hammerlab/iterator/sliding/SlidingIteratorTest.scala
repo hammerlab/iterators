@@ -1,7 +1,7 @@
-package org.hammerlab.iterator
+package org.hammerlab.iterator.sliding
 
+import org.hammerlab.iterator.sliding.SlidingIterator._
 import org.hammerlab.test.Suite
-import SlidingIterator._
 
 class SlidingIteratorTest
   extends Suite {

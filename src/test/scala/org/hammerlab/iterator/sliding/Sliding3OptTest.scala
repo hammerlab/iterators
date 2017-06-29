@@ -1,6 +1,6 @@
-package org.hammerlab.iterator
+package org.hammerlab.iterator.sliding
 
-import org.hammerlab.iterator.Sliding3Iterator._
+import org.hammerlab.iterator.sliding.Sliding3Iterator._
 import org.hammerlab.test.Suite
 
 class Sliding3OptTest extends Suite {

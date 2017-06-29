@@ -1,7 +1,7 @@
 package org.hammerlab.iterator
 
+import org.hammerlab.iterator.GroupWithIterator._
 import org.hammerlab.test.Suite
-import GroupWithIterator._
 
 class GroupWithIteratorTest
   extends Suite {
@@ -9,9 +9,9 @@ class GroupWithIteratorTest
   implicit def stringToInt(s: String): Int = augmentString(s).toInt
 
   test("mixed") {
-    TestIterator(2, 4, 6, 8, 10)
+    Iterator(2, 4, 6, 8, 10)
       .groupWith[String, Int](
-        TestIterator("1", "2", "3", "4", "5", "5", "7", "11")
+        Iterator("1", "2", "3", "4", "5", "5", "7", "11")
       )
       .toList
       .map {
@@ -29,9 +29,9 @@ class GroupWithIteratorTest
   }
 
   test("left empty") {
-    TestIterator[Int]()
+    Iterator[Int]()
       .groupWith[String, Int](
-        TestIterator("1", "2", "3", "4", "5", "5", "7", "11")
+        Iterator("1", "2", "3", "4", "5", "5", "7", "11")
       )
       .toList
       .map {

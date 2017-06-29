@@ -1,4 +1,6 @@
-package org.hammerlab.iterator
+package org.hammerlab.iterator.sliding
+
+import org.hammerlab.iterator.SimpleBufferedIterator
 
 case class Sliding2Iterator[T](it: BufferedIterator[T]) {
   def sliding2Prev: Iterator[(Option[T], T)] =

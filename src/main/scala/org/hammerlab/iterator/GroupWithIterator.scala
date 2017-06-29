@@ -1,6 +1,6 @@
 package org.hammerlab.iterator
 
-import BufferedTakeWhileIterator._
+import org.hammerlab.iterator.bulk.BufferedBulkIterator._
 
 /**
  * Group one sorted iterator with another, emitting an iterator of the latter's elements for each of the former's
@@ -26,6 +26,37 @@ case class GroupWithIterator[T](it: BufferedIterator[T]) {
                 ≥(uv(u), _)
               )
           )
+  }
+
+  def sortedZip[U, V: Ordering](other: Iterator[U])(
+      implicit
+      tv: T ⇒ V,
+      uv: U ⇒ V
+  ): Iterator[Either[T, U]] = {
+    val o = other.buffered
+    val ord = implicitly[Ordering[V]]
+    new SimpleBufferedIterator[Either[T, U]] {
+      override protected def _advance: Option[Either[T, U]] = {
+        (it.headOption, o.headOption) match {
+          case (None, None) ⇒ None
+          case (Some(t), None) ⇒
+            it.next
+            Some(Left(t))
+          case (None, Some(u)) ⇒
+            o.next
+            Some(Right(u))
+          case (Some(t), Some(u)) ⇒
+            ord.compare(tv(t), uv(u)) match {
+              case x if x > 0 ⇒
+                o.next
+                Some(Right(u))
+              case _ ⇒
+                it.next
+                Some(Left(t))
+            }
+        }
+      }
+    }
   }
 }
 

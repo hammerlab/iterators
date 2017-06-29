@@ -1,7 +1,7 @@
-package org.hammerlab.iterator
+package org.hammerlab.iterator.sliding
 
+import org.hammerlab.iterator.sliding.Sliding2Iterator._
 import org.hammerlab.test.Suite
-import Sliding2Iterator._
 
 class Sliding2OptTest extends Suite {
   test("empty") {

@@ -1,4 +1,6 @@
-package org.hammerlab.iterator
+package org.hammerlab.iterator.sliding
+
+import org.hammerlab.iterator.{ NextOptionIterator, SimpleBufferedIterator }
 
 /**
  * Given an [[Iterator[T]]], emit each element sandwiched between its preceding and succeeding elements.
