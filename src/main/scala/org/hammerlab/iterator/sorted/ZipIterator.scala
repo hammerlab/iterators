@@ -3,18 +3,20 @@ package org.hammerlab.iterator.sorted
 import org.hammerlab.iterator.{ HeadOptionIterator, SimpleBufferedIterator }
 
 case class ZipIterator[T](l: BufferedIterator[T]) {
-  def sortedZip[V: Ordering](other: Iterable[T])(
+  def sortedZip[V](other: Iterable[T])(
       implicit
+      ord: Ordering[V],
       tv: T ⇒ V
   ): SimpleBufferedIterator[T] =
-    sortedZip[V](other)
+    sortedZip[V](other.iterator)
 
-  def sortedZip[V: Ordering](other: Iterator[T])(
+  def sortedZip[V](other: Iterator[T])(
       implicit
+      ord: Ordering[V],
       tv: T ⇒ V
   ): SimpleBufferedIterator[T] = {
     val r = other.buffered
-    val ≤ = implicitly[Ordering[V]].lteq _
+    val ≤ = ord.lteq _
     new SimpleBufferedIterator[T] {
       override protected def _advance: Option[T] =
         (l.headOption, r.headOption) match {

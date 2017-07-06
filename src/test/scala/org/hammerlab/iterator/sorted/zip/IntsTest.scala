@@ -1,10 +1,27 @@
-package org.hammerlab.iterator.sorted
+package org.hammerlab.iterator.sorted.zip
 
-class EitherInts
-  extends EitherZip
-    with ZipIntsTest {
+import org.hammerlab.iterator.sorted
+import org.hammerlab.iterator.sorted.VInt
+import org.hammerlab.iterator.sorted.ZipIterator._
 
-  override def expected: Map[String, Seq[Either[Int, Int]]] =
+class IntsTest
+  extends sorted.Suite
+    with VInt
+    with sorted.IntsTest {
+
+  override type Result = Int
+
+  override def check(left: Seq[L])(right: Seq[R])(expected: Seq[Int]): Unit =
+    left
+      .sortedZip(right)
+      .toList should be(
+      expected
+    )
+
+  override def L(t: L): Result = t
+  override def R(u: R): Result = u
+
+  override def expected: Map[String, Seq[Result]] =
     Map(
       "1,2,3 4,5,6" →
         Seq(
@@ -64,4 +81,3 @@ class EitherInts
         )
     )
 }
-

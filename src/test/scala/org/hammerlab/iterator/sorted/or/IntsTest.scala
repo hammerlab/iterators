@@ -1,33 +1,13 @@
-package org.hammerlab.iterator.sorted
+package org.hammerlab.iterator.sorted.or
 
-import org.hammerlab.iterator.sorted.OrZipIterator._
-import org.hammerlab.types.{ Both, LO, Or, RO }
+import org.hammerlab.iterator.sorted
+import org.hammerlab.iterator.sorted.IdentityIntConversions
+import org.hammerlab.types.Or
 
-abstract class OrZip
-  extends ZipIteratorTest
-    with EitherOr {
-
-  type Result = Or[L, R]
-
-  override def check(left: L*)(right: R*)(expected: Result*): Unit = {
-    left
-      .iterator
-      .sortedOrZip(right.iterator)
-      .toList should be(
-        expected
-      )
-  }
-
-  def B(l: L)(implicit ev: L =:= R): Result = Both(l, l)
-  def B(l: L, r: R): Result = Both(l, r)
-
-  def L(l: L): Result = LO(l)
-  def R(r: R): Result = RO(r)
-}
-
-class OrInts
-  extends OrZip
-    with ZipIntsTest {
+class IntsTest
+  extends Suite
+    with sorted.IntsTest
+    with IdentityIntConversions {
 
   override def expected: Map[String, Seq[Or[Int, Int]]] =
     Map(

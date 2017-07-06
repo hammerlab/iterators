@@ -2,8 +2,9 @@ package org.hammerlab.iterator.sorted
 
 import scala.collection.immutable.StringOps
 
-trait IntStringEitherTest
-  extends EitherZip {
+trait WrappedIntString
+  extends ConvertToInt {
+  self: Suite ⇒
 
   /**
    * Workaround [[strlen]] making [[augmentString]] implicit (for accessing
@@ -24,6 +25,8 @@ trait IntStringEitherTest
        4,
        7,
       10,
+      11,
+      11,
       15
     )
 

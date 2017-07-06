@@ -1,14 +1,11 @@
 package org.hammerlab.iterator.sorted
 
-trait ZipIntsTest {
+trait IntsTest {
 
-  self: ZipIteratorTest with EitherOr ⇒
+  self: Suite with VInt ⇒
 
   type L = Int
   type R = Int
-
-  override implicit def tv: Int ⇒ Int = identity
-  override implicit def uv: Int ⇒ Int = identity
 
   def L(t: L): Result
   def R(u: R): Result
@@ -25,13 +22,7 @@ trait ZipIntsTest {
     val name = s"${str(l)} ${str(r)}"
 
     test(name) {
-      check(
-        l: _*
-      )(
-        r: _*
-      )(
-        expected(name): _*
-      )
+      check(l)(r)(expected(name))
     }
   }
 
