@@ -10,4 +10,6 @@ deps ++= Seq(
   libs.value('spire)
 )
 
+testUtilsVersion := "1.2.4-SNAPSHOT"
+
 testDeps += kryo.value
