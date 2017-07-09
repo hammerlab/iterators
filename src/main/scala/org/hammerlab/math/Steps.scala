@@ -1,6 +1,7 @@
 package org.hammerlab.math
 
-import math.{exp, log, max, min}
+import math.{ exp, log, max, min }
+import scala.collection.immutable.SortedSet
 
 /**
  * Some utilities for generating exponential sequences of integers that can be used as e.g. histogram-bucket boundaries.
@@ -12,23 +13,28 @@ object Steps {
    *
    * Until the k-th step is bigger than k, the whole number k is used in its stead.
    */
-  def geometricEvenSteps(maxDepth: Int, N: Int = 100): Set[Int] = {
+  def geometricEvenSteps(maxDepth: Int, N: Int = 100): SortedSet[Int] = {
     val logMaxDepth = log(maxDepth)
 
-    Set(0) ++
-      (for {
-        i ← 1 until N
-      } yield
-        min(
-          maxDepth,
-          max(
-            i,
-            exp(
-              (i - 1) * logMaxDepth / (N - 2)
-            ).toInt
-          )
+    SortedSet(
+      0 ::
+        (
+          for {
+            i ← 1 until N
+          } yield
+            min(
+              maxDepth,
+              max(
+                i,
+                exp(
+                  (i - 1) * logMaxDepth / (N - 2)
+                )
+                .toInt
+              )
+            )
         )
-      ).toSet
+        .toList: _*
+    )
   }
 
   /**
@@ -60,11 +66,16 @@ object Steps {
    *
    * …etc.
    */
-  def roundNumbers(maxDepth: Int): Set[Int] =
-    (0 until 10).toSet ++
-      RoundNumbers(
-        (10 until 20) ++ (20 until 50 by 2) ++ (50 until 100 by 5),
-        maxDepth,
-        10
-      ).toSet
+  def roundNumbers(maxDepth: Int): SortedSet[Int] =
+    SortedSet(
+      (
+        (0 until 10) ++
+          RoundNumbers(
+            (10 until 20) ++ (20 until 50 by 2) ++ (50 until 100 by 5),
+            maxDepth,
+            10
+          )
+          .toSeq
+      ): _*
+    )
 }
