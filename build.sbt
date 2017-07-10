@@ -5,11 +5,11 @@ version := "1.3.0-SNAPSHOT"
 addScala212
 
 deps ++= Seq(
-  libs.value('commons_math),
-  "com.chuusai" %% "shapeless" % "2.3.2",
-  libs.value('spire)
+  commons_math,
+  shapeless,
+  spire
 )
 
-testUtilsVersion := "1.2.4-SNAPSHOT"
+testDeps += kryo
 
-testDeps += kryo.value
+testUtilsVersion := "1.2.4-SNAPSHOT"
