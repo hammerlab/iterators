@@ -12,9 +12,10 @@ trait MonoidSyntax[T] {
 }
 
 object MonoidSyntax {
-  implicit def monoidSyntax[T](a: T)(implicit mt: Monoid[T]): MonoidSyntax[T] = new MonoidSyntax[T] {
-    def |+|(b: T) = mt.append(a, b)
-  }
+  implicit def monoidSyntax[T](a: T)(implicit mt: Monoid[T]): MonoidSyntax[T] =
+    new MonoidSyntax[T] {
+      def |+|(b: T) = mt.append(a, b)
+    }
 }
 
 trait Monoid[T] {
