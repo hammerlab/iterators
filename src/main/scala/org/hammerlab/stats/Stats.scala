@@ -12,8 +12,6 @@ import scala.math.{log10, floor, ceil, abs, sqrt}
  * Wrapper for some computed statistics about a dataset of [[Numeric]] elements.
  *
  * @param n number of elements in the dataset.
- * @param mean mean.
- * @param stddev stddev.
  * @param mad median absolute deviation (from the median).
  * @param samplesOpt "sample" elements; the start and end of the data.
  * @param sortedSamplesOpt "sample" elements; the least and greatest elements. If the dataset is already sorted, meaning
@@ -25,6 +23,7 @@ import scala.math.{log10, floor, ceil, abs, sqrt}
 case class Stats[K: Numeric, V: Integral](n: V,
                                           mean: Double,
                                           stddev: Double,
+                                          median: Double,
                                           mad: Double,
                                           samplesOpt: Option[Samples[K, V]],
                                           sortedSamplesOpt: Option[Samples[K, V]],
@@ -192,7 +191,8 @@ object Stats {
 
     Stats(
       n,
-      mean, stddev, mad,
+      mean, stddev,
+      median, mad,
       samplesOpt,
       sortedSamplesOpt,
       ps
@@ -278,7 +278,8 @@ object Stats {
 
     new Stats(
       n,
-      mean, stddev, mad,
+      mean, stddev,
+      median, mad,
       samplesOpt,
       sortedSamplesOpt,
       percentiles(sorted)
@@ -293,6 +294,7 @@ object Stats {
       n = Integral[V].zero,
       mean = 0,
       stddev = 0,
+      median = 0,
       mad = 0,
       samplesOpt = None,
       sortedSamplesOpt = None,
