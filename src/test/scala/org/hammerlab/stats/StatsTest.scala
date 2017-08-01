@@ -2,7 +2,7 @@ package org.hammerlab.stats
 
 import org.hammerlab.test.Suite
 import spire.implicits._
-import spire.math.Integral
+import spire.math.{ Integral, Numeric }
 
 import scala.util.Random
 import scala.util.Random.shuffle
@@ -14,20 +14,36 @@ class StatsTest extends Suite {
 
   Random.setSeed(123L)
 
-  def check(input: Seq[Int], lines: String*): Unit = {
-    Stats(input).toString should be(lines.mkString("\n"))
-  }
+  def check[K: Numeric: Ordering](input: Seq[K], lines: String*): Unit =
+    Stats(input)
+      .toString should be(
+      lines.mkString("\n")
+    )
 
-  def check(input: Seq[Int], numToSample: Int, lines: String*): Unit = {
-    Stats(input, numToSample).toString should be(lines.mkString("\n"))
-  }
+  def check[K: Numeric: Ordering](input: Seq[K], numToSample: Int, lines: String*): Unit =
+    Stats(
+      input,
+      numToSample
+    )
+    .toString should be(
+      lines.mkString("\n")
+    )
 
-  def check(input: Seq[Int], numToSample: Int, onlySampleSorted: Boolean, lines: String*): Unit = {
-    Stats(input, numToSample, onlySampleSorted).toString should be(lines.mkString("\n"))
-  }
+  def check[K: Numeric: Ordering](input: Seq[K],
+                                  numToSample: Int,
+                                  onlySampleSorted: Boolean,
+                                  lines: String*): Unit =
+    Stats(
+      input,
+      numToSample,
+      onlySampleSorted
+    )
+    .toString should be(
+      lines.mkString("\n")
+    )
 
   test("empty") {
-    check(
+    check[Int](
       Nil,
       "(empty)"
     )
@@ -357,6 +373,27 @@ class StatsTest extends Suite {
       "95:	9"
     )
   }
+
+  test("values over Int.MAX_VALUE") {
+    check(
+      Seq(
+        10000000000L,
+        100000000000L,
+        100000000000L,
+        1000000000000L,
+        1000000000000L,
+        10000000000L,
+        1000000000000L,
+        100000000000L,
+        10000000000L,
+        10000000000L
+      ),
+      "num:	10,	mean:	334000000000,	stddev:	437588848121.2,	mad:	90000000000",
+      "elems:	10000000000, 100000000000×2, 1000000000000×2, 10000000000, 1000000000000, 100000000000, 10000000000×2",
+      "sorted:	10000000000×4, 100000000000×3, 1000000000000×3",
+      "25:	10000000000",
+      "50:	100000000000",
+      "75:	325000000000"
+    )
+  }
 }
-
-

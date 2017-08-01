@@ -2,11 +2,11 @@ package org.hammerlab.stats
 
 import org.hammerlab.iterator.RunLengthIterator._
 import spire.implicits._
-import spire.math.{ Integral, Numeric }
+import spire.math.{ Integral, Numeric, Rational }
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
-import scala.math.{log10, floor, ceil, abs, sqrt}
+import scala.math.{ abs, ceil, floor, sqrt }
 
 /**
  * Wrapper for some computed statistics about a dataset of [[Numeric]] elements.
@@ -27,19 +27,19 @@ case class Stats[K: Numeric, V: Integral](n: V,
                                           mad: Double,
                                           samplesOpt: Option[Samples[K, V]],
                                           sortedSamplesOpt: Option[Samples[K, V]],
-                                          percentiles: Seq[(Double, Double)]) {
+                                          percentiles: Seq[(Rational, Double)]) {
 
   def prettyDouble(d: Double): String =
-    if (floor(d).toInt == ceil(d).toInt)
-      d.toInt.toString
+    if (floor(d).toLong == ceil(d).toLong)
+      d.toLong.toString
     else
       "%.1f".format(d)
 
-  def prettyPercentile(d: Double): String =
-    if (floor(d).toInt == ceil(d).toInt)
-      d.toInt.toString
+  def prettyPercentile(r: Rational): String =
+    if (r.isWhole())
+      r.toLong.toString
     else
-      d.toString
+      r.toDouble.toString
 
   override def toString: String = {
     if (n == 0)
@@ -53,7 +53,8 @@ case class Stats[K: Numeric, V: Integral](n: V,
           s"mean:\t${prettyDouble(mean)}",
           s"stddev:\t${prettyDouble(stddev)}",
           s"mad:\t${prettyDouble(mad)}"
-        ).mkString(",\t")
+        )
+        .mkString(",\t")
 
       for {
         samples ← samplesOpt
@@ -155,7 +156,7 @@ object Stats {
       getRunPercentiles(
         medianDeviations,
         Seq(
-          50.0 →
+          Rational(50) →
             ((n.toDouble() - 1) / 2.0)
         )
       )
@@ -305,7 +306,7 @@ object Stats {
    * Compute percentiles listed in `ps` of the data in `values`; wrapper for implementation below.
    */
   private def getRunPercentiles[K: Numeric, V: Integral](values: Seq[(K, V)],
-                                                         ps: Seq[(Double, Double)]): Vector[(Double, Double)] =
+                                                         ps: Seq[(Rational, Double)]): Vector[(Rational, Double)] =
     getRunPercentiles(
       values
         .iterator
@@ -325,15 +326,15 @@ object Stats {
    * @return pairs of (percentile, value).
    */
   private def getRunPercentiles[K: Numeric, V: Integral](values: BufferedIterator[(K, V)],
-                                                         percentiles: BufferedIterator[(Double, Double)]): Iterator[(Double, Double)] =
-    new Iterator[(Double, Double)] {
+                                                         percentiles: BufferedIterator[(Rational, Double)]): Iterator[(Rational, Double)] =
+    new Iterator[(Rational, Double)] {
 
       var elemsPast = 0.0
       var curK: Option[Double] = None
 
       override def hasNext: Boolean = percentiles.hasNext
 
-      override def next(): (Double, Double) = {
+      override def next(): (Rational, Double) = {
         val (percentile, idx) = percentiles.next()
         while(elemsPast <= idx) {
           val (k, v) = values.next()
@@ -357,7 +358,8 @@ object Stats {
    * Compute some relevant percentiles based on the number of elements present.
    * @return pairs of (percentile, value).
    */
-  private def histPercentiles[K: Numeric, V: Integral](N: V, values: IndexedSeq[(K, V)]): Vector[(Double, Double)] = {
+  private def histPercentiles[K: Numeric, V: Integral](N: V,
+                                                       values: IndexedSeq[(K, V)]): Vector[(Rational, Double)] = {
     val n = N - 1
     val denominators: Iterator[Int] = Iterator(2, 4, 10, 20, 100, 1000, 10000)
 
@@ -365,21 +367,22 @@ object Stats {
     val percentileIdxs =
       denominators
         .takeWhile(d ⇒ d <= n || d == 2)  // Always take the median (denominator 2 aka 50th percentile).
-        .flatMap(d ⇒ {
-          val loPercentile = 100.0 / d
-          val hiPercentile = 100.0 - loPercentile
+        .flatMap {
+          d ⇒
+            val loPercentile = Rational(100, d)
+            val hiPercentile = 100 - loPercentile
 
-          val loIdx = nd / d
-          val hiIdx = nd - loIdx
+            val loIdx = nd / d
+            val hiIdx = nd - loIdx
 
-          if (d == 2)
-          // Median (50th percentile, denominator 2) only emits one tuple.
-            Iterator(loPercentile → loIdx)
-          else
-          // In general, we emit two tuples per "denominator", one on the high side and one on the low. For example, for
-          // denominator 4, we emit the 25th and 75th percentiles.
-            Iterator(loPercentile → loIdx, hiPercentile → hiIdx)
-        })
+            if (d == 2)
+            // Median (50th percentile, denominator 2) only emits one tuple.
+              Iterator(loPercentile → loIdx)
+            else
+            // In general, we emit two tuples per "denominator", one on the high side and one on the low. For example, for
+            // denominator 4, we emit the 25th and 75th percentiles.
+              Iterator(loPercentile → loIdx, hiPercentile → hiIdx)
+        }
         .toArray
         .sortBy(_._1)
 
@@ -388,48 +391,60 @@ object Stats {
 
   /**
    * Compute some relevant percentiles based on the number of elements present.
+   *
    * @return pairs of (percentile, value).
    */
-  private def percentiles[T: Numeric](values: IndexedSeq[T]): Vector[(Double, Double)] = {
+  private def percentiles[T: Numeric](values: IndexedSeq[T]): Vector[(Rational, Double)] = {
     val n = values.length - 1
 
     val denominators: Iterator[Int] = {
       lazy val pow10s: Stream[Int] = 100 #:: pow10s.map(_ * 10)
-      Iterator(2, 4, 10, 20) ++ pow10s.iterator
+      Iterator(
+         2,  // 50
+         4,  // 25/75
+        10,  // 10/90
+        20   //  5/95
+      ) ++ pow10s.iterator  // 1/99, .1/99.9, .01/99.99, …
     }
 
     val nd = n.toDouble
-    denominators.takeWhile(_ <= n).flatMap(d ⇒ {
-      val loPercentile = 100.0 / d
-      val hiPercentile = 100.0 - loPercentile
 
-      val loFrac = nd / d
+    denominators
+      .takeWhile(_ <= n)
+      .flatMap {
+        d ⇒
+          val loPercentile = Rational(100, d)
+          val hiPercentile = 100 - loPercentile
 
-      val loFloor = floor(loFrac).toInt
-      val loCeil = ceil(loFrac).toInt
+          val loFloor = n / d
+          val loRemainder = n % d
 
-      val hiFloor = n - loFloor
-      val hiCeil = n - loCeil
+          val hiCeil = n - loFloor
 
-      val loRemainder = loFrac - loFloor
-      val (lo, hi) =
-        if (loFloor == loCeil)
-          (values(loFloor).toDouble(), values(hiFloor).toDouble())
-        else
-          (
-            values(loFloor).toDouble() * loRemainder +  values(loCeil).toDouble() * (1 - loRemainder),
-            values(hiCeil).toDouble() * loRemainder + values(hiFloor).toDouble() * (1 - loRemainder)
-          )
+          val (lo, hi) =
+            if (loRemainder == 0)
+              (
+                values(loFloor).toDouble(),
+                values( hiCeil).toDouble()
+              )
+            else {
+              val floorWeight = loRemainder.toDouble() / d
+              (
+                values(loFloor).toDouble() * floorWeight + values(loFloor + 1).toDouble() * (1 - floorWeight),
+                values( hiCeil).toDouble() * floorWeight + values( hiCeil - 1).toDouble() * (1 - floorWeight)
+              )
+            }
 
-      if (d == 2)
-        // Median (50th percentile, denominator 2) only emits one tuple.
-        Iterator(loPercentile → lo)
-      else
-        // In general, we emit two tuples per "denominator", one on the high side and one on the low. For example, for
-        // denominator 4, we emit the 25th and 75th percentiles.
-        Iterator(loPercentile → lo, hiPercentile → hi)
-
-    }).toVector.sortBy(_._1)
+          if (d == 2)
+            // Median (50th percentile, denominator 2) only emits one tuple.
+            Iterator(loPercentile → lo)
+          else
+            // In general, we emit two tuples per "denominator", one on the high side and one on the low. For example, for
+            // denominator 4, we emit the 25th and 75th percentiles.
+            Iterator(loPercentile → lo, hiPercentile → hi)
+        }
+      .toVector
+      .sortBy(_._1)
   }
 
   private def getMedian[T: Numeric](sorted: Vector[T]): Double = {
