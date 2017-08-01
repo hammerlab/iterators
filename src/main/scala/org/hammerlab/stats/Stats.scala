@@ -1,5 +1,9 @@
 package org.hammerlab.stats
 
+import cats.Show
+import cats.Show.show
+import cats.instances.all.catsStdShowForString
+import cats.syntax.all._
 import org.hammerlab.iterator.RunLengthIterator._
 import spire.implicits._
 import spire.math.{ Integral, Numeric, Rational }
@@ -27,59 +31,7 @@ case class Stats[K: Numeric, V: Integral](n: V,
                                           mad: Double,
                                           samplesOpt: Option[Samples[K, V]],
                                           sortedSamplesOpt: Option[Samples[K, V]],
-                                          percentiles: Seq[(Rational, Double)]) {
-
-  def prettyDouble(d: Double): String =
-    if (floor(d).toLong == ceil(d).toLong)
-      d.toLong.toString
-    else
-      "%.1f".format(d)
-
-  def prettyPercentile(r: Rational): String =
-    if (r.isWhole())
-      r.toLong.toString
-    else
-      r.toDouble.toString
-
-  override def toString: String = {
-    if (n == 0)
-      "(empty)"
-    else {
-      val strings = ArrayBuffer[String]()
-
-      strings +=
-        List(
-          s"num:\t$n",
-          s"mean:\t${prettyDouble(mean)}",
-          s"stddev:\t${prettyDouble(stddev)}",
-          s"mad:\t${prettyDouble(mad)}"
-        )
-        .mkString(",\t")
-
-      for {
-        samples ← samplesOpt
-        if samples.nonEmpty
-      } {
-        strings += s"elems:\t$samples"
-      }
-
-      for {
-        sortedSamples ← sortedSamplesOpt
-        if sortedSamples.nonEmpty
-      } {
-        strings += s"sorted:\t$sortedSamples"
-      }
-
-      strings ++=
-        percentiles.map {
-          case (k, v) ⇒
-            s"${prettyPercentile(k)}:\t${prettyDouble(v)}"
-        }
-
-      strings.mkString("\n")
-    }
-  }
-}
+                                          percentiles: Seq[(Rational, Double)])
 
 /**
  * Helpers for constructing [[Stats]] / computing the statistics that populate a [[Stats]] instance.
@@ -480,4 +432,74 @@ object Stats {
     }
     runs → sum
   }
+
+  implicit def makeShow[
+    K : Numeric : Show,
+    V: Integral : Show
+  ](
+    implicit
+    percentileShow: Show[Rational] = showPercentile,
+    statShow: Show[Double] = showDouble
+  ): Show[Stats[K, V]] =
+    show {
+      case Stats(n, mean, stddev, median, mad, samplesOpt, sortedSamplesOpt, percentiles) ⇒
+        if (n == 0)
+          "(empty)"
+        else {
+
+          def pair[L: Show, R: Show](l: L, r: R): String =
+            s"${l.show}:\t${r.show}"
+
+          val strings = ArrayBuffer[String]()
+
+          strings +=
+            List(
+              pair("num", n),
+              pair("mean", mean),
+              pair("stddev", stddev),
+              pair("mad", mad)
+            )
+            .mkString(",\t")
+
+          for {
+            samples ← samplesOpt
+            if samples.nonEmpty
+          } {
+            strings += pair("elems", samples)
+          }
+
+          for {
+            sortedSamples ← sortedSamplesOpt
+            if sortedSamples.nonEmpty
+          } {
+            strings += pair("sorted", sortedSamples)
+          }
+
+          strings ++=
+            percentiles.map {
+              case (k, v) ⇒
+                pair(k, v)
+            }
+
+          strings.mkString("\n")
+        }
+    }
+
+  def showDouble: Show[Double] =
+    show(
+      d ⇒
+        if (floor(d).toLong == ceil(d).toLong)
+          d.toLong.toString
+        else
+          "%.1f".format(d)
+    )
+
+  def showPercentile: Show[Rational] =
+    show(
+      r ⇒
+        if (r.isWhole())
+          r.toLong.toString
+        else
+          r.toDouble.toString
+    )
 }

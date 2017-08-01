@@ -5,6 +5,7 @@ version := "1.3.0-SNAPSHOT"
 addScala212
 
 deps ++= Seq(
+  cats,
   commons_math,
   shapeless,
   spire

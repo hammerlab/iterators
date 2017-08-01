@@ -1,8 +1,10 @@
 package org.hammerlab.stats
 
+import cats.Show
+import cats.instances.all.{ catsStdShowForInt, catsStdShowForLong }
+import cats.syntax.all._
 import org.hammerlab.test.Suite
-import spire.implicits._
-import spire.math.{ Integral, Numeric }
+import spire.math.Numeric
 
 import scala.util.Random
 import scala.util.Random.shuffle
@@ -14,31 +16,30 @@ class StatsTest extends Suite {
 
   Random.setSeed(123L)
 
-  def check[K: Numeric: Ordering](input: Seq[K], lines: String*): Unit =
-    Stats(input)
-      .toString should be(
+  def check[K : Numeric : Ordering : Show](input: Seq[K], lines: String*): Unit =
+    Stats(input).show should be(
       lines.mkString("\n")
     )
 
-  def check[K: Numeric: Ordering](input: Seq[K], numToSample: Int, lines: String*): Unit =
+  def check[K : Numeric : Ordering : Show](input: Seq[K], numToSample: Int, lines: String*): Unit =
     Stats(
       input,
       numToSample
     )
-    .toString should be(
+    .show should be(
       lines.mkString("\n")
     )
 
-  def check[K: Numeric: Ordering](input: Seq[K],
-                                  numToSample: Int,
-                                  onlySampleSorted: Boolean,
-                                  lines: String*): Unit =
+  def check[K : Numeric : Ordering : Show](input: Seq[K],
+                                           numToSample: Int,
+                                           onlySampleSorted: Boolean,
+                                           lines: String*): Unit =
     Stats(
       input,
       numToSample,
       onlySampleSorted
     )
-    .toString should be(
+    .show should be(
       lines.mkString("\n")
     )
 
