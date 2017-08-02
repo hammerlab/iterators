@@ -18,9 +18,7 @@ import spire.math.Integral
  */
 case class Samples[K, V: Integral](n: V,
                                    first: Runs[K, V],
-                                   numFirst: V,
-                                   last: Runs[K, V],
-                                   numLast: V) {
+                                   last: Runs[K, V]) {
   def isEmpty: Boolean = first.isEmpty
   def nonEmpty: Boolean = first.nonEmpty
 }
@@ -28,8 +26,8 @@ case class Samples[K, V: Integral](n: V,
 object Samples {
   implicit def makeShow[K, V: Integral](implicit showRuns: Show[Runs[K, V]]): Show[Samples[K, V]] =
     show {
-      case Samples(n, first, numFirst, last, numLast) ⇒
-        val numSampled = numFirst + numLast
+      case Samples(n, first, last) ⇒
+        val numSampled = first.num + last.num
         val numSkipped = n - numSampled
         if (numSkipped > 0)
           s"${first.show}, …, ${last.show}"

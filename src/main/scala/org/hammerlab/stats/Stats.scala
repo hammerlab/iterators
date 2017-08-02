@@ -5,10 +5,10 @@ import cats.Show.show
 import cats.instances.all.catsStdShowForString
 import cats.syntax.all._
 import org.hammerlab.iterator.RunLengthIterator._
-import org.hammerlab.stats.Stats.makeShow
 import spire.implicits._
 import spire.math.{ Integral, Numeric, Rational }
 
+import scala.Double.NaN
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 import scala.math.{ abs, ceil, floor, sqrt }
@@ -75,9 +75,8 @@ object Stats {
       vBuilder.result()
     }
 
-    if (values.isEmpty) {
-      return empty
-    }
+    if (values.isEmpty)
+      return Empty
 
     val sorted =
       if (alreadySorted)
@@ -122,24 +121,30 @@ object Stats {
     val samplesOpt =
       if (alreadySorted || !onlySampleSorted) {
         val firstElems = values.take(numToSample)
-        val numFirstElems = firstElems.map(_._2).reduce(_ + _)
-
         val lastElems = values.takeRight(numToSample)
-        val numLastElems = lastElems.map(_._2).reduce(_ + _)
 
-        Some(Samples[K, V](n, firstElems, numFirstElems, lastElems, numLastElems))
+        Some(
+          Samples[K, V](
+            n,
+            firstElems,
+            lastElems
+          )
+        )
       } else
         None
 
     val sortedSamplesOpt =
       if (!alreadySorted) {
         val leastElems = sorted.take(numToSample)
-        val numLeastElems = leastElems.map(_._2).reduce(_ + _)
-
         val greatestElems = sorted.takeRight(numToSample)
-        val numGreatestElems = greatestElems.map(_._2).reduce(_ + _)
 
-        Some(Samples(n, leastElems, numLeastElems, greatestElems, numGreatestElems))
+        Some(
+          Samples(
+            n,
+            leastElems,
+            greatestElems
+          )
+        )
       } else
         None
 
@@ -179,6 +184,9 @@ object Stats {
 
     val values = vBuilder.result()
 
+    if (values.isEmpty)
+      return Empty
+
     val n = values.length
 
     val sorted =
@@ -208,25 +216,56 @@ object Stats {
 
     val samplesOpt: Option[Samples[K, Int]] =
       if (alreadySorted || !onlySampleSorted) {
+
         // Count occurrences of the first N distinct values.
-        val (firstElems, numFirstElems) = runLengthEncodeWithSum(values.iterator, numToSample)
+        val (firstElems, numFirstElems) =
+          runLengthEncodeWithSum(
+            values.iterator,
+            numToSample
+          )
 
         // Count occurrences of the last N distinct values.
-        val (lastElems, numLastElems) = runLengthEncodeWithSum(values.reverseIterator, numToSample, reverse = true)
+        val (lastElems, numLastElems) =
+          runLengthEncodeWithSum(
+            values.reverseIterator,
+            numToSample,
+            reverse = true
+          )
 
-        Some(Samples(n, firstElems, numFirstElems, lastElems, numLastElems))
+        Some(
+          Samples(
+            n,
+            Runs(firstElems, numFirstElems),
+            Runs(lastElems, numLastElems)
+          )
+        )
       } else
         None
 
     val sortedSamplesOpt: Option[Samples[K, Int]] =
       if (!alreadySorted) {
         // Count occurrences of the least N distinct values.
-        val (leastElems, numLeastElems) = runLengthEncodeWithSum[K](sorted.iterator, numToSample)
+        val (leastElems, numLeastElems) =
+          runLengthEncodeWithSum[K](
+            sorted.iterator,
+            numToSample
+          )
 
         // Count occurrences of the greatest N distinct values.
-        val (greatestElems, numGreatestElems) = runLengthEncodeWithSum(sorted.reverseIterator, numToSample, reverse = true)
+        val (greatestElems, numGreatestElems) =
+          runLengthEncodeWithSum(
+            sorted.reverseIterator,
+            numToSample,
+            reverse = true
+          )
 
-        Some(Samples(n, leastElems, numLeastElems, greatestElems, numGreatestElems))
+        Some(
+          Samples(
+            n,
+            Runs(leastElems, numLeastElems),
+            Runs(greatestElems, numGreatestElems)
+          )
+        )
       } else
         None
 
@@ -267,7 +306,8 @@ object Stats {
       ps
         .iterator
         .buffered
-    ).toVector
+    )
+    .toVector
 
   /**
    * Compute percentiles listed in `ps` of the data in `values`.
@@ -348,7 +388,7 @@ object Stats {
    * @return pairs of (percentile, value).
    */
   private def percentiles[T: Numeric](values: IndexedSeq[T]): Vector[(Rational, Double)] = {
-    val n = values.length - 1
+    val n = values.length + 1
 
     val denominators: Iterator[Int] = {
       lazy val pow10s: Stream[Int] = 100 #:: pow10s.map(_ * 10)
@@ -360,8 +400,6 @@ object Stats {
       ) ++ pow10s.iterator  // 1/99, .1/99.9, .01/99.99, …
     }
 
-    val nd = n.toDouble
-
     denominators
       .takeWhile(_ <= n)
       .flatMap {
@@ -369,10 +407,10 @@ object Stats {
           val loPercentile = Rational(100, d)
           val hiPercentile = 100 - loPercentile
 
-          val loFloor = n / d
+          val loFloor = n / d - 1
           val loRemainder = n % d
 
-          val hiCeil = n - loFloor
+          val hiCeil = n - 2 - loFloor
 
           val (lo, hi) =
             if (loRemainder == 0)
@@ -403,7 +441,7 @@ object Stats {
   private def getMedian[T: Numeric](sorted: Vector[T]): Double = {
     val n = sorted.length
     if (n == 0)
-      -1
+      NaN
     else if (n % 2 == 0)
       (sorted(n / 2 - 1) + sorted(n / 2)).toDouble() / 2.0
     else
