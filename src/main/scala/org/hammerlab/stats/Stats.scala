@@ -5,6 +5,7 @@ import cats.Show.show
 import cats.instances.all.catsStdShowForString
 import cats.syntax.all._
 import org.hammerlab.iterator.RunLengthIterator._
+import org.hammerlab.stats.Stats.makeShow
 import spire.implicits._
 import spire.math.{ Integral, Numeric, Rational }
 
@@ -448,7 +449,7 @@ object Stats {
         else {
 
           def pair[L: Show, R: Show](l: L, r: R): String =
-            s"${l.show}:\t${r.show}"
+            show"$l:\t$r"
 
           val strings = ArrayBuffer[String]()
 

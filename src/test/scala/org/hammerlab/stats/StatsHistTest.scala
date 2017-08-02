@@ -1,5 +1,9 @@
 package org.hammerlab.stats
 
+import cats.Show
+import cats.implicits.{ catsStdShowForInt, catsStdShowForLong }
+import cats.syntax.all._
+import org.hammerlab.stats.Stats.fromHist
 import org.hammerlab.test.Suite
 import spire.implicits._
 import spire.math.Integral
@@ -15,17 +19,33 @@ class StatsHistTest extends Suite {
 
   Random.setSeed(123L)
 
-  def check[V: Integral](input: Seq[(Int, V)], lines: String*): Unit = {
-    Stats.fromHist(input).toString should be(lines.mkString("\n"))
-  }
+  def check[V: Integral : Show](input: Seq[(Int, V)],
+                                lines: String*): Unit =
+    fromHist(input).show should be(lines.mkString("\n"))
 
-  def check[V: Integral](input: Seq[(Int, V)], numToSample: Int, lines: String*): Unit = {
-    Stats.fromHist(input, numToSample).toString should be(lines.mkString("\n"))
-  }
+  def check[V: Integral : Show](input: Seq[(Int, V)],
+                                numToSample: Int,
+                                lines: String*): Unit =
+    fromHist(
+      input,
+      numToSample
+    )
+    .show should be(
+      lines.mkString("\n")
+    )
 
-  def check[V: Integral](input: Seq[(Int, V)], numToSample: Int, onlySampleSorted: Boolean, lines: String*): Unit = {
-    Stats.fromHist(input, numToSample, onlySampleSorted).toString should be(lines.mkString("\n"))
-  }
+  def check[V: Integral : Show](input: Seq[(Int, V)],
+                                numToSample: Int,
+                                onlySampleSorted: Boolean,
+                                lines: String*): Unit =
+    fromHist(
+      input,
+      numToSample,
+      onlySampleSorted
+    )
+    .show should be(
+      lines.mkString("\n")
+    )
 
   test("empty") {
     check(
