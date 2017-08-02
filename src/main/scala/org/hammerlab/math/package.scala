@@ -1,6 +1,7 @@
 package org.hammerlab
 
-import spire.math.Integral
+import spire.implicits._
+import spire.math._
 
 package object math {
   /**
@@ -15,4 +16,7 @@ package object math {
       )
     )
   }
+
+  def interpolate[N: Numeric](start: N, end: N, delta: Double): Double =
+    start.toDouble() + delta * (end - start).toDouble()
 }

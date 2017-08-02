@@ -5,6 +5,8 @@ import cats.Show.show
 import cats.instances.all.catsStdShowForString
 import cats.syntax.all._
 import org.hammerlab.iterator.RunLengthIterator._
+import org.hammerlab.math.interpolate
+import org.hammerlab.types._
 import spire.implicits._
 import spire.math.{ Integral, Numeric, Rational }
 
@@ -12,6 +14,78 @@ import scala.Double.NaN
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 import scala.math.{ abs, ceil, floor, sqrt }
+
+sealed abstract class StatsI[K: Numeric, V: Integral]
+
+object StatsI {
+  implicit def makeShow[
+    K : Numeric : Show,
+    V: Integral : Show
+  ](
+    implicit
+    percentileShow: Show[Rational] = showPercentile,
+    statShow: Show[Double] = showDouble
+  ): Show[StatsI[K, V]] =
+    show {
+      case Empty() ⇒ "(empty)"
+      case Stats(n, mean, stddev, _, mad, samplesOpt, sortedSamplesOpt, percentiles) ⇒
+        def pair[L: Show, R: Show](l: L, r: R): String =
+          show"$l:\t$r"
+
+        val strings = ArrayBuffer[String]()
+
+        strings +=
+          List(
+            pair("num", n),
+            pair("mean", mean),
+            pair("stddev", stddev),
+            pair("mad", mad)
+          )
+          .mkString(",\t")
+
+        for {
+          samples ← samplesOpt
+          if samples.nonEmpty
+        } {
+          strings += pair("elems", samples)
+        }
+
+        for {
+          sortedSamples ← sortedSamplesOpt
+          if sortedSamples.nonEmpty
+        } {
+          strings += pair("sorted", sortedSamples)
+        }
+
+        strings ++=
+          percentiles.map {
+            case (k, v) ⇒
+              pair(k, v)
+          }
+
+        strings.mkString("\n")
+    }
+
+  def showDouble: Show[Double] =
+    show(
+      d ⇒
+        if (floor(d).toLong == ceil(d).toLong)
+          d.toLong.toString
+        else
+          "%.1f".format(d)
+    )
+
+  def showPercentile: Show[Rational] =
+    show(
+      r ⇒
+        if (r.isWhole())
+          r.toLong.toString
+        else
+          r.toDouble.toString
+    )
+}
+
+case class Empty[K: Numeric, V: Integral]() extends StatsI[K, V]
 
 /**
  * Wrapper for some computed statistics about a dataset of [[Numeric]] elements.
@@ -33,6 +107,7 @@ case class Stats[K: Numeric, V: Integral](n: V,
                                           samplesOpt: Option[Samples[K, V]],
                                           sortedSamplesOpt: Option[Samples[K, V]],
                                           percentiles: Seq[(Rational, Double)])
+  extends StatsI[K, V]
 
 /**
  * Helpers for constructing [[Stats]] / computing the statistics that populate a [[Stats]] instance.
@@ -49,7 +124,7 @@ object Stats {
    */
   def fromHist[K: Numeric: Ordering, V: Integral](v: Iterable[(K, V)],
                                                   numToSample: Int = 10,
-                                                  onlySampleSorted: Boolean = false): Stats[K, V] = {
+                                                  onlySampleSorted: Boolean = false): StatsI[K, V] = {
 
     var alreadySorted = true
     val hist = mutable.HashMap[K, V]()
@@ -76,7 +151,7 @@ object Stats {
     }
 
     if (values.isEmpty)
-      return Empty
+      return Empty[K, V]()
 
     val sorted =
       if (alreadySorted)
@@ -87,9 +162,9 @@ object Stats {
         } yield
           key → hist(key)
 
-    val ps = histPercentiles(n, sorted)
+    val percentiles = histPercentiles(n, sorted)
 
-    val median = ps(ps.length / 2)._2
+    val median = percentiles(percentiles.length / 2)._2
 
     val medianDeviationsBuilder = Vector.newBuilder[(Double, V)]
 
@@ -118,35 +193,20 @@ object Stats {
     val mean = sum / n.toDouble()
     val stddev = sqrt(sumSquares / n.toDouble() - mean * mean)
 
-    val samplesOpt =
-      if (alreadySorted || !onlySampleSorted) {
-        val firstElems = values.take(numToSample)
-        val lastElems = values.takeRight(numToSample)
+    def samples(vs: Vector[(K, V)]): Samples[K, V] =
+      Samples[K, V](
+        n,
+        vs.take(numToSample),
+        vs.takeRight(numToSample)
+      )
 
-        Some(
-          Samples[K, V](
-            n,
-            firstElems,
-            lastElems
-          )
-        )
-      } else
-        None
+    val samplesOpt =
+      (alreadySorted || !onlySampleSorted) |
+        samples(values)
 
     val sortedSamplesOpt =
-      if (!alreadySorted) {
-        val leastElems = sorted.take(numToSample)
-        val greatestElems = sorted.takeRight(numToSample)
-
-        Some(
-          Samples(
-            n,
-            leastElems,
-            greatestElems
-          )
-        )
-      } else
-        None
+      !alreadySorted |
+        samples(sorted)
 
     Stats(
       n,
@@ -154,7 +214,7 @@ object Stats {
       median, mad,
       samplesOpt,
       sortedSamplesOpt,
-      ps
+      percentiles
     )
   }
 
@@ -167,7 +227,7 @@ object Stats {
    */
   def apply[K: Numeric: Ordering](v: Iterable[K],
                                   numToSample: Int = 10,
-                                  onlySampleSorted: Boolean = false): Stats[K, Int] = {
+                                  onlySampleSorted: Boolean = false): StatsI[K, Int] = {
 
     val vBuilder = Vector.newBuilder[K]
     var alreadySorted = true
@@ -185,7 +245,7 @@ object Stats {
     val values = vBuilder.result()
 
     if (values.isEmpty)
-      return Empty
+      return Empty[K, Int]()
 
     val n = values.length
 
@@ -214,60 +274,36 @@ object Stats {
     val mean = sum / n
     val stddev = sqrt(sumSquares / n - mean * mean)
 
-    val samplesOpt: Option[Samples[K, Int]] =
-      if (alreadySorted || !onlySampleSorted) {
-
-        // Count occurrences of the first N distinct values.
-        val (firstElems, numFirstElems) =
-          runLengthEncodeWithSum(
-            values.iterator,
-            numToSample
-          )
-
-        // Count occurrences of the last N distinct values.
-        val (lastElems, numLastElems) =
-          runLengthEncodeWithSum(
-            values.reverseIterator,
-            numToSample,
-            reverse = true
-          )
-
-        Some(
-          Samples(
-            n,
-            Runs(firstElems, numFirstElems),
-            Runs(lastElems, numLastElems)
-          )
+    def samples(vs: Vector[K]): Samples[K, Int] = {
+      // Count occurrences of the first N distinct values.
+      val (firstElems, numFirstElems) =
+        runLengthEncodeWithSum(
+          vs.iterator,
+          numToSample
         )
-      } else
-        None
 
-    val sortedSamplesOpt: Option[Samples[K, Int]] =
-      if (!alreadySorted) {
-        // Count occurrences of the least N distinct values.
-        val (leastElems, numLeastElems) =
-          runLengthEncodeWithSum[K](
-            sorted.iterator,
-            numToSample
-          )
-
-        // Count occurrences of the greatest N distinct values.
-        val (greatestElems, numGreatestElems) =
-          runLengthEncodeWithSum(
-            sorted.reverseIterator,
-            numToSample,
-            reverse = true
-          )
-
-        Some(
-          Samples(
-            n,
-            Runs(leastElems, numLeastElems),
-            Runs(greatestElems, numGreatestElems)
-          )
+      // Count occurrences of the last N distinct values.
+      val (lastElems, numLastElems) =
+        runLengthEncodeWithSum(
+          vs.reverseIterator,
+          numToSample,
+          reverse = true
         )
-      } else
-        None
+
+      Samples(
+        n,
+        Runs(firstElems, numFirstElems),
+        Runs(lastElems, numLastElems)
+      )
+    }
+
+    val samplesOpt =
+      (alreadySorted || !onlySampleSorted) |
+        samples(values)
+
+    val sortedSamplesOpt =
+      !alreadySorted |
+        samples(sorted)
 
     new Stats(
       n,
@@ -278,21 +314,6 @@ object Stats {
       percentiles(sorted)
     )
   }
-
-  /**
-   * Construct an empty [[Stats]] instance.
-   */
-  private def empty[K: Numeric, V: Integral]: Stats[K, V] =
-    new Stats(
-      n = Integral[V].zero,
-      mean = 0,
-      stddev = 0,
-      median = 0,
-      mad = 0,
-      samplesOpt = None,
-      sortedSamplesOpt = None,
-      percentiles = Nil
-    )
 
   /**
    * Compute percentiles listed in `ps` of the data in `values`; wrapper for implementation below.
@@ -421,8 +442,8 @@ object Stats {
             else {
               val floorWeight = loRemainder.toDouble() / d
               (
-                values(loFloor).toDouble() * floorWeight + values(loFloor + 1).toDouble() * (1 - floorWeight),
-                values( hiCeil).toDouble() * floorWeight + values( hiCeil - 1).toDouble() * (1 - floorWeight)
+                interpolate(values(loFloor), values(loFloor + 1), floorWeight),
+                interpolate(values( hiCeil), values( hiCeil - 1), floorWeight)
               )
             }
 
@@ -471,74 +492,4 @@ object Stats {
     }
     runs → sum
   }
-
-  implicit def makeShow[
-    K : Numeric : Show,
-    V: Integral : Show
-  ](
-    implicit
-    percentileShow: Show[Rational] = showPercentile,
-    statShow: Show[Double] = showDouble
-  ): Show[Stats[K, V]] =
-    show {
-      case Stats(n, mean, stddev, median, mad, samplesOpt, sortedSamplesOpt, percentiles) ⇒
-        if (n == 0)
-          "(empty)"
-        else {
-
-          def pair[L: Show, R: Show](l: L, r: R): String =
-            show"$l:\t$r"
-
-          val strings = ArrayBuffer[String]()
-
-          strings +=
-            List(
-              pair("num", n),
-              pair("mean", mean),
-              pair("stddev", stddev),
-              pair("mad", mad)
-            )
-            .mkString(",\t")
-
-          for {
-            samples ← samplesOpt
-            if samples.nonEmpty
-          } {
-            strings += pair("elems", samples)
-          }
-
-          for {
-            sortedSamples ← sortedSamplesOpt
-            if sortedSamples.nonEmpty
-          } {
-            strings += pair("sorted", sortedSamples)
-          }
-
-          strings ++=
-            percentiles.map {
-              case (k, v) ⇒
-                pair(k, v)
-            }
-
-          strings.mkString("\n")
-        }
-    }
-
-  def showDouble: Show[Double] =
-    show(
-      d ⇒
-        if (floor(d).toLong == ceil(d).toLong)
-          d.toLong.toString
-        else
-          "%.1f".format(d)
-    )
-
-  def showPercentile: Show[Rational] =
-    show(
-      r ⇒
-        if (r.isWhole())
-          r.toLong.toString
-        else
-          r.toDouble.toString
-    )
 }
