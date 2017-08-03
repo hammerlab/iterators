@@ -7,10 +7,8 @@ import cats.syntax.all._
 import org.hammerlab.iterator.RunLengthIterator._
 import org.hammerlab.math.interpolate
 import org.hammerlab.types._
-//import spire.implicits._
-//import spire.math._
-import spire.syntax.all._
 import spire.math.{ Integral, Numeric, Rational }
+import spire.syntax.all._
 
 import scala.Double.NaN
 import scala.collection.mutable
@@ -25,7 +23,10 @@ import scala.math.{ abs, ceil, floor, sqrt }
  * @tparam K [[Numeric]] element type. TODO(ryan): allow this to be non-[[Numeric]].
  * @tparam V [[Integral]] value type.
  */
-sealed abstract class Stats[K: Numeric, V: Integral]
+sealed abstract class Stats[K: Numeric, V: Integral] {
+  def n: V
+  def sum: Double
+}
 
 object Stats {
 
@@ -128,6 +129,7 @@ object Stats {
 
     NonEmpty(
       n,
+      sum,
       mean, stddev,
       median, mad,
       samplesOpt,
@@ -226,6 +228,7 @@ object Stats {
 
     NonEmpty(
       n,
+      sum,
       mean, stddev,
       median, mad,
       samplesOpt,
@@ -404,7 +407,7 @@ object Stats {
   ): Show[Stats[K, V]] =
     show {
       case Empty() ⇒ "(empty)"
-      case NonEmpty(n, mean, stddev, _, mad, samplesOpt, sortedSamplesOpt, percentiles) ⇒
+      case NonEmpty(n, _, mean, stddev, _, mad, samplesOpt, sortedSamplesOpt, percentiles) ⇒
         def pair[L: Show, R: Show](l: L, r: R): String =
           show"$l:\t$r"
 
@@ -461,7 +464,10 @@ object Stats {
     )
 }
 
-case class Empty[K: Numeric, V: Integral]() extends Stats[K, V]
+case class Empty[K: Numeric, V: Integral]() extends Stats[K, V] {
+  override def n: V = Integral[V].zero
+  override def sum: Double = 0
+}
 
 /**
  * Stores some computed statistics about a dataset of [[Numeric]] elements.
@@ -474,6 +480,7 @@ case class Empty[K: Numeric, V: Integral]() extends Stats[K, V]
  * @param percentiles selected percentiles of the dataset.
  */
 case class NonEmpty[K: Numeric, V: Integral](n: V,
+                                             sum: Double,
                                              mean: Double,
                                              stddev: Double,
                                              median: Double,

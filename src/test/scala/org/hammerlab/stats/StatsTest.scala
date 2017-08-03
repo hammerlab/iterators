@@ -48,6 +48,7 @@ class StatsTest
       0 to 0,
       NonEmpty(
         n = 1,
+        sum = 0,
         mean = 0,
         stddev = 0,
         median = 0,
@@ -71,6 +72,7 @@ class StatsTest
       0 to 1,
       NonEmpty(
         n = 2,
+        sum = 1,
         mean = .5,
         stddev = .5,
         median = .5,
@@ -94,6 +96,7 @@ class StatsTest
       1 to 0 by -1,
       NonEmpty(
         n = 2,
+        sum = 1,
         mean = .5,
         stddev = .5,
         median = .5,
@@ -124,6 +127,7 @@ class StatsTest
       0 to 2,
       NonEmpty(
         n = 3,
+        sum = 3,
         mean = 1,
         stddev = sqrt(2 / 3.0),
         median = 1,
