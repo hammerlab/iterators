@@ -7,7 +7,7 @@ import spire.implicits._
 import spire.math.Integral
 
 /**
- * Used by [[Stats]] to wrap some [[Runs]] of elements from the start and end of a dataset.
+ * Used by [[NonEmpty]] to wrap some [[Runs]] of elements from the start and end of a dataset.
  * @param n total number of elements in the dataset.
  * @param first [[Runs]] of elements from the start of the dataset.
  * @param last [[Runs]] of elements from the end of the dataset.

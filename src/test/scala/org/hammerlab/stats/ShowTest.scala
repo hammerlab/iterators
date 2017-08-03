@@ -9,7 +9,7 @@ import spire.math.Numeric
 import scala.util.Random.{ nextInt, setSeed, shuffle }
 
 /**
- * Test constructing [[Stats]] instances.
+ * Test the default [[Show.show]] method of [[Stats]] instances.
  */
 class ShowTest extends Suite {
 

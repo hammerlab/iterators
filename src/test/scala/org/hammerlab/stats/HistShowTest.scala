@@ -11,7 +11,7 @@ import spire.math.Integral
 import scala.util.Random
 
 /**
- * Tests of the [[Stats.fromHist]] API for constructing [[Stats]] instances from "histograms" of elements that each come
+ * Tests of the [[Stats.fromHist]] API for constructing [[NonEmpty]] instances from "histograms" of elements that each come
  * with an associated repetition count, which allows the total number of elements represented to be much larger
  * ([[Long]] vs. [[Int]]).
  */

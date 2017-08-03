@@ -7,7 +7,7 @@ import spire.implicits._
 import spire.math.Integral
 
 /**
- * Convenience class wrapping a sequence of key-number pairs, used in run-length-encoding in [[Stats]].
+ * Convenience class wrapping a sequence of key-number pairs, used in run-length-encoding in [[NonEmpty]].
  */
 case class Runs[K, V: Integral](elems: Seq[(K, V)], num: V)
 

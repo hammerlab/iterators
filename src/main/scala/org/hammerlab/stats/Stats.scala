@@ -15,107 +15,18 @@ import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 import scala.math.{ abs, ceil, floor, sqrt }
 
-sealed abstract class StatsI[K: Numeric, V: Integral]
-
-object StatsI {
-  implicit def makeShow[
-    K : Numeric : Show,
-    V: Integral : Show
-  ](
-    implicit
-    percentileShow: Show[Rational] = showPercentile,
-    statShow: Show[Double] = showDouble
-  ): Show[StatsI[K, V]] =
-    show {
-      case Empty() ⇒ "(empty)"
-      case Stats(n, mean, stddev, _, mad, samplesOpt, sortedSamplesOpt, percentiles) ⇒
-        def pair[L: Show, R: Show](l: L, r: R): String =
-          show"$l:\t$r"
-
-        val strings = ArrayBuffer[String]()
-
-        strings +=
-          List(
-            pair("num", n),
-            pair("mean", mean),
-            pair("stddev", stddev),
-            pair("mad", mad)
-          )
-          .mkString(",\t")
-
-        for {
-          samples ← samplesOpt
-          if samples.nonEmpty
-        } {
-          strings += pair("elems", samples)
-        }
-
-        for {
-          sortedSamples ← sortedSamplesOpt
-          if sortedSamples.nonEmpty
-        } {
-          strings += pair("sorted", sortedSamples)
-        }
-
-        strings ++=
-          percentiles.map {
-            case (k, v) ⇒
-              pair(k, v)
-          }
-
-        strings.mkString("\n")
-    }
-
-  def showDouble: Show[Double] =
-    show(
-      d ⇒
-        if (floor(d).toLong == ceil(d).toLong)
-          d.toLong.toString
-        else
-          "%.1f".format(d)
-    )
-
-  def showPercentile: Show[Rational] =
-    show(
-      r ⇒
-        if (r.isWhole())
-          r.toLong.toString
-        else
-          r.toDouble.toString
-    )
-}
-
-case class Empty[K: Numeric, V: Integral]() extends StatsI[K, V]
-
 /**
- * Wrapper for some computed statistics about a dataset of [[Numeric]] elements.
+ * Stores some computed statistics about a dataset of [[Numeric]] elements.
  *
- * @param n number of elements in the dataset.
- * @param mad median absolute deviation (from the median).
- * @param samplesOpt "sample" elements; the start and end of the data.
- * @param sortedSamplesOpt "sample" elements; the least and greatest elements. If the dataset is already sorted, meaning
- *                         this would be equivalent to [[samplesOpt]], it is omitted.
- * @param percentiles selected percentiles of the dataset.
  * @tparam K [[Numeric]] element type. TODO(ryan): allow this to be non-[[Numeric]].
  * @tparam V [[Integral]] value type.
  */
-case class Stats[K: Numeric, V: Integral](n: V,
-                                          mean: Double,
-                                          stddev: Double,
-                                          median: Double,
-                                          mad: Double,
-                                          samplesOpt: Option[Samples[K, V]],
-                                          sortedSamplesOpt: Option[Samples[K, V]],
-                                          percentiles: Seq[(Rational, Double)])
-  extends StatsI[K, V]
+sealed abstract class Stats[K: Numeric, V: Integral]
 
-/**
- * Helpers for constructing [[Stats]] / computing the statistics that populate a [[Stats]] instance.
- */
 object Stats {
 
   /**
-   * Construct a [[Stats]] from a sequence of "runs"; elements paired with a count of repetitions.
+   * Construct a [[NonEmpty]] from a sequence of "runs"; elements paired with a count of repetitions.
    *
    * @param v values.
    * @param numToSample highlight this many "runs" of data from the start and end of the data; likewise the least and
@@ -124,7 +35,7 @@ object Stats {
    */
   def fromHist[K: Numeric: Ordering, V: Integral](v: Iterable[(K, V)],
                                                   numToSample: Int = 10,
-                                                  onlySampleSorted: Boolean = false): StatsI[K, V] = {
+                                                  onlySampleSorted: Boolean = false): Stats[K, V] = {
 
     var alreadySorted = true
     val hist = mutable.HashMap[K, V]()
@@ -208,7 +119,7 @@ object Stats {
       !alreadySorted |
         samples(sorted)
 
-    Stats(
+    NonEmpty(
       n,
       mean, stddev,
       median, mad,
@@ -219,7 +130,8 @@ object Stats {
   }
 
   /**
-   * Construct a [[Stats]] instance from input data `v`.
+   * Construct a [[NonEmpty]] instance from input data `v`.
+   *
    * @param v values.
    * @param numToSample highlight this many "runs" of data from the start and end of the data; likewise the least and
    *                    greatest elements (and repetition counts).
@@ -227,7 +139,7 @@ object Stats {
    */
   def apply[K: Numeric: Ordering](v: Iterable[K],
                                   numToSample: Int = 10,
-                                  onlySampleSorted: Boolean = false): StatsI[K, Int] = {
+                                  onlySampleSorted: Boolean = false): Stats[K, Int] = {
 
     val vBuilder = Vector.newBuilder[K]
     var alreadySorted = true
@@ -305,7 +217,7 @@ object Stats {
       !alreadySorted |
         samples(sorted)
 
-    new Stats(
+    NonEmpty(
       n,
       mean, stddev,
       median, mad,
@@ -350,6 +262,7 @@ object Stats {
 
       override def next(): (Rational, Double) = {
         val (percentile, idx) = percentiles.next()
+
         while(elemsPast <= idx) {
           val (k, v) = values.next()
           curK = Some(k.toDouble())
@@ -390,11 +303,11 @@ object Stats {
             val hiIdx = nd - loIdx
 
             if (d == 2)
-            // Median (50th percentile, denominator 2) only emits one tuple.
+              // Median (50th percentile, denominator 2) only emits one tuple.
               Iterator(loPercentile → loIdx)
             else
-            // In general, we emit two tuples per "denominator", one on the high side and one on the low. For example, for
-            // denominator 4, we emit the 25th and 75th percentiles.
+              // In general, we emit two tuples per "denominator", one on the high side and one on the low. For example, for
+              // denominator 4, we emit the 25th and 75th percentiles.
               Iterator(loPercentile → loIdx, hiPercentile → hiIdx)
         }
         .toArray
@@ -454,7 +367,7 @@ object Stats {
             // In general, we emit two tuples per "denominator", one on the high side and one on the low. For example, for
             // denominator 4, we emit the 25th and 75th percentiles.
             Iterator(loPercentile → lo, hiPercentile → hi)
-        }
+      }
       .toVector
       .sortBy(_._1)
   }
@@ -492,4 +405,92 @@ object Stats {
     }
     runs → sum
   }
+
+  implicit def makeShow[
+    K : Numeric : Show,
+    V: Integral : Show
+  ](
+    implicit
+    percentileShow: Show[Rational] = showPercentile,
+    statShow: Show[Double] = showDouble
+  ): Show[Stats[K, V]] =
+    show {
+      case Empty() ⇒ "(empty)"
+      case NonEmpty(n, mean, stddev, _, mad, samplesOpt, sortedSamplesOpt, percentiles) ⇒
+        def pair[L: Show, R: Show](l: L, r: R): String =
+          show"$l:\t$r"
+
+        val strings = ArrayBuffer[String]()
+
+        strings +=
+          List(
+            pair("num", n),
+            pair("mean", mean),
+            pair("stddev", stddev),
+            pair("mad", mad)
+          )
+          .mkString(",\t")
+
+        for {
+          samples ← samplesOpt
+          if samples.nonEmpty
+        } {
+          strings += pair("elems", samples)
+        }
+
+        for {
+          sortedSamples ← sortedSamplesOpt
+          if sortedSamples.nonEmpty
+        } {
+          strings += pair("sorted", sortedSamples)
+        }
+
+        strings ++=
+          percentiles.map {
+            case (k, v) ⇒
+              pair(k, v)
+          }
+
+        strings.mkString("\n")
+    }
+
+  def showDouble: Show[Double] =
+    show(
+      d ⇒
+        if (floor(d).toLong == ceil(d).toLong)
+          d.toLong.toString
+        else
+          "%.1f".format(d)
+    )
+
+  def showPercentile: Show[Rational] =
+    show(
+      r ⇒
+        if (r.isWhole())
+          r.toLong.toString
+        else
+          r.toDouble.toString
+    )
 }
+
+case class Empty[K: Numeric, V: Integral]() extends Stats[K, V]
+
+/**
+ * Stores some computed statistics about a dataset of [[Numeric]] elements.
+ *
+ * @param n number of elements in the dataset.
+ * @param mad median absolute deviation (from the median).
+ * @param samplesOpt "sample" elements; the start and end of the data.
+ * @param sortedSamplesOpt "sample" elements; the least and greatest elements. If the dataset is already sorted, meaning
+ *                         this would be equivalent to [[samplesOpt]], it is omitted.
+ * @param percentiles selected percentiles of the dataset.
+ */
+case class NonEmpty[K: Numeric, V: Integral](n: V,
+                                             mean: Double,
+                                             stddev: Double,
+                                             median: Double,
+                                             mad: Double,
+                                             samplesOpt: Option[Samples[K, V]],
+                                             sortedSamplesOpt: Option[Samples[K, V]],
+                                             percentiles: Seq[(Rational, Double)])
+  extends Stats[K, V]

@@ -10,25 +10,13 @@ import scala.math.sqrt
 class StatsTest
   extends Suite {
 
-  implicit val de =
-    new Equality[Double] {
-      override def areEqual(a: Double, b: Any): Boolean =
-        b match {
-          case d: Double ⇒
-            if (a.isNaN && d.isNaN) true
-            else a == d
-          case _ ⇒
-            false
-        }
-    }
-
   def check[K : Numeric : Ordering](input: Seq[K],
-                                    expected: StatsI[K, Int]): Unit =
-    Stats(input) should ===(expected)
+                                    expected: Stats[K, Int]): Unit =
+    Stats(input) should be(expected)
 
   def check[K : Numeric : Ordering](input: Seq[K],
                                     numToSample: Int,
-                                    expected: StatsI[K, Int]): Unit =
+                                    expected: Stats[K, Int]): Unit =
     Stats(
       input,
       numToSample
@@ -39,7 +27,7 @@ class StatsTest
   def check[K : Numeric : Ordering](input: Seq[K],
                                     numToSample: Int,
                                     onlySampleSorted: Boolean,
-                                    expected: StatsI[K, Int]): Unit =
+                                    expected: Stats[K, Int]): Unit =
     Stats(
       input,
       numToSample,
@@ -58,7 +46,7 @@ class StatsTest
   test("0 to 0") {
     check(
       0 to 0,
-      Stats(
+      NonEmpty(
         n = 1,
         mean = 0,
         stddev = 0,
@@ -81,7 +69,7 @@ class StatsTest
   test("0 to 1") {
     check(
       0 to 1,
-      Stats(
+      NonEmpty(
         n = 2,
         mean = .5,
         stddev = .5,
@@ -104,7 +92,7 @@ class StatsTest
   test("1 to 0") {
     check(
       1 to 0 by -1,
-      Stats(
+      NonEmpty(
         n = 2,
         mean = .5,
         stddev = .5,
@@ -134,7 +122,7 @@ class StatsTest
   test("0 to 2") {
     check(
       0 to 2,
-      Stats(
+      NonEmpty(
         n = 3,
         mean = 1,
         stddev = sqrt(2 / 3.0),
