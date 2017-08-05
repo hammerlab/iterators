@@ -1,8 +1,7 @@
 package org.hammerlab.iterator
 
+import org.hammerlab.iterator.SimpleBufferedIterator._
 import org.hammerlab.test.Suite
-
-import SimpleBufferedIterator._
 
 class SimpleBufferedIteratorTest
   extends Suite {

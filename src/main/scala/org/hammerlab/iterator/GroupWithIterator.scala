@@ -1,6 +1,6 @@
 package org.hammerlab.iterator
 
-import BufferedTakeWhileIterator._
+import org.hammerlab.iterator.bulk.BufferedBulkIterator._
 
 /**
  * Group one sorted iterator with another, emitting an iterator of the latter's elements for each of the former's

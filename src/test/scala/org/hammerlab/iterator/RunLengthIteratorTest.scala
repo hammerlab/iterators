@@ -70,4 +70,21 @@ class RunLengthIteratorTest extends Suite {
     }
   }
 
+  {
+    test("re-encode") {
+      reencode(
+        Iterator('a' → 2, 'a' → 1, 'b' → 3, 'a' → 4, 'c' → 1, 'c' → 1, 'c' → 2, 'a' → 1)
+      )
+      .toList should be(
+        List(
+          'a' → 3,
+          'b' → 3,
+          'a' → 4,
+          'c' → 4,
+          'a' → 1
+        )
+      )
+    }
+  }
+
 }

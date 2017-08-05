@@ -1,5 +1,7 @@
 package org.hammerlab.iterator
 
+import scala.Range
+
 /**
  * Given an [[Iterator]] of [[Int]]s, collapse contiguous "ranges" of integers that are each 1 greater than their
  * predecessor.
@@ -9,7 +11,8 @@ package org.hammerlab.iterator
  *
  * See RangeAccruingIteratorTest for more examples.
  */
-class RangeAccruingIterator(it: Iterator[Int]) extends Iterator[Range] {
+class RangeAccruingIterator(it: Iterator[Int])
+  extends Iterator[Range] {
 
   var anchor = -1
 
