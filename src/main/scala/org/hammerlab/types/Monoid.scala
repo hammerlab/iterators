@@ -2,7 +2,13 @@ package org.hammerlab.types
 
 import shapeless._
 
+/**
+ * Automatic [[cats.Monoid]] construction for case-classes, taken from
+ * https://github.com/milessabin/shapeless/blob/shapeless-2.3.2/examples/src/main/scala/shapeless/examples/monoids.scala.
+ */
 object Monoid extends ProductTypeClassCompanion[cats.Monoid] {
+  def zero[T](implicit mt: cats.Monoid[T]) = mt.empty
+
   object typeClass extends ProductTypeClass[cats.Monoid] {
     def emptyProduct = new cats.Monoid[HNil] {
       def empty = HNil
