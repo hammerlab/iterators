@@ -1,7 +1,7 @@
 package org.hammerlab.iterator.sorted
 
 import org.hammerlab.iterator.{ HeadOptionIterator, SimpleBufferedIterator }
-import org.hammerlab.types.{ Both, LO, Or, RO }
+import org.hammerlab.types.{ Both, L, Or, R }
 
 case class OrZipIterator[T](l: BufferedIterator[T]) {
   def sortedOrZip[U, V](other: Iterable[U])(
@@ -31,18 +31,18 @@ case class OrZipIterator[T](l: BufferedIterator[T]) {
                   Both(t, u)
                 case x if x < 0 ⇒
                   l.next
-                  LO(t)
+                  L(t)
                 case _ ⇒
                   r.next
-                  RO(u)
+                  R(u)
               }
             )
           case (Some(t), _) ⇒
             l.next
-            Some(LO(t))
+            Some(L(t))
           case (_, Some(u)) ⇒
             r.next
-            Some(RO(u))
+            Some(R(u))
           case _ ⇒
             None
         }
