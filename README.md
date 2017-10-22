@@ -4,44 +4,37 @@
 [![Coverage Status](https://coveralls.io/repos/github/hammerlab/iterators/badge.svg)](https://coveralls.io/github/hammerlab/iterators)
 [![Maven Central](https://img.shields.io/maven-central/v/org.hammerlab/iterator_2.11.svg?maxAge=1800)](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.hammerlab%22%20AND%20a%3A%22iterator_2.11%22)
 
-- Some Scala `Iterator`s and useful `Iterator`-related abstractions; see [`org.hammerlab.iterator`]().
-- Also, [math](https://github.com/hammerlab/iterator/blob/master/src/main/scala/org/hammerlab/math) and [stats](https://github.com/hammerlab/iterator/blob/master/src/main/scala/org/hammerlab/stats) packages, some of which are highlighted below.
+Scala `Iterator`s and useful `Iterator`-related abstractions; see [`org.hammerlab.iterator`]().
 
-### Descriptive Statistics
-[`org.hammerlab.stats.Stats`](https://github.com/hammerlab/iterator/blob/master/src/main/scala/org/hammerlab/stats/Stats.scala) has APIs for ingesting numeric elements and outputting nicely formatted statistics about them; modeled after [Apache commons-math `DescriptiveStatistics`](https://github.com/apache/commons-math/blob/MATH_3_6_1/src/main/java/org/apache/commons/math3/stat/descriptive/DescriptiveStatistics.java).
+### [Scans](src/main/scala/org/hammerlab/iterator/scan):
+- in terms of [`Monoid`](https://typelevel.org/cats/typeclasses/monoid.html)
+- {left, right}
+- {inclusive, exclusive} of first element
+- elements or values of tuples
 
-As a bonus, [it can ingest numbers in histogram-style / run-length-encoded format](https://github.com/hammerlab/magic-rdds/blob/master/src/main/scala/org/hammerlab/magic/stats/Stats.scala#L81), supporting `Long` values as well for computations involving element counts from RDDs: 
+### [Sliding / Windowed traversals](src/main/scala/org/hammerlab/iterator/sliding)
+- for 2- and 3-tuples
+- `Option`-al next/prev elements
+- [run-length encoding](src/main/scala/org/hammerlab/iterator/RunLengthIterator.scala)
+- [grouping consecutive elements by predicate / `Ordering`](src/main/scala/org/hammerlab/iterator/GroupRunsIterator.scala)
 
-```scala
-scala> import org.hammerlab.stats.Stats
-scala> :paste
-Stats.fromHist(
-    List[(Int, Long)](
-        1 →  10000000000L,
-        2 →   1000000000,
-        1 →          100,
-        2 →   1000000000
-    )
-)
+### Drops / Takes
+- [eager drop](src/main/scala/org/hammerlab/iterator/DropRightIterator.scala)
+- [eager take](src/main/scala/org/hammerlab/iterator/TakeEagerIterator.scala)
+- [takewhile / dropwhile / collectwhile](src/main/scala/org/hammerlab/iterator/bulk/BufferedBulkIterator.scala)
 
-res0: org.hammerlab.stats.Stats[Int,Long] =
-num:   	12000000100,   	mean:  	1.2,   	stddev:	0.4,   	mad:   	0
-elems: 	1×10000000000, 2×1000000000, 1×100, 2×1000000000
-sorted:	1×10000000100, 2×2000000000
-0.0:   	1
-0.1:   	1
-1:     	1
-5:     	1
-10:    	1
-25:    	1
-50:    	1
-75:    	1
-90:    	2
-95:    	2
-99:    	2
-99.9:  	2
-100.0: 	2
-```
+Context: [scala/bug#9274](https://github.com/scala/bug/issues/9274#issuecomment-308218901)
 
-### HyperGeometric Distribution
-[`org.hammerlab.stats.HypergeometricDistribution`](https://github.com/hammerlab/iterator/blob/master/src/main/scala/org/hammerlab/stats/HypergeometricDistribution.scala) is an implementation of a hypergeometric distribution, modeled after [`org.apache.commons.math3.distribution.HypergeometricDistribution`](https://commons.apache.org/proper/commons-math/javadocs/api-3.6/org/apache/commons/math3/distribution/HypergeometricDistribution.html), but supporting 8-byte `Long` parameters.
+### Sorted/Range zips
+- [in terms of `Either`, `Or`](src/main/scala/org/hammerlab/iterator/sorted)
+- [as a mapping from each left-side element to a list of right-side elements](src/main/scala/org/hammerlab/iterator/GroupWithIterator.scala)
+- [join iterators of ranges by overalap](src/main/scala/org/hammerlab/iterator/range/OverlappingRangesIterator.scala)
+
+### [`SimpleBufferedIterator`](src/main/scala/org/hammerlab/iterator/SimpleBufferedIterator.scala)
+- define iterators in terms of only a `nextOption` that returns an `Option`
+- `hasNext` lazily buffers and caches `head`
+
+### And more…
+- [`.nextOption` / `.headOption`](src/main/scala/org/hammerlab/iterator/package.scala)
+- [`Iterator[Either]`](src/main/scala/org/hammerlab/iterator/EitherIterator.scala) utilities
+- [`.finish`](src/main/scala/org/hammerlab/iterator/FinishingIterator.scala): clean up / teardown hook
