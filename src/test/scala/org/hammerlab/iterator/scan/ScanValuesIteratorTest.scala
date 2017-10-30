@@ -1,9 +1,9 @@
 package org.hammerlab.iterator.scan
 
-import cats.implicits.{ catsKernelStdGroupForInt, catsKernelStdMonoidForString }
+import cats.implicits.catsKernelStdMonoidForString
+import hammerlab.monoid._
 import org.hammerlab.iterator.scan.ScanValuesIterator._
 import org.hammerlab.test.Suite
-import org.hammerlab.types.Monoid._
 
 trait ScanValuesIteratorTest
   extends Suite {

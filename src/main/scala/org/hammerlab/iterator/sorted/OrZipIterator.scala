@@ -1,7 +1,7 @@
 package org.hammerlab.iterator.sorted
 
 import org.hammerlab.iterator.{ HeadOptionIterator, SimpleBufferedIterator }
-import org.hammerlab.types.{ Both, L, Or, R }
+import org.hammerlab.types._
 
 case class OrZipIterator[T](l: BufferedIterator[T]) {
   def sortedOrZip[U, V](other: Iterable[U])(
