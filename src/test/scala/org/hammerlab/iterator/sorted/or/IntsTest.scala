@@ -1,8 +1,8 @@
 package org.hammerlab.iterator.sorted.or
 
+import hammerlab.either._
 import org.hammerlab.iterator.sorted
 import org.hammerlab.iterator.sorted.IdentityIntConversions
-import org.hammerlab.types.Or
 
 class IntsTest
   extends Suite

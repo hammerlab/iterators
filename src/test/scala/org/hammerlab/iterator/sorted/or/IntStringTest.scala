@@ -1,7 +1,7 @@
 package org.hammerlab.iterator.sorted.or
 
+import hammerlab.either._
 import org.hammerlab.iterator.sorted
-import org.hammerlab.types.Or
 
 class IntStringTest
   extends Suite

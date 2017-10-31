@@ -1,11 +1,10 @@
 package org.hammerlab.iterator.sorted.or
 
+import hammerlab.either._
 import org.hammerlab.iterator.sorted
 import org.hammerlab.iterator.sorted.ConvertToInt
 import org.hammerlab.iterator.sorted.OrZipIterator._
 import org.hammerlab.test.matchers.seqs.SeqMatcher.seqMatch
-import org.hammerlab.types
-import org.hammerlab.types.{ Both, Or }
 
 abstract class Suite
   extends sorted.Suite
@@ -25,6 +24,7 @@ abstract class Suite
   def B(l: L)(implicit ev: L =:= R): Result = Both(l, l)
   def B(l: L, r: R): Result = Both(l, r)
 
-  def L(l: L): Result = types.L(l)
-  def R(r: R): Result = types.R(r)
+  import cats.data.Ior._
+  def L(l: L): Result = Left(l)
+  def R(r: R): Result = Right(r)
 }

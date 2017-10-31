@@ -6,7 +6,6 @@ addScala212
 
 deps ++= Seq(
   cats,
-  spire
+  spire,
+  types % "1.0.0-SNAPSHOT"
 )
-
-testDeps += monoids % "1.0.0-SNAPSHOT"
