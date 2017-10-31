@@ -1,7 +1,7 @@
 package org.hammerlab.iterator.bulk
 
+import hammerlab.iterators.bulk._
 import org.hammerlab.iterator.EitherIteratorTest._
-import org.hammerlab.iterator.bulk.BufferedBulkIterator._
 import org.hammerlab.test.Suite
 
 class BufferedCollectWhileTest

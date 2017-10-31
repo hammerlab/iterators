@@ -1,11 +1,11 @@
 package org.hammerlab.iterator.scan
 
 import cats.implicits.catsKernelStdMonoidForString
+import hammerlab.iterators.scan._
 import hammerlab.monoid._
-import org.hammerlab.iterator.scan.ScanValuesIterator._
 import org.hammerlab.test.Suite
 
-trait ScanValuesIteratorTest
+trait ScanValuesTest
   extends Suite {
 
   type K = Char
@@ -42,8 +42,8 @@ trait ScanValuesIteratorTest
     )
 }
 
-abstract class ScanLeftValuesIteratorTest(includeCurrentValues: Boolean)
-  extends ScanValuesIteratorTest {
+abstract class ScanLeftValuesTest(includeCurrentValues: Boolean)
+  extends ScanValuesTest {
 
   test("left ints") {
     check(
@@ -68,7 +68,7 @@ abstract class ScanLeftValuesIteratorTest(includeCurrentValues: Boolean)
 }
 
 class ScanLeftValuesInclusiveTest
-  extends ScanLeftValuesIteratorTest(true) {
+  extends ScanLeftValuesTest(true) {
   override def ints: Seq[(K, Int)] =
     Seq(
       'a' →  1,
@@ -94,7 +94,7 @@ class ScanLeftValuesInclusiveTest
 }
 
 class ScanLeftValuesExclusiveTest
-  extends ScanLeftValuesIteratorTest(false) {
+  extends ScanLeftValuesTest(false) {
   override def ints: Seq[(K, Int)] =
     Seq(
       'a' → 0,
@@ -120,8 +120,8 @@ class ScanLeftValuesExclusiveTest
 }
 
 
-abstract class ScanRightValuesIteratorTest(includeCurrentValues: Boolean)
-  extends ScanValuesIteratorTest {
+abstract class ScanRightValuesTest(includeCurrentValues: Boolean)
+  extends ScanValuesTest {
 
   test("right ints") {
     check(
@@ -146,7 +146,7 @@ abstract class ScanRightValuesIteratorTest(includeCurrentValues: Boolean)
 }
 
 class ScanRightValuesInclusiveTest
-  extends ScanRightValuesIteratorTest(true) {
+  extends ScanRightValuesTest(true) {
 
   override def ints: Seq[(K, Int)] =
     Seq(
@@ -173,7 +173,7 @@ class ScanRightValuesInclusiveTest
 }
 
 class ScanRightValuesExclusiveTest
-  extends ScanRightValuesIteratorTest(false) {
+  extends ScanRightValuesTest(false) {
 
   override def ints: Seq[(K, Int)] =
     Seq(

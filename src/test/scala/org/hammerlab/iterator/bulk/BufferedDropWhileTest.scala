@@ -1,6 +1,6 @@
 package org.hammerlab.iterator.bulk
 
-import org.hammerlab.iterator.bulk.BufferedBulkIterator._
+import hammerlab.iterators.bulk._
 import org.hammerlab.test.Suite
 
 class BufferedDropWhileTest

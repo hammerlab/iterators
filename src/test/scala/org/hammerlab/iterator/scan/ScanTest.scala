@@ -1,11 +1,11 @@
 package org.hammerlab.iterator.scan
 
 import cats.implicits.catsKernelStdMonoidForString
+import hammerlab.iterators.scan._
 import hammerlab.monoid._
-import org.hammerlab.iterator.scan.ScanIterator._
 import org.hammerlab.test.Suite
 
-abstract class ScanIteratorTest
+abstract class ScanTest
   extends Suite {
 
   // Test-case inputs
@@ -28,8 +28,8 @@ abstract class ScanIteratorTest
   }
 }
 
-abstract class ScanLeftIteratorTest(includeCurrentValue: Boolean)
-  extends ScanIteratorTest {
+abstract class ScanLeftTest(includeCurrentValue: Boolean)
+  extends ScanTest {
 
   test("scanL ints") {
     check(
@@ -53,8 +53,8 @@ abstract class ScanLeftIteratorTest(includeCurrentValue: Boolean)
   }
 }
 
-abstract class ScanRightIteratorTest(includeCurrentValue: Boolean)
-  extends ScanIteratorTest {
+abstract class ScanRightTest(includeCurrentValue: Boolean)
+  extends ScanTest {
 
   test("scanR ints") {
     check(
@@ -79,7 +79,7 @@ abstract class ScanRightIteratorTest(includeCurrentValue: Boolean)
 }
 
 class ScanLeftInclusiveTest
-  extends ScanLeftIteratorTest(true) {
+  extends ScanLeftTest(true) {
 
   override val ints: Seq[Int] =
     Seq(
@@ -113,7 +113,7 @@ class ScanLeftInclusiveTest
 }
 
 class ScanLeftExclusiveTest
-  extends ScanLeftIteratorTest(false) {
+  extends ScanLeftTest(false) {
 
   override val ints: Seq[Int] =
     Seq(
@@ -147,7 +147,7 @@ class ScanLeftExclusiveTest
 }
 
 class ScanRightInclusiveTest
-  extends ScanRightIteratorTest(true) {
+  extends ScanRightTest(true) {
 
   override val ints: Seq[Int] =
     Seq(
@@ -181,7 +181,7 @@ class ScanRightInclusiveTest
 }
 
 class ScanRightExclusiveTest
-  extends ScanRightIteratorTest(false) {
+  extends ScanRightTest(false) {
 
   override val ints: Seq[Int] =
     Seq(
