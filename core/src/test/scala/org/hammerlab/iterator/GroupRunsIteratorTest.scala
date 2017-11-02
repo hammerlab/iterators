@@ -48,11 +48,11 @@ class GroupRunsIteratorPredicateTest extends Suite {
     )
   }
 
-  test ("true singleton") {
+  test("true singleton") {
     check(2)("2")
   }
 
-  test ("false singleton") {
+  test("false singleton") {
     check(3)("3")
   }
 }
@@ -61,13 +61,12 @@ class GroupRunsIteratorTest extends Suite {
 
   implicit val ord = Ordering.by[(Int, Int), Int](_._1)
 
-  def check(tuples: (Int, Int)*)(strs: String*): Unit = {
+  def check(tuples: (Int, Int)*)(strs: String*): Unit =
     tuples
       .iterator
       .groupRuns
       .map(_.map(t ⇒ s"${t._1},${t._2}").mkString(" "))
       .toList should be(strs.toList)
-  }
 
   test("empty") {
     check()()
