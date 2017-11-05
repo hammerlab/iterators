@@ -11,7 +11,7 @@ case class CappedCostGroupsIterator[T](it: BufferedIterator[T]) {
 
     import org.hammerlab.iterator.CappedCostGroupsIterator.ElementTooCostlyStrategy._
 
-    new SimpleBufferedIterator[T] {
+    new SimpleIterator[T] {
       val numeric = implicitly[Numeric[N]]
       import numeric._
       var cost = numeric.zero
@@ -56,7 +56,7 @@ case class CappedCostGroupsIterator[T](it: BufferedIterator[T]) {
       implicit elementTooCostlyStrategy: ElementTooCostlyStrategy
   ): Iterator[Iterator[T]] = {
     val withCosts = it.map(elem ⇒ elem → costFn(elem)).buffered
-    new SimpleBufferedIterator[Iterator[T]] {
+    new SimpleIterator[Iterator[T]] {
       override protected def _advance: Option[Iterator[T]] = {
         val group = cappedCostGroup(withCosts, costFn, limit)
         if (group.isEmpty)

@@ -18,18 +18,16 @@ class IteratorWrapper
         val tns = ts.map(t ⇒ Name(t.name.value))
 
         val Param(
-          mods,  // mods
-          n,  // name
+          _,  // mods
+          _,  // name
           Some(
             Apply(
               iterType,  // Iterator or BufferedIterator
               Seq(tn)    // Type arg or tuple of two type args
             )
           ),
-          default   // "default"
+          _   // "default"
         ) = param
-
-        println(s"mods: $mods, n: $n, default: $default, iterType: $iterType, tn: $tn")
 
         val Name(iterTypeName) = iterType
 

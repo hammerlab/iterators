@@ -2,7 +2,6 @@ package org.hammerlab.iterator.sorted
 
 import hammerlab.iterator._
 import hammerlab.iterator.macros.IteratorWrapper
-import org.hammerlab.iterator.SimpleBufferedIterator
 
 @IteratorWrapper
 class Zip[T](l: BufferedIterator[T]) {
@@ -10,17 +9,17 @@ class Zip[T](l: BufferedIterator[T]) {
       implicit
       ord: Ordering[V],
       tv: T ⇒ V
-  ): SimpleBufferedIterator[T] =
+  ): SimpleIterator[T] =
     sortedZip[V](other.iterator)
 
   def sortedZip[V](other: Iterator[T])(
       implicit
       ord: Ordering[V],
       tv: T ⇒ V
-  ): SimpleBufferedIterator[T] = {
+  ): SimpleIterator[T] = {
     val r = other.buffered
     val ≤ = ord.lteq _
-    new SimpleBufferedIterator[T] {
+    new SimpleIterator[T] {
       override protected def _advance: Option[T] =
         (l.headOption, r.headOption) match {
           case (Some(t), Some(u)) ⇒

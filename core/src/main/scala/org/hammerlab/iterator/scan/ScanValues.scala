@@ -3,7 +3,6 @@ package org.hammerlab.iterator.scan
 import cats.Monoid
 import hammerlab.iterator._
 import hammerlab.iterator.macros.IteratorWrapper
-import org.hammerlab.iterator.SimpleBufferedIterator
 import org.hammerlab.iterator.util.MapValuesWithStateIterator
 
 @IteratorWrapper
@@ -24,7 +23,7 @@ class ScanValues[K, V](it: Iterator[(K, V)]) {
       m.combine
     )
 
-  def scanLeftValues[U](identity: U)(combine: (U, V) ⇒ U): SimpleBufferedIterator[(K, U)] =
+  def scanLeftValues[U](identity: U)(combine: (U, V) ⇒ U): SimpleIterator[(K, U)] =
     new MapValuesWithStateIterator[K, V, U](it) {
       private var u = identity
       override def w(v: V): U = {
@@ -41,7 +40,7 @@ class ScanValues[K, V](it: Iterator[(K, V)]) {
       m.combine
     )
 
-  def scanLeftValuesInclusive[U](identity: U)(combine: (U, V) ⇒ U): SimpleBufferedIterator[(K, U)] =
+  def scanLeftValuesInclusive[U](identity: U)(combine: (U, V) ⇒ U): SimpleIterator[(K, U)] =
     new MapValuesWithStateIterator[K, V, U](it) {
       private var u = identity
       override def w(v: V): U = {
@@ -99,4 +98,3 @@ class ScanValues[K, V](it: Iterator[(K, V)]) {
       }
       .dropRight(1)
 }
-//}

@@ -1,6 +1,6 @@
 package org.hammerlab.iterator
 
-import hammerlab.iterator.start._
+import hammerlab.iterator._
 import hammerlab.iterator.macros.IteratorWrapper
 
 import scala.collection.mutable.ArrayBuffer
@@ -25,7 +25,7 @@ class EitherIterator[T, U](it: BufferedIterator[Either[T, U]]) {
       }
       .toList
 
-    new SimpleBufferedIterator[(T, BufferedIterator[U])] {
+    new SimpleIterator[(T, BufferedIterator[U])] {
       var curLeft: Option[T] = None
       var curRights = Iterator[U]().buffered
       override protected def _advance: Option[(T, BufferedIterator[U])] = {
@@ -54,7 +54,7 @@ class EitherIterator[T, U](it: BufferedIterator[Either[T, U]]) {
   }
 
   def roundUpRight: BufferedIterator[(Seq[T], U)] =
-    new SimpleBufferedIterator[(Seq[T], U)] {
+    new SimpleIterator[(Seq[T], U)] {
       override protected def _advance: Option[(Seq[T], U)] = {
         val lefts = ArrayBuffer[T]()
         while (true) {

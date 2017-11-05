@@ -10,7 +10,7 @@ import hammerlab.iterator._
  * @tparam T type of inner [[Iterator]]
  */
 case class FlatteningIterator[V, T](it: BufferedIterator[T])(implicit ev: <:<[T, Iterator[V]])
-  extends SimpleBufferedIterator[V] {
+  extends SimpleIterator[V] {
   private var _cur: Option[T] = _
 
   def _advanceIterator(): Option[T] = {
