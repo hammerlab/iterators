@@ -1,43 +1,49 @@
 package hammerlab.iterator.macros
 
 import scala.annotation.StaticAnnotation
-import scala.meta._
 import scala.collection.immutable.Seq
+import scala.meta.Term.Param
+import scala.meta.Type.{Apply, Name}
+import scala.meta._
 
 class IteratorWrapper
   extends StaticAnnotation {
   inline def apply(defn: Any): Any = meta {
     defn match {
       case q"class $name[..$ts]($param) { ..$body }" =>
-        val ops = Type.Name(s"${name}Ops")
+        val ops = Name(s"${name}Ops")
         val opsCtor = Ctor.Ref.Name(ops.value)
         val makeName = Term.Name(s"make$name")
 
-        val tns = ts.map(t ⇒ Type.Name(t.name.value))
+        val tns = ts.map(t ⇒ Name(t.name.value))
 
-        val tn: Type =
-          tns match {
-            case t :: Nil ⇒ t
-            case t1 :: t2 :: Nil ⇒
-              Type.Apply(
-                Type.Name("scala.Tuple2"),
-                Seq[Type](t1, t2)
-              )
-            case names ⇒
-              throw new IllegalArgumentException(
-                s"Expected one or two type parameters, found ${names.size}: ${names.mkString(",")}"
-              )
-          }
+        val Param(
+          _,  // mods
+          _,  // name
+          Some(
+            Apply(
+              iterType,  // Iterator or BufferedIterator
+              Seq(tn)    // Type arg or tuple of two type args
+            )
+          ),
+          _   // "default"
+        ) = param
 
-        println(s"param: $param ${param.getClass}")
+        val Name(iterTypeName) = iterType
+
+        val (iterArg, arrArg) =
+          if (iterTypeName == "BufferedIterator")
+            (q"it.buffered", q"it.iterator.buffered")
+          else
+            (q"it", q"it.iterator")
 
         q"""trait $name {
               class $ops[..$ts]($param) {
                 ..$body
               }
-              implicit def $makeName[..$ts](it: scala.Iterator[$tn]): $ops[..$tns] = new $opsCtor(it.buffered)
-              implicit def $makeName[..$ts](it: scala.Iterable[$tn]): $ops[..$tns] = new $opsCtor(it.iterator.buffered)
-              implicit def $makeName[..$ts](it: scala.Array[$tn]): $ops[..$tns] = new $opsCtor(it.iterator.buffered)
+              implicit def $makeName[..$ts](it: scala.Iterator[$tn]): $ops[..$tns] = new $opsCtor($iterArg)
+              implicit def $makeName[..$ts](it: scala.Iterable[$tn]): $ops[..$tns] = new $opsCtor($arrArg)
+              implicit def $makeName[..$ts](it: scala.Array[$tn]): $ops[..$tns] = new $opsCtor($arrArg)
             }
           """
       case _ =>
