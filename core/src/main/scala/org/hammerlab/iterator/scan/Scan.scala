@@ -1,7 +1,7 @@
 package org.hammerlab.iterator.scan
 
 import cats.Monoid
-import org.hammerlab.iterator.DropRightIterator._
+import hammerlab.iterator.drop._
 import hammerlab.iterator.macros.IteratorWrapper
 
 @IteratorWrapper

@@ -1,6 +1,6 @@
 package org.hammerlab.iterator
 
-import org.hammerlab.iterator.DropEagerIterator._
+import hammerlab.iterator.drop._
 
 case class SliceIterator[T](it: Iterator[T]) {
   def sliceOpt(start: Option[Int], length: Option[Int]): Iterator[T] = {

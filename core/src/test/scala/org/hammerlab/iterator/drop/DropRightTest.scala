@@ -1,9 +1,9 @@
-package org.hammerlab.iterator
+package org.hammerlab.iterator.drop
 
-import org.hammerlab.iterator.DropRightIterator._
+import hammerlab.iterator.drop._
 import org.hammerlab.test.Suite
 
-class DropRightIteratorTest extends Suite {
+class DropRightTest extends Suite {
   test("drop-ones") {
     for { n ← 0 to 10 } {
       (1 to n).iterator.dropRight(1).toList should be(1 until n)

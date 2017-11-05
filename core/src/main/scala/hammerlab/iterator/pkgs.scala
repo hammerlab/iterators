@@ -11,6 +11,9 @@ trait count
      with CountByKey
 object count extends count
 
+trait drop extends iterator.Drop
+object drop extends drop
+
 import iterator.scan._
 trait scan
   extends Scan
