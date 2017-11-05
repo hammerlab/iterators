@@ -1,9 +1,9 @@
-package org.hammerlab.iterator
+package org.hammerlab.iterator.start
 
 import scala.collection.mutable
 
 trait Drop {
-  implicit class DropEagerIterator[T](it: Iterator[T]) {
+  implicit class DropEager[T](it: Iterator[T]) {
     def dropEager(n: Int): Iterator[T] = {
       var idx = 0
       while (it.hasNext && idx < n) {
@@ -14,7 +14,7 @@ trait Drop {
     }
   }
 
-  implicit class DropRightIterator[T](it: Iterator[T]) {
+  implicit class DropRight[T](it: Iterator[T]) {
     def dropRight(n: Int): Iterator[T] =
       if (n == 0)
         it

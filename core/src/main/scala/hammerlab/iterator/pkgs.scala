@@ -1,10 +1,6 @@
 package hammerlab.iterator
 
 import org.hammerlab.iterator
-import org.hammerlab.iterator.{ EitherIterator, Slice }
-
-trait bulk extends iterator.Bulk
-object bulk extends bulk
 
 import iterator.count._
 trait count
@@ -12,10 +8,7 @@ trait count
      with CountByKey
 object count extends count
 
-trait drop extends iterator.Drop
-object drop extends drop
-
-trait either extends EitherIterator
+trait either extends iterator.EitherIterator
 object either extends either
 
 import iterator.end._
@@ -34,7 +27,7 @@ object group extends group
 
 import iterator.range._
 trait range
-  extends OverlappingRangesIterator {
+  extends OverlappingRanges {
   type Range[T] = iterator.range.Range[T]
 }
 object range extends range
@@ -45,7 +38,7 @@ trait scan
      with ScanValues
 object scan extends scan
 
-trait slice extends Slice
+trait slice extends iterator.Slice
 object slice extends slice
 
 import iterator.sliding._
@@ -61,3 +54,10 @@ trait sorted
      with OrZip
      with Zip
 object sorted extends sorted
+
+import iterator.start._
+trait start
+  extends Bulk
+     with Head
+     with Drop
+object start extends start

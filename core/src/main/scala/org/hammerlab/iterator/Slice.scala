@@ -1,6 +1,6 @@
 package org.hammerlab.iterator
 
-import hammerlab.iterator.drop._
+import hammerlab.iterator._
 import hammerlab.iterator.macros.IteratorWrapper
 
 @IteratorWrapper

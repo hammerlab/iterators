@@ -1,5 +1,7 @@
 package org.hammerlab.iterator
 
+import hammerlab.iterator._
+
 /**
  * "Flatmap" over an [[Iterator]] of [[Iterator]]s, exposing the inner [[Iterator]] along the way (as its true type)
  *

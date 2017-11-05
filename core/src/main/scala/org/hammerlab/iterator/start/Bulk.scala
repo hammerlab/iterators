@@ -1,4 +1,6 @@
-package org.hammerlab.iterator
+package org.hammerlab.iterator.start
+
+import org.hammerlab.iterator.SimpleBufferedIterator
 
 import scala.collection.mutable
 import scala.reflect.ClassTag
@@ -7,7 +9,7 @@ trait Bulk {
   /**
    * Some smarter bulk operations on [[BufferedIterator]]s, consuming exactly the elements necessary and not more
    */
-  implicit class BufferedBulkOps[T](it: BufferedIterator[T]) extends Serializable {
+  implicit class BufferedOps[T](it: BufferedIterator[T]) extends Serializable {
     def takewhile(fn: T ⇒ Boolean): SimpleBufferedIterator[T] =
       new SimpleBufferedIterator[T] {
         override protected def _advance: Option[T] =

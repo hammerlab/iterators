@@ -1,7 +1,8 @@
 package org.hammerlab.iterator.sorted
 
+import hammerlab.iterator._
 import hammerlab.iterator.macros.IteratorWrapper
-import org.hammerlab.iterator.{ HeadOptionIterator, SimpleBufferedIterator }
+import org.hammerlab.iterator.SimpleBufferedIterator
 
 @IteratorWrapper
 class Zip[T](l: BufferedIterator[T]) {

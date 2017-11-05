@@ -1,7 +1,7 @@
-package org.hammerlab
+package org.hammerlab.iterator.start
 
-package object iterator {
-  implicit class NextOptionIterator[T](val it: Iterator[T]) extends AnyVal {
+trait Head {
+  implicit class NextOption[T](it: Iterator[T]) {
     def nextOption: Option[T] =
       if (it.hasNext)
         Some(it.next)
@@ -9,7 +9,7 @@ package object iterator {
         None
   }
 
-  implicit class HeadOptionIterator[T](val it: BufferedIterator[T]) extends AnyVal {
+  implicit class HeadOption[T](it: BufferedIterator[T]) {
     def headOption: Option[T] =
       if (it.hasNext)
         Some(it.head)

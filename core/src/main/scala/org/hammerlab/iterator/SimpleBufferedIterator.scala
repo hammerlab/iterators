@@ -1,5 +1,7 @@
 package org.hammerlab.iterator
 
+import hammerlab.iterator._
+
 /**
  * Interface for implementing [[BufferedIterator]]s following a common pattern: the `hasNext` implementation must
  * actually compute the next element (or return a sentinel that implies that one doesn't exist), and should therefore

@@ -1,8 +1,9 @@
 package org.hammerlab.iterator.sorted
 
 import hammerlab.either._
+import hammerlab.iterator._
 import hammerlab.iterator.macros.IteratorWrapper
-import org.hammerlab.iterator.{ HeadOptionIterator, SimpleBufferedIterator }
+import org.hammerlab.iterator.SimpleBufferedIterator
 
 @IteratorWrapper
 class OrZip[T](l: BufferedIterator[T]) {

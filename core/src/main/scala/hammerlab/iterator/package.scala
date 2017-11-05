@@ -1,9 +1,7 @@
 package hammerlab
 
 package object iterator
-  extends bulk
-     with count
-     with drop
+  extends count
      with end
      with iterator.either
      with group
@@ -12,3 +10,4 @@ package object iterator
      with slice
      with sliding
      with sorted
+     with start

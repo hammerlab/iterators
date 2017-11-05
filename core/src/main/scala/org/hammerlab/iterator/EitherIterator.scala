@@ -1,6 +1,6 @@
 package org.hammerlab.iterator
 
-import hammerlab.iterator.bulk._
+import hammerlab.iterator.start._
 import hammerlab.iterator.macros.IteratorWrapper
 
 import scala.collection.mutable.ArrayBuffer
@@ -52,24 +52,4 @@ class EitherIterator[T, U](it: BufferedIterator[Either[T, U]]) {
       }
     }
   }
-
-  def roundUpRight: BufferedIterator[(Seq[T], U)] =
-    new SimpleBufferedIterator[(Seq[T], U)] {
-      override protected def _advance: Option[(Seq[T], U)] = {
-        val lefts = ArrayBuffer[T]()
-        while (true) {
-          it.headOption match {
-            case Some(Left(t)) ⇒
-              it.next
-              lefts += t
-            case Some(Right(u)) ⇒
-              it.next
-              return Some(lefts → u)
-            case None ⇒
-              return None
-          }
-        }
-        ???
-      }
-    }
 }

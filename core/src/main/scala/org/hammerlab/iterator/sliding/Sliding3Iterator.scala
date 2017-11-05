@@ -1,7 +1,8 @@
 package org.hammerlab.iterator.sliding
 
+import hammerlab.iterator._
 import hammerlab.iterator.macros.IteratorWrapper
-import org.hammerlab.iterator.{ NextOptionIterator, SimpleBufferedIterator }
+import org.hammerlab.iterator.SimpleBufferedIterator
 
 /**
  * Given an [[Iterator[T]]], emit each element sandwiched between its preceding and succeeding elements.

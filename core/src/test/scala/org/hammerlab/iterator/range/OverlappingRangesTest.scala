@@ -3,7 +3,7 @@ package org.hammerlab.iterator.range
 import hammerlab.iterator.range._
 import org.hammerlab.test.Suite
 
-class OverlappingRangesIteratorTest
+class OverlappingRangesTest
   extends Suite {
 
   def Ranges(ranges: (Range[Int], Int)*): Seq[(Range[Int], Int)] = ranges

@@ -1,6 +1,6 @@
-package org.hammerlab.iterator.bulk
+package org.hammerlab.iterator.start
 
-import hammerlab.iterator.bulk._
+import hammerlab.iterator.start._
 import org.hammerlab.test.Suite
 
 class BufferedTakeWhileTest

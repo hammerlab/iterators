@@ -2,7 +2,7 @@ package org.hammerlab.iterator
 
 import org.hammerlab.test.Suite
 
-class NextOptionIteratorTest extends Suite {
+class NextOptionTest extends Suite {
   test("empty") {
     Iterator().nextOption should be(None)
   }

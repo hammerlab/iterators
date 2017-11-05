@@ -1,5 +1,6 @@
 package org.hammerlab.iterator
 
+import hammerlab.iterator._
 import org.hammerlab.iterator.CappedCostGroupsIterator.{ ElementTooCostlyException, ElementTooCostlyStrategy }
 
 case class CappedCostGroupsIterator[T](it: BufferedIterator[T]) {

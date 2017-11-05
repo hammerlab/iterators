@@ -1,12 +1,13 @@
 package org.hammerlab.iterator.range
 
+import hammerlab.iterator._
 import hammerlab.iterator.macros.IteratorWrapper
 import org.hammerlab.iterator.SimpleBufferedIterator
 
 import scala.collection.mutable
 
 @IteratorWrapper
-class OverlappingRangesIterator[T: Ordering](it: BufferedIterator[Range[T]]) {
+class OverlappingRanges[T: Ordering](it: BufferedIterator[Range[T]]) {
 
   type RangeT = (T, Option[T])
 
