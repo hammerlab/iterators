@@ -5,6 +5,12 @@ import org.hammerlab.iterator
 trait bulk extends iterator.Bulk
 object bulk extends bulk
 
+import iterator.count._
+trait count
+  extends CountElems
+     with CountByKey
+object count extends count
+
 import iterator.scan._
 trait scan
   extends Scan

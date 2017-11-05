@@ -1,9 +1,9 @@
-package org.hammerlab.iterator
+package org.hammerlab.iterator.count
 
-import org.hammerlab.iterator.CountIteratorByKey._
+import hammerlab.iterator.count._
 import org.hammerlab.test.Suite
 
-class CountIteratorByKeyTest
+class CountByKeyTest
   extends Suite {
   test("empty") {
     Iterator[(String, Int)]().countByKey should be(Map())
