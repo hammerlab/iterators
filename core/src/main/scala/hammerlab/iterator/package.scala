@@ -5,8 +5,10 @@ package object iterator
      with count
      with drop
      with end
+     with iterator.either
      with group
      with range
      with scan
+     with slice
      with sliding
      with sorted

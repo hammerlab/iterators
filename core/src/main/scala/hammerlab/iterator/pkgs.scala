@@ -1,6 +1,7 @@
 package hammerlab.iterator
 
 import org.hammerlab.iterator
+import org.hammerlab.iterator.{ EitherIterator, Slice }
 
 trait bulk extends iterator.Bulk
 object bulk extends bulk
@@ -13,6 +14,9 @@ object count extends count
 
 trait drop extends iterator.Drop
 object drop extends drop
+
+trait either extends EitherIterator
+object either extends either
 
 import iterator.end._
 trait end
@@ -40,6 +44,9 @@ trait scan
   extends Scan
      with ScanValues
 object scan extends scan
+
+trait slice extends Slice
+object slice extends slice
 
 import iterator.sliding._
 trait sliding

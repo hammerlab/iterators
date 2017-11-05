@@ -1,9 +1,12 @@
 package org.hammerlab.iterator
 
 import hammerlab.iterator.bulk._
+import hammerlab.iterator.macros.IteratorWrapper
+
 import scala.collection.mutable.ArrayBuffer
 
-case class EitherIterator[T, U](it: BufferedIterator[Either[T, U]]) {
+@IteratorWrapper
+class EitherIterator[T, U](it: BufferedIterator[Either[T, U]]) {
 
   def findLeft: Option[T] =
     it
@@ -69,9 +72,4 @@ case class EitherIterator[T, U](it: BufferedIterator[Either[T, U]]) {
         ???
       }
     }
-}
-
-object EitherIterator {
-  implicit def makeEitherIterator[T, U](it: Iterator[Either[T, U]]): EitherIterator[T, U] =
-    EitherIterator(it.buffered)
 }
