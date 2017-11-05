@@ -1,6 +1,6 @@
-package org.hammerlab.iterator.drop
+package org.hammerlab.iterator.start
 
-import hammerlab.iterator.drop._
+import hammerlab.iterator._
 import org.hammerlab.test.Suite
 
 class DropRightTest extends Suite {

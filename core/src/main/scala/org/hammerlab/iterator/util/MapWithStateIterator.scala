@@ -1,6 +1,7 @@
-package org.hammerlab.iterator
+package org.hammerlab.iterator.util
 
 import hammerlab.iterator._
+import org.hammerlab.iterator.SimpleBufferedIterator
 
 abstract class MapWithStateIterator[T, U](it: Iterator[T])
   extends SimpleBufferedIterator[U] {

@@ -1,5 +1,6 @@
 package org.hammerlab.iterator
 
+import hammerlab.iterator._
 import org.hammerlab.iterator.SimpleBufferedIterator._
 import org.hammerlab.test.Suite
 

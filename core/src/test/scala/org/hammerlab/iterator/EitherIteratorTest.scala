@@ -1,6 +1,6 @@
 package org.hammerlab.iterator
 
-import hammerlab.iterator.either._
+import hammerlab.iterator._
 import org.hammerlab.iterator.EitherIteratorTest._
 import org.hammerlab.test.Suite
 

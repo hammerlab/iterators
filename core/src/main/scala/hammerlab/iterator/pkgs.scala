@@ -27,7 +27,8 @@ object group extends group
 
 import iterator.range._
 trait range
-  extends OverlappingRanges {
+  extends OverlappingRanges
+     with Contiguous {
   type Range[T] = iterator.range.Range[T]
 }
 object range extends range
