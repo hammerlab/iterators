@@ -5,6 +5,7 @@ package object iterator
      with count
      with drop
      with group
+     with range
      with scan
      with sliding
      with sorted

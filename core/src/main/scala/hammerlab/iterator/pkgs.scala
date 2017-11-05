@@ -22,6 +22,13 @@ trait group
      with Split
 object group extends group
 
+import iterator.range._
+trait range
+  extends OverlappingRangesIterator {
+  type Range[T] = iterator.range.Range[T]
+}
+object range extends range
+
 import iterator.scan._
 trait scan
   extends Scan

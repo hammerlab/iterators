@@ -7,8 +7,8 @@ abstract class MapWithStateIterator[T, U](it: Iterator[T])
 
   override protected def _advance: Option[U] =
     it
-    .nextOption
-    .map(fn)
+      .nextOption
+      .map(fn)
 }
 
 abstract class MapValuesWithStateIterator[K, V, W](it: Iterator[(K, V)])

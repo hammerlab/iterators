@@ -1,6 +1,6 @@
 package org.hammerlab.iterator.range
 
-import org.hammerlab.iterator.range.OverlappingRangesIterator._
+import hammerlab.iterator.range._
 import org.hammerlab.test.Suite
 
 class OverlappingRangesIteratorTest

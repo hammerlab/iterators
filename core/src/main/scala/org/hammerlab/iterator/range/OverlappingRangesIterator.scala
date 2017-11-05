@@ -1,10 +1,12 @@
 package org.hammerlab.iterator.range
 
+import hammerlab.iterator.macros.IteratorWrapper
 import org.hammerlab.iterator.SimpleBufferedIterator
 
 import scala.collection.mutable
 
-case class OverlappingRangesIterator[T: Ordering](it: BufferedIterator[Range[T]]) {
+@IteratorWrapper
+class OverlappingRangesIterator[T: Ordering](it: BufferedIterator[Range[T]]) {
 
   type RangeT = (T, Option[T])
 
@@ -32,7 +34,14 @@ case class OverlappingRangesIterator[T: Ordering](it: BufferedIterator[Range[T]]
           .nextOption
           .map {
             elem ⇒
-              while (queue.headOption.exists(!_._1.∩(elem))) {
+              while (
+                queue
+                  .headOption
+                  .exists {
+                    case (range, _) ⇒
+                      !range.∩(elem)
+                  }
+              ) {
                 queue.dequeue()
               }
 
@@ -60,12 +69,4 @@ case class OverlappingRangesIterator[T: Ordering](it: BufferedIterator[Range[T]]
           }
     }
   }
-}
-
-object OverlappingRangesIterator {
-  implicit def makeOverlappingRangesIteratorFromIterable[T: Ordering](it: Iterable[Range[T]]): OverlappingRangesIterator[T] =
-    OverlappingRangesIterator(it.iterator.buffered)
-
-  implicit def makeOverlappingRangesIterator[T: Ordering](it: Iterator[Range[T]]): OverlappingRangesIterator[T] =
-    OverlappingRangesIterator(it.buffered)
 }
