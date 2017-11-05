@@ -1,7 +1,7 @@
 package org.hammerlab.iterator.group
 
 import hammerlab.iterator.macros.IteratorWrapper
-import org.hammerlab.iterator.SimpleBufferedIterator
+import org.hammerlab.iterator.SimpleIterator
 
 /**
  * Given an iterator and a predicate function, emit iterators containing maximal runs of sequential elements that all
@@ -24,7 +24,7 @@ class GroupRuns[T](it: BufferedIterator[T]) {
         if (!pred(it.head))
           Iterator(it.next())
         else
-          new SimpleBufferedIterator[T] {
+          new SimpleIterator[T] {
             override protected def _advance: Option[T] =
               if (it.hasNext && pred(it.head))
                 Some(it.next())
@@ -41,7 +41,7 @@ class GroupRuns[T](it: BufferedIterator[T]) {
       override def next(): Iterator[T] = {
         val n = it.next()
         Iterator(n) ++
-          new SimpleBufferedIterator[T] {
+          new SimpleIterator[T] {
             override protected def _advance: Option[T] =
               if (it.hasNext && ord.compare(n, it.head) == 0)
                 Some(it.next)

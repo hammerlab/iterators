@@ -33,6 +33,9 @@ trait range
 }
 object range extends range
 
+trait sample extends iterator.Sample
+object sample extends sample
+
 import iterator.scan._
 trait scan
   extends Scan
@@ -44,9 +47,9 @@ object slice extends slice
 
 import iterator.sliding._
 trait sliding
-  extends Sliding2Iterator
-     with Sliding3Iterator
-     with SlidingIterator
+  extends Sliding2
+     with Sliding3
+     with Sliding
 object sliding extends sliding
 
 import iterator.sorted._

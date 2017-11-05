@@ -1,10 +1,10 @@
 package org.hammerlab.iterator.util
 
 import hammerlab.iterator._
-import org.hammerlab.iterator.SimpleBufferedIterator
+import org.hammerlab.iterator.SimpleIterator
 
 abstract class MapWithStateIterator[T, U](it: Iterator[T])
-  extends SimpleBufferedIterator[U] {
+  extends SimpleIterator[U] {
 
   def fn(t: T): U
 

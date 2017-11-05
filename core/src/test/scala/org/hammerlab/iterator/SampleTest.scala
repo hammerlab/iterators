@@ -1,11 +1,11 @@
 package org.hammerlab.iterator
 
-import org.hammerlab.iterator.SamplingIterator._
+import hammerlab.iterator.sample._
 import org.hammerlab.test.Suite
 
 import scala.util.Random
 
-class SamplingIteratorTest
+class SampleTest
   extends Suite {
 
   before {

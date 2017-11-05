@@ -1,13 +1,13 @@
 package org.hammerlab.iterator.end
 
 import hammerlab.iterator.macros.IteratorWrapper
-import org.hammerlab.iterator.SimpleBufferedIterator
+import org.hammerlab.iterator.SimpleIterator
 
 @IteratorWrapper
 class ExpandLastElement[T](it: Iterator[T]) {
   def expandLastElement(fn: T ⇒ Iterator[T]): Iterator[T] = {
     val main =
-      new SimpleBufferedIterator[T] {
+      new SimpleIterator[T] {
         var lastOpt: Option[T] = None
 
         override protected def _advance: Option[T] =

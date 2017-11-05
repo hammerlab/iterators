@@ -1,14 +1,14 @@
 package org.hammerlab.iterator.sliding
 
 import hammerlab.iterator.macros.IteratorWrapper
-import org.hammerlab.iterator.SimpleBufferedIterator
+import org.hammerlab.iterator.SimpleIterator
 
 import scala.collection.mutable.ArrayBuffer
 
 @IteratorWrapper
-class SlidingIterator[T](it: Iterator[T]) {
+class Sliding[T](it: Iterator[T]) {
   def slide(n: Int): Iterator[Seq[T]] =
-    new SimpleBufferedIterator[Seq[T]] {
+    new SimpleIterator[Seq[T]] {
       var bufferOpt: Option[ArrayBuffer[T]] = None
       override protected def _advance: Option[Seq[T]] =
         bufferOpt match {
@@ -37,7 +37,3 @@ class SlidingIterator[T](it: Iterator[T]) {
         }
     }
 }
-
-//object SlidingIterator {
-//  implicit def makeSlidingIterator[T](it: Iterator[T]): SlidingIterator[T] = SlidingIterator(it)
-//}

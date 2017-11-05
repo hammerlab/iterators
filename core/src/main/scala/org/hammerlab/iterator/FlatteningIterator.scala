@@ -3,7 +3,7 @@ package org.hammerlab.iterator
 import hammerlab.iterator._
 
 /**
- * "Flatmap" over an [[Iterator]] of [[Iterator]]s, exposing the inner [[Iterator]] along the way (as its true type)
+ * "Flatmap" over an [[Iterator]] of [[Iterator]]s, exposing the inner [[Iterator]] along the way
  *
  * @param it [[Iterator]] of [[Iterator]]s
  * @tparam V "value" type of resulting [[Iterator]]

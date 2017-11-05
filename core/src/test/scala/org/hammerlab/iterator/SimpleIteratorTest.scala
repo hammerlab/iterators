@@ -1,16 +1,15 @@
 package org.hammerlab.iterator
 
 import hammerlab.iterator._
-import org.hammerlab.iterator.SimpleBufferedIterator._
 import org.hammerlab.test.Suite
 
-class SimpleBufferedIteratorTest
+class SimpleIteratorTest
   extends Suite {
 
   test("done") {
     var _done = false
     val it =
-      new SimpleBufferedIterator[Int] {
+      new SimpleIterator[Int] {
         var elems = List(1, 2, 3)
         override protected def _advance: Option[Int] = {
           elems.headOption match {
@@ -59,8 +58,29 @@ class SimpleBufferedIteratorTest
     Iterator(1, 2, 3, 4).buffer.buffer.toList should be(Seq(1, 2, 3, 4))
   }
 
+  implicit class Bufferer[T](it: Iterator[T]) {
+    def buffer: SimpleIterator[T] = {
+      it match {
+        case sbi: SimpleIterator[T] ⇒ sbi
+        case _ ⇒
+          val buf = it.buffered
+          new SimpleIterator[T] {
+            override protected def _advance: Option[T] = {
+              buf
+                .headOption
+                .map {
+                  elem ⇒
+                    buf.next()
+                    elem
+                }
+            }
+          }
+      }
+    }
+  }
+
   case class TestIterator(elems: Int*)
-    extends SimpleBufferedIterator[Int] {
+    extends SimpleIterator[Int] {
     val it = elems.iterator
     override protected def _advance: Option[Int] =
       it.nextOption

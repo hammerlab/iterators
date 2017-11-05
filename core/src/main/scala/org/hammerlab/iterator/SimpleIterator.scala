@@ -13,7 +13,7 @@ import hammerlab.iterator._
  * It also exposes protected `clear` and `postNext` methods for [[None]]ing the internal state and responding to
  * `next()` having been called, respectively.
  */
-trait SimpleBufferedIterator[+T]
+trait SimpleIterator[+T]
   extends BufferedIterator[T] {
 
   /**
@@ -67,27 +67,4 @@ trait SimpleBufferedIterator[+T]
 
   /** Called exactly once, when the iterator is empty */
   protected def done(): Unit = {}
-}
-
-object SimpleBufferedIterator {
-  implicit class Bufferer[T](it: Iterator[T]) {
-    def buffer: SimpleBufferedIterator[T] = {
-      it match {
-        case sbi: SimpleBufferedIterator[T] ⇒ sbi
-        case _ ⇒
-          val buf = it.buffered
-          new SimpleBufferedIterator[T] {
-            override protected def _advance: Option[T] = {
-              buf
-                .headOption
-                .map {
-                  elem ⇒
-                    buf.next()
-                    elem
-                }
-            }
-          }
-      }
-    }
-  }
 }

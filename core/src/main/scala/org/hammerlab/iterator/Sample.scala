@@ -1,5 +1,6 @@
 package org.hammerlab.iterator
 
+import hammerlab.iterator.macros.IteratorWrapper
 import hammerlab.iterator.start._
 
 import scala.reflect.ClassTag
@@ -8,7 +9,8 @@ import scala.util.Random
 /**
  * Sample elements from an iterator into an [[Array]]
  */
-case class SamplingIterator[T: ClassTag](it: Iterator[T]) {
+@IteratorWrapper
+class Sample[T: ClassTag](it: Iterator[T]) {
   def sample(n: Int): Array[T] = {
     if (n == 0)
       return Array()
@@ -27,9 +29,4 @@ case class SamplingIterator[T: ClassTag](it: Iterator[T]) {
       .sortBy(_._2)
       .map(_._1)
   }
-}
-
-object SamplingIterator {
-  implicit def makeSamplingIterator[T: ClassTag](it: Iterator[T]): SamplingIterator[T] =
-    SamplingIterator(it)
 }

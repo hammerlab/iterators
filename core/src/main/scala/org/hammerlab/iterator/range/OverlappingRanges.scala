@@ -2,7 +2,7 @@ package org.hammerlab.iterator.range
 
 import hammerlab.iterator._
 import hammerlab.iterator.macros.IteratorWrapper
-import org.hammerlab.iterator.SimpleBufferedIterator
+import org.hammerlab.iterator.SimpleIterator
 
 import scala.collection.mutable
 
@@ -29,7 +29,7 @@ class OverlappingRanges[T: Ordering](it: BufferedIterator[Range[T]]) {
         .zipWithIndex
         .buffered
 
-    new SimpleBufferedIterator[(Range[T], Vector[(Range[T], Int)])] {
+    new SimpleIterator[(Range[T], Vector[(Range[T], Int)])] {
       override protected def _advance: Option[(Range[T], Vector[(Range[T], Int)])] =
         it
           .nextOption

@@ -2,7 +2,7 @@ package org.hammerlab.iterator.sorted
 
 import hammerlab.iterator._
 import hammerlab.iterator.macros.IteratorWrapper
-import org.hammerlab.iterator.SimpleBufferedIterator
+import org.hammerlab.iterator.SimpleIterator
 
 @IteratorWrapper
 class EitherZip[T](l: BufferedIterator[T]) {
@@ -11,7 +11,7 @@ class EitherZip[T](l: BufferedIterator[T]) {
       ord: Ordering[V],
       tv: T ⇒ V,
       uv: U ⇒ V
-  ): SimpleBufferedIterator[Either[T, U]] =
+  ): SimpleIterator[Either[T, U]] =
     sortedEitherZip(other.iterator)
 
   def sortedEitherZip[U, V](other: Iterator[U])(
@@ -19,10 +19,10 @@ class EitherZip[T](l: BufferedIterator[T]) {
       ord: Ordering[V],
       tv: T ⇒ V,
       uv: U ⇒ V
-  ): SimpleBufferedIterator[Either[T, U]] = {
+  ): SimpleIterator[Either[T, U]] = {
     val r = other.buffered
     val ≤ = ord.lteq _
-    new SimpleBufferedIterator[Either[T, U]] {
+    new SimpleIterator[Either[T, U]] {
       override protected def _advance: Option[Either[T, U]] =
         (l.headOption, r.headOption) match {
           case (Some(t), Some(u)) ⇒

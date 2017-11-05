@@ -1,10 +1,10 @@
 package org.hammerlab.iterator.sliding
 
 import hammerlab.iterator.macros.IteratorWrapper
-import org.hammerlab.iterator.SimpleBufferedIterator
+import org.hammerlab.iterator.SimpleIterator
 
 @IteratorWrapper
-class Sliding2Iterator[T](it: BufferedIterator[T]) {
+class Sliding2[T](it: BufferedIterator[T]) {
   def sliding2Prev: Iterator[(Option[T], T)] =
     new Iterator[(Option[T], T)] {
       var prevOpt: Option[T] = None
@@ -37,7 +37,7 @@ class Sliding2Iterator[T](it: BufferedIterator[T]) {
     }
 
   def sliding2: Iterator[(T, T)] =
-    new SimpleBufferedIterator[(T, T)] {
+    new SimpleIterator[(T, T)] {
       var curOpt: Option[T] = None
       override protected def _advance: Option[(T, T)] =
         curOpt match {
@@ -57,9 +57,3 @@ class Sliding2Iterator[T](it: BufferedIterator[T]) {
         }
     }
 }
-
-//object Sliding2Iterator {
-//  implicit def makeSliding2Iterator[T](it: Iterator[T]): Sliding2Iterator[T] = Sliding2Iterator(it.buffered)
-//  implicit def makeSliding2Iterable[T](it: Iterable[T]): Sliding2Iterator[T] = Sliding2Iterator(it.iterator.buffered)
-//  implicit def makeSliding2Array[T](it: Array[T]): Sliding2Iterator[T] = Sliding2Iterator(it.iterator.buffered)
-//}

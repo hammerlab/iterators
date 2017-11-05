@@ -6,7 +6,7 @@ import java.io.{BufferedReader, InputStream, InputStreamReader}
  * Wrap a [[BufferedReader]] and emit lines.
  */
 class LinesIterator(br: BufferedReader)
-  extends SimpleBufferedIterator[String] {
+  extends SimpleIterator[String] {
   override def _advance: Option[String] =
     if (br.ready)
       Some(br.readLine())

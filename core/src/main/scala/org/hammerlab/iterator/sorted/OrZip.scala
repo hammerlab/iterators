@@ -3,7 +3,7 @@ package org.hammerlab.iterator.sorted
 import hammerlab.either._
 import hammerlab.iterator._
 import hammerlab.iterator.macros.IteratorWrapper
-import org.hammerlab.iterator.SimpleBufferedIterator
+import org.hammerlab.iterator.SimpleIterator
 
 @IteratorWrapper
 class OrZip[T](l: BufferedIterator[T]) {
@@ -12,7 +12,7 @@ class OrZip[T](l: BufferedIterator[T]) {
       ord: Ordering[V],
       tv: T ⇒ V,
       uv: U ⇒ V
-  ): SimpleBufferedIterator[Or[T, U]] =
+  ): SimpleIterator[Or[T, U]] =
     sortedOrZip(other.iterator)
 
   def sortedOrZip[U, V](other: Iterator[U])(
@@ -20,9 +20,9 @@ class OrZip[T](l: BufferedIterator[T]) {
       ord: Ordering[V],
       tv: T ⇒ V,
       uv: U ⇒ V
-  ): SimpleBufferedIterator[Or[T, U]] = {
+  ): SimpleIterator[Or[T, U]] = {
     val r = other.buffered
-    new SimpleBufferedIterator[Or[T, U]] {
+    new SimpleIterator[Or[T, U]] {
       override protected def _advance: Option[Or[T, U]] =
         (l.headOption, r.headOption) match {
           case (Some(t), Some(u)) ⇒
