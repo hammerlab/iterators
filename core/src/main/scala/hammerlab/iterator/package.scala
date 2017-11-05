@@ -4,3 +4,4 @@ package object iterator
   extends bulk
      with scan
      with sliding
+     with sorted

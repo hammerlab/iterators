@@ -1,8 +1,10 @@
 package org.hammerlab.iterator.sorted
 
+import hammerlab.iterator.macros.IteratorWrapper
 import org.hammerlab.iterator.{ HeadOptionIterator, SimpleBufferedIterator }
 
-case class ZipIterator[T](l: BufferedIterator[T]) {
+@IteratorWrapper
+class ZipIterator[T](l: BufferedIterator[T]) {
   def sortedZip[V](other: Iterable[T])(
       implicit
       ord: Ordering[V],
@@ -39,12 +41,4 @@ case class ZipIterator[T](l: BufferedIterator[T]) {
         }
     }
   }
-}
-
-object ZipIterator {
-  implicit def makeZipIterator[T](it: Iterator[T]): ZipIterator[T] =
-    ZipIterator(it.buffered)
-
-  implicit def makeZipIteratorFromIterable[T](it: Iterable[T]): ZipIterator[T] =
-    ZipIterator(it.iterator.buffered)
 }

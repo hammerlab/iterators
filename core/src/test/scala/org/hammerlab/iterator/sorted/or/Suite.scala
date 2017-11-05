@@ -1,9 +1,9 @@
 package org.hammerlab.iterator.sorted.or
 
 import hammerlab.either._
+import hammerlab.iterator.sorted._
 import org.hammerlab.iterator.sorted
 import org.hammerlab.iterator.sorted.ConvertToInt
-import org.hammerlab.iterator.sorted.OrZipIterator._
 import org.hammerlab.test.matchers.seqs.SeqMatcher.seqMatch
 
 abstract class Suite

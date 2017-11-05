@@ -1,8 +1,8 @@
 package org.hammerlab.iterator.sorted.either
 
+import hammerlab.iterator.sorted._
 import org.hammerlab.iterator.sorted
 import org.hammerlab.iterator.sorted.ConvertToInt
-import org.hammerlab.iterator.sorted.EitherZipIterator._
 
 abstract class Suite
   extends sorted.Suite

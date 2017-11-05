@@ -1,8 +1,8 @@
 package org.hammerlab.iterator.sorted.zip
 
+import hammerlab.iterator.sorted._
 import org.hammerlab.iterator.sorted
 import org.hammerlab.iterator.sorted.VInt
-import org.hammerlab.iterator.sorted.ZipIterator._
 
 class IntsTest
   extends sorted.Suite

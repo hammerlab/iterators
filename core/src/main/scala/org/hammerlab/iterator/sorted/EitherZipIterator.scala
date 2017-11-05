@@ -1,8 +1,10 @@
 package org.hammerlab.iterator.sorted
 
+import hammerlab.iterator.macros.IteratorWrapper
 import org.hammerlab.iterator.{ HeadOptionIterator, SimpleBufferedIterator }
 
-case class EitherZipIterator[T](l: BufferedIterator[T]) {
+@IteratorWrapper
+class EitherZipIterator[T](l: BufferedIterator[T]) {
   def sortedEitherZip[U, V](other: Iterable[U])(
       implicit
       ord: Ordering[V],
@@ -41,12 +43,4 @@ case class EitherZipIterator[T](l: BufferedIterator[T]) {
         }
     }
   }
-}
-
-object EitherZipIterator {
-  implicit def makeEitherZipIterator[T](it: Iterator[T]): EitherZipIterator[T] =
-    EitherZipIterator(it.buffered)
-
-  implicit def makeEitherZipIteratorFromIterable[T](it: Iterable[T]): EitherZipIterator[T] =
-    EitherZipIterator(it.iterator.buffered)
 }

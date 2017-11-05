@@ -1,9 +1,11 @@
 package org.hammerlab.iterator.sorted
 
 import hammerlab.either._
+import hammerlab.iterator.macros.IteratorWrapper
 import org.hammerlab.iterator.{ HeadOptionIterator, SimpleBufferedIterator }
 
-case class OrZipIterator[T](l: BufferedIterator[T]) {
+@IteratorWrapper
+class OrZipIterator[T](l: BufferedIterator[T]) {
   def sortedOrZip[U, V](other: Iterable[U])(
       implicit
       ord: Ordering[V],
@@ -48,12 +50,4 @@ case class OrZipIterator[T](l: BufferedIterator[T]) {
         }
     }
   }
-}
-
-object OrZipIterator {
-  implicit def makeOrZipIterator[T](it: Iterator[T]): OrZipIterator[T] =
-    OrZipIterator(it.buffered)
-
-  implicit def makeOrZipIteratorFromIterable[T](it: Iterable[T]): OrZipIterator[T] =
-    OrZipIterator(it.iterator.buffered)
 }
