@@ -1,11 +1,12 @@
-package org.hammerlab.iterator
+package org.hammerlab.iterator.sorted
 
 import hammerlab.iterator.bulk._
+import org.hammerlab.iterator.HeadOptionIterator
 
 /**
  * Group one sorted iterator with another, emitting an iterator of the latter's elements for each of the former's
  */
-case class GroupWithIterator[T](it: BufferedIterator[T]) {
+case class GroupWith[T](it: BufferedIterator[T]) {
   def groupWith[U, V: Ordering](other: Iterator[U])(
       implicit
       tv: T ⇒ V,
@@ -29,7 +30,7 @@ case class GroupWithIterator[T](it: BufferedIterator[T]) {
   }
 }
 
-object GroupWithIterator {
-  implicit def makeGroupByIterator[T](it: Iterator[T]): GroupWithIterator[T] =
-    GroupWithIterator(it.buffered)
+object GroupWith {
+  implicit def makeGroupByIterator[T](it: Iterator[T]): GroupWith[T] =
+    GroupWith(it.buffered)
 }

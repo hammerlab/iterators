@@ -1,10 +1,11 @@
-package org.hammerlab.iterator
+package org.hammerlab.iterator.group
 
+import hammerlab.iterator.group._
 import org.hammerlab.test.Suite
 
-class TakeUntilIteratorTest extends Suite {
+class SplitTest extends Suite {
   test("simple") {
-    new TakeUntilIterator("abc defg hij".toIterator, ' ').map(_.mkString("")).toList should be(
+    "abc defg hij".iterator.splitBy(' ').map(_.mkString("")).toList should be(
       List(
         "abc",
         "bc",
@@ -23,7 +24,7 @@ class TakeUntilIteratorTest extends Suite {
   }
 
   test("double-space and trailing space") {
-    new TakeUntilIterator("abc defg  hij ".toIterator, ' ').map(_.mkString("")).toList should be(
+    "abc defg  hij ".toIterator.splitBy(' ').map(_.mkString("")).toList should be(
       List(
         "abc",
         "bc",
@@ -44,7 +45,7 @@ class TakeUntilIteratorTest extends Suite {
   }
 
   test("leading spaces, multiple-space, trailing spaces") {
-    new TakeUntilIterator("  abc defg    hij   ".toIterator, ' ').map(_.mkString("")).toList should be(
+    "  abc defg    hij   ".toIterator.splitBy(' ').map(_.mkString("")).toList should be(
       List(
         "",
         "",

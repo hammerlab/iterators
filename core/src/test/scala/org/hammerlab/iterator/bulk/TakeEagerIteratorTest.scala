@@ -1,6 +1,6 @@
-package org.hammerlab.iterator
+package org.hammerlab.iterator.bulk
 
-import org.hammerlab.iterator.TakeEagerIterator._
+import hammerlab.iterator.bulk._
 import org.hammerlab.test.Suite
 
 class TakeEagerIteratorTest

@@ -1,14 +1,13 @@
-package org.hammerlab.iterator
+package org.hammerlab.iterator.group
 
+import hammerlab.iterator.group._
 import org.hammerlab.test.Suite
-import GroupRunsIterator._
 
-class GroupRunsIteratorPredicateTest extends Suite {
+class GroupRunsPredicateTest extends Suite {
 
   def check(ints: Int*)(strs: String*): Unit =
     ints
-      .iterator
-      .groupBy((_: Int) % 2 == 0)
+      .groupRuns((_: Int) % 2 == 0)
       .map(_.mkString(","))
       .toList should be(strs)
 
@@ -57,13 +56,12 @@ class GroupRunsIteratorPredicateTest extends Suite {
   }
 }
 
-class GroupRunsIteratorTest extends Suite {
+class GroupRunsTest extends Suite {
 
   implicit val ord = Ordering.by[(Int, Int), Int](_._1)
 
   def check(tuples: (Int, Int)*)(strs: String*): Unit =
     tuples
-      .iterator
       .groupRuns
       .map(_.map(t ⇒ s"${t._1},${t._2}").mkString(" "))
       .toList should be(strs.toList)

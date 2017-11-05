@@ -14,6 +14,14 @@ object count extends count
 trait drop extends iterator.Drop
 object drop extends drop
 
+import iterator.group._
+trait group
+  extends GroupRuns
+     with RunLength
+     with RunLengthReencode
+     with Split
+object group extends group
+
 import iterator.scan._
 trait scan
   extends Scan
@@ -29,7 +37,7 @@ object sliding extends sliding
 
 import iterator.sorted._
 trait sorted
-  extends EitherZipIterator
-     with OrZipIterator
-     with ZipIterator
+  extends EitherZip
+     with OrZip
+     with Zip
 object sorted extends sorted

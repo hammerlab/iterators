@@ -1,10 +1,10 @@
-package org.hammerlab.iterator
+package org.hammerlab.iterator.sorted
 
-import org.hammerlab.iterator.GroupWithIterator._
-import org.hammerlab.test.Suite
+import org.hammerlab.iterator.sorted.GroupWith._
+import org.hammerlab.test
 
-class GroupWithIteratorTest
-  extends Suite {
+class GroupWithTest
+  extends test.Suite {
 
   implicit def stringToInt(s: String): Int = augmentString(s).toInt
 
@@ -19,10 +19,10 @@ class GroupWithIteratorTest
           t → us.toList
       } should be(
       Seq(
-        2 → Seq("1", "2", "3"),
-        4 → Seq("4", "5", "5"),
-        6 → Seq("7"),
-        8 → Seq(),
+         2 → Seq("1", "2", "3"),
+         4 → Seq("4", "5", "5"),
+         6 → Seq("7"),
+         8 → Seq(),
         10 → Seq("11")
       )
     )
@@ -33,11 +33,11 @@ class GroupWithIteratorTest
       .groupWith[String, Int](
         Iterator("1", "2", "3", "4", "5", "5", "7", "11")
       )
-      .toList
       .map {
         case (t, us) ⇒
           t → us.toList
-      } should be(
+      }
+      .toList should be(
       Nil
     )
   }

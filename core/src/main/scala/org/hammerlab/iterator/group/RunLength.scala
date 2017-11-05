@@ -1,7 +1,8 @@
-package org.hammerlab.iterator
+package org.hammerlab.iterator.group
 
-import spire.math.Integral
+import hammerlab.iterator.macros.IteratorWrapper
 import spire.implicits._
+import spire.math.Integral
 
 /**
  * Run-length encode an input iterator, replacing contiguous runs of identical elements with pairs consisting of the
@@ -9,7 +10,8 @@ import spire.implicits._
  *
  * See RunLengthIteratorTest for examples.
  */
-class RunLengthIterator[K](val it: BufferedIterator[K]) {
+@IteratorWrapper
+class RunLength[K](it: BufferedIterator[K]) {
   def runLengthEncode(implicit ord: Ordering[K]): Iterator[(K, Int)] =
     runLengthEncode(ord.equiv(_, _))
 
@@ -29,12 +31,9 @@ class RunLengthIterator[K](val it: BufferedIterator[K]) {
     }
 }
 
-object RunLengthIterator {
-
-  implicit def make[K](it: Iterator[K]): RunLengthIterator[K] = new RunLengthIterator(it.buffered)
-
-  def reencode[K, V: Integral](it: Iterator[(K, V)]): Iterator[(K, V)] = reencode(it.buffered)
-  def reencode[K, V: Integral](it: BufferedIterator[(K, V)]): Iterator[(K, V)] =
+@IteratorWrapper
+class RunLengthReencode[K, V: Integral](it: BufferedIterator[(K, V)]) {
+  def reencode: Iterator[(K, V)] =
     new Iterator[(K, V)] {
       override def hasNext: Boolean = it.hasNext
 

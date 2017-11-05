@@ -5,7 +5,7 @@ import hammerlab.iterator.macros.IteratorWrapper
 import org.hammerlab.iterator.{ HeadOptionIterator, SimpleBufferedIterator }
 
 @IteratorWrapper
-class OrZipIterator[T](l: BufferedIterator[T]) {
+class OrZip[T](l: BufferedIterator[T]) {
   def sortedOrZip[U, V](other: Iterable[U])(
       implicit
       ord: Ordering[V],

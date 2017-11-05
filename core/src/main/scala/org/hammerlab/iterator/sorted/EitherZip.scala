@@ -4,7 +4,7 @@ import hammerlab.iterator.macros.IteratorWrapper
 import org.hammerlab.iterator.{ HeadOptionIterator, SimpleBufferedIterator }
 
 @IteratorWrapper
-class EitherZipIterator[T](l: BufferedIterator[T]) {
+class EitherZip[T](l: BufferedIterator[T]) {
   def sortedEitherZip[U, V](other: Iterable[U])(
       implicit
       ord: Ordering[V],

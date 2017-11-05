@@ -1,6 +1,6 @@
 package org.hammerlab.iterator
 
-import org.hammerlab.iterator.TakeEagerIterator._
+import hammerlab.iterator.bulk._
 
 import scala.reflect.ClassTag
 import scala.util.Random
