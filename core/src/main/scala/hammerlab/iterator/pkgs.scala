@@ -14,6 +14,12 @@ object count extends count
 trait drop extends iterator.Drop
 object drop extends drop
 
+import iterator.end._
+trait end
+  extends Finish
+     with ExpandLastElement
+object end extends end
+
 import iterator.group._
 trait group
   extends GroupRuns

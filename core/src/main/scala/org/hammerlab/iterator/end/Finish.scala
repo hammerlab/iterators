@@ -1,6 +1,10 @@
-package org.hammerlab.iterator
+package org.hammerlab.iterator.end
 
-case class FinishingIterator[T](it: Iterator[T]) {
+import hammerlab.iterator.macros.IteratorWrapper
+import org.hammerlab.iterator.SimpleBufferedIterator
+
+@IteratorWrapper
+class Finish[T](it: Iterator[T]) {
   def finish(fn: ⇒ Unit): Iterator[T] =
     new SimpleBufferedIterator[T] {
       override protected def _advance: Option[T] =
@@ -13,9 +17,4 @@ case class FinishingIterator[T](it: Iterator[T]) {
         fn
       }
     }
-}
-
-object FinishingIterator {
-  implicit def makeFinallyIterator[T](it: Iterator[T]): FinishingIterator[T] =
-    FinishingIterator(it)
 }

@@ -1,6 +1,10 @@
-package org.hammerlab.iterator
+package org.hammerlab.iterator.end
 
-case class ExpandLastElementIterator[T](it: Iterator[T]) {
+import hammerlab.iterator.macros.IteratorWrapper
+import org.hammerlab.iterator.SimpleBufferedIterator
+
+@IteratorWrapper
+class ExpandLastElement[T](it: Iterator[T]) {
   def expandLastElement(fn: T ⇒ Iterator[T]): Iterator[T] = {
     val main =
       new SimpleBufferedIterator[T] {
@@ -26,8 +30,4 @@ case class ExpandLastElementIterator[T](it: Iterator[T]) {
         override def next(): T = rest.next
       }
   }
-}
-
-object ExpandLastElementIterator {
-  implicit def makeExpandLastElementIterator[T](it: Iterator[T]): ExpandLastElementIterator[T] = ExpandLastElementIterator(it)
 }

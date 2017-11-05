@@ -1,10 +1,12 @@
-package org.hammerlab.iterator
+package org.hammerlab.iterator.end
 
 import org.hammerlab.test.Suite
-import ExpandLastElementIterator._
-import Array.fill
 
-class ExpandLastElementIteratorTest
+import hammerlab.iterator.end._
+
+import scala.Array.fill
+
+class ExpandLastElementTest
   extends Suite {
 
   test("empty") {

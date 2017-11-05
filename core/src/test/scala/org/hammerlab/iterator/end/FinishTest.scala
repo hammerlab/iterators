@@ -1,10 +1,9 @@
-package org.hammerlab.iterator
+package org.hammerlab.iterator.end
 
+import hammerlab.iterator.end._
 import org.hammerlab.test.Suite
 
-import FinishingIterator._
-
-class FinishingIteratorTest
+class FinishTest
   extends Suite {
 
   test("empty") {
