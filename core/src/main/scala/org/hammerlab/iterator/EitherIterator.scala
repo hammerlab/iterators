@@ -1,11 +1,11 @@
 package org.hammerlab.iterator
 
 import hammerlab.iterator._
-import hammerlab.iterator.macros.IteratorWrapper
+import hammerlab.iterator.macros.IteratorOps
 
 import scala.collection.mutable.ArrayBuffer
 
-@IteratorWrapper
+@IteratorOps
 class EitherIterator[T, U](it: BufferedIterator[Either[T, U]]) {
 
   def findLeft: Option[T] =

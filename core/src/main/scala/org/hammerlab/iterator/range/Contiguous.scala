@@ -1,6 +1,6 @@
 package org.hammerlab.iterator.range
 
-import hammerlab.iterator.macros.IteratorWrapper
+import hammerlab.iterator.macros.IteratorOps
 
 /**
  * Given an [[Iterator]] of [[Int]]s, collapse contiguous "ranges" of integers that are each 1 greater than their
@@ -11,7 +11,7 @@ import hammerlab.iterator.macros.IteratorWrapper
  *
  * See RangeAccruingIteratorTest for more examples.
  */
-@IteratorWrapper
+@IteratorOps
 class Contiguous(it: Iterator[Int]) {
 
   def contiguousRanges: Iterator[scala.Range] =

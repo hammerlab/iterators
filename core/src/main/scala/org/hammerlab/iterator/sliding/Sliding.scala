@@ -1,11 +1,11 @@
 package org.hammerlab.iterator.sliding
 
-import hammerlab.iterator.macros.IteratorWrapper
+import hammerlab.iterator.macros.IteratorOps
 import org.hammerlab.iterator.SimpleIterator
 
 import scala.collection.mutable.ArrayBuffer
 
-@IteratorWrapper
+@IteratorOps
 class Sliding[T](it: Iterator[T]) {
   def slide(n: Int): Iterator[Seq[T]] =
     new SimpleIterator[Seq[T]] {

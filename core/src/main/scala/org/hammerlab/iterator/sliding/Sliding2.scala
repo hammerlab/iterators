@@ -1,9 +1,9 @@
 package org.hammerlab.iterator.sliding
 
-import hammerlab.iterator.macros.IteratorWrapper
+import hammerlab.iterator.macros.IteratorOps
 import org.hammerlab.iterator.SimpleIterator
 
-@IteratorWrapper
+@IteratorOps
 class Sliding2[T](it: BufferedIterator[T]) {
   def sliding2Prev: Iterator[(Option[T], T)] =
     new Iterator[(Option[T], T)] {

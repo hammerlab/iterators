@@ -1,9 +1,9 @@
 package org.hammerlab.iterator.end
 
-import hammerlab.iterator.macros.IteratorWrapper
+import hammerlab.iterator.macros.IteratorOps
 import org.hammerlab.iterator.SimpleIterator
 
-@IteratorWrapper
+@IteratorOps
 class ExpandLastElement[T](it: Iterator[T]) {
   def expandLastElement(fn: T ⇒ Iterator[T]): Iterator[T] = {
     val main =

@@ -1,9 +1,9 @@
 package org.hammerlab.iterator
 
 import hammerlab.iterator._
-import hammerlab.iterator.macros.IteratorWrapper
+import hammerlab.iterator.macros.IteratorOps
 
-@IteratorWrapper
+@IteratorOps
 class Slice[T](it: Iterator[T]) {
   def sliceOpt(start: Option[Int], length: Option[Int]): Iterator[T] = {
     start.foreach(it.dropEager)

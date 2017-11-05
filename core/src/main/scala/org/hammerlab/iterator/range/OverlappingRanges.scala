@@ -1,27 +1,33 @@
 package org.hammerlab.iterator.range
 
 import hammerlab.iterator._
-import hammerlab.iterator.macros.IteratorWrapper
+import hammerlab.iterator.macros.IteratorOps
 import org.hammerlab.iterator.SimpleIterator
 
 import scala.collection.mutable
 
-@IteratorWrapper
-class OverlappingRanges[T: Ordering](it: BufferedIterator[Range[T]]) {
+@IteratorOps
+class OverlappingRanges[T](it: BufferedIterator[Range[T]]) {
 
   type RangeT = (T, Option[T])
 
-  val ≤ = implicitly[Ordering[T]].lteq _
-
-  implicit val orderZippedRangeByEndOpt: Ordering[(Range[T], Int)] =
-    Ordering
-      .by[(Range[T], Int), Option[T]](_._1.endOpt)
-      .reverse
-
-  def joinOverlaps(other: Iterable[Range[T]]): Iterator[(Range[T], Vector[(Range[T], Int)])] =
+  def joinOverlaps(other: Iterable[Range[T]])(
+      implicit
+      ord: Ordering[T]
+  ): Iterator[(Range[T], Vector[(Range[T], Int)])] =
     joinOverlaps(other.iterator.buffered)
 
-  def joinOverlaps(other: BufferedIterator[Range[T]]): Iterator[(Range[T], Vector[(Range[T], Int)])] = {
+  def joinOverlaps(other: BufferedIterator[Range[T]])(
+      implicit
+      ord: Ordering[T]
+  ): Iterator[(Range[T], Vector[(Range[T], Int)])] = {
+    val ≤ = ord.lteq _
+
+    implicit val orderZippedRangeByEndOpt: Ordering[(Range[T], Int)] =
+      Ordering
+        .by[(Range[T], Int), Option[T]](_._1.endOpt)
+        .reverse
+
     val queue = mutable.PriorityQueue[(Range[T], Int)]()
 
     val zippedOther =

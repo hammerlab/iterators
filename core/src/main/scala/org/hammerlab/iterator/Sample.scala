@@ -1,6 +1,6 @@
 package org.hammerlab.iterator
 
-import hammerlab.iterator.macros.IteratorWrapper
+import hammerlab.iterator.macros.IteratorOps
 import hammerlab.iterator.start._
 
 import scala.reflect.ClassTag
@@ -9,9 +9,9 @@ import scala.util.Random
 /**
  * Sample elements from an iterator into an [[Array]]
  */
-@IteratorWrapper
-class Sample[T: ClassTag](it: Iterator[T]) {
-  def sample(n: Int): Array[T] = {
+@IteratorOps
+class Sample[T](it: Iterator[T]) {
+  def sample(n: Int)(implicit ct: ClassTag[T]): Array[T] = {
     if (n == 0)
       return Array()
 

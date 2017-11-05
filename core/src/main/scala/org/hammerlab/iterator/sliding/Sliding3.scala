@@ -1,13 +1,13 @@
 package org.hammerlab.iterator.sliding
 
 import hammerlab.iterator._
-import hammerlab.iterator.macros.IteratorWrapper
+import hammerlab.iterator.macros.IteratorOps
 import org.hammerlab.iterator.SimpleIterator
 
 /**
  * Given an [[Iterator[T]]], emit each element sandwiched between its preceding and succeeding elements.
  */
-@IteratorWrapper
+@IteratorOps
 class Sliding3[T](it: BufferedIterator[T]) {
 
   def sliding3: Iterator[(T, T, T)] =

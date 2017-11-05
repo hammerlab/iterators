@@ -1,6 +1,6 @@
 package org.hammerlab.iterator.group
 
-import hammerlab.iterator.macros.IteratorWrapper
+import hammerlab.iterator.macros.IteratorOps
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -10,7 +10,7 @@ import scala.collection.mutable.ArrayBuffer
  *
  * See `SplitTest` for examples.
  */
-@IteratorWrapper
+@IteratorOps
 class Split[T](it: Iterator[T]) {
   def splitBy(sentinel: T): Iterator[Seq[T]] =
     new Iterator[Seq[T]] {

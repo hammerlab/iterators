@@ -3,14 +3,15 @@ package hammerlab.iterator.macros
 import scala.annotation.StaticAnnotation
 import scala.collection.immutable.Seq
 import scala.meta.Term.Param
-import scala.meta.Type.{Apply, Name}
+import scala.meta.Type.{ Apply, Name }
 import scala.meta._
 
-class IteratorWrapper
+class IteratorOps
   extends StaticAnnotation {
   inline def apply(defn: Any): Any = meta {
     defn match {
       case q"class $name[..$ts]($param) { ..$body }" ⇒
+        val objName = Term.Name(name.value)
         val ops = Name(s"${name}Ops")
         val opsCtor = Ctor.Ref.Name(ops.value)
         val makeName = Term.Name(s"make$name")
@@ -22,8 +23,8 @@ class IteratorWrapper
           _,  // name
           Some(
             Apply(
-              iterType,  // Iterator or BufferedIterator
-              Seq(tn)    // Type arg or tuple of two type args
+            iterType,  // Iterator or BufferedIterator
+            Seq(tn)    // Type arg or tuple of two type args
             )
           ),
           _   // "default"
@@ -37,11 +38,14 @@ class IteratorWrapper
           else
             (q"it", q"it.iterator")
 
+        val newMods = param.mods :+ Mod.ValParam()
+        val newParam = param.copy(mods = newMods)
+
         val classDef =
           if (ts.isEmpty)
-            q"class $ops($param) { ..$body }"
+            q"class $ops($newParam) extends AnyVal { ..$body }"
           else
-            q"class $ops[..$ts]($param) { ..$body }"
+            q"class $ops[..$ts]($newParam) extends AnyVal { ..$body }"
 
         def makeImplicit(argType: String, iterator: Term) = {
           val arg = Apply(Name(argType), Seq(tn))
@@ -57,10 +61,13 @@ class IteratorWrapper
         val    arrayImplicit = makeImplicit("scala.Array"   ,  arrArg)
 
         q"""trait $name {
-              $classDef
+              import $objName._
               $iteratorImplicit
               $iterableImplicit
               $arrayImplicit
+            }
+            object $objName {
+              $classDef
             }
           """
       case _ ⇒

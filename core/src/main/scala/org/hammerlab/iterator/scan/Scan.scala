@@ -2,9 +2,9 @@ package org.hammerlab.iterator.scan
 
 import cats.Monoid
 import hammerlab.iterator._
-import hammerlab.iterator.macros.IteratorWrapper
+import hammerlab.iterator.macros.IteratorOps
 
-@IteratorWrapper
+@IteratorOps
 class Scan[T](it: Iterator[T]) {
 
   def scanL(implicit m: Monoid[T]): Iterator[T] = scanL(includeCurrentValue = false)

@@ -1,9 +1,9 @@
 package org.hammerlab.iterator.sorted
 
 import hammerlab.iterator._
-import hammerlab.iterator.macros.IteratorWrapper
+import hammerlab.iterator.macros.IteratorOps
 
-@IteratorWrapper
+@IteratorOps
 class Zip[T](l: BufferedIterator[T]) {
   def sortedZip[V](other: Iterable[T])(
       implicit

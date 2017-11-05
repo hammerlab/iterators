@@ -2,10 +2,10 @@ package org.hammerlab.iterator.scan
 
 import cats.Monoid
 import hammerlab.iterator._
-import hammerlab.iterator.macros.IteratorWrapper
+import hammerlab.iterator.macros.IteratorOps
 import org.hammerlab.iterator.util.MapValuesWithStateIterator
 
-@IteratorWrapper
+@IteratorOps
 class ScanValues[K, V](it: Iterator[(K, V)]) {
 
   def scanLeftValues(includeCurrentValue: Boolean)(
@@ -64,7 +64,8 @@ class ScanValues[K, V](it: Iterator[(K, V)]) {
     )
 
   def scanRightValues[U](identity: U,
-                         combine: (V, U) ⇒ U): Iterator[(K, U)] =
+                         combine: (V, U) ⇒ U): Iterator[(K, U)] = {
+    val k: K = null.asInstanceOf[K]  // unused
     it
       .scanRight(
         k → identity
@@ -78,6 +79,7 @@ class ScanValues[K, V](it: Iterator[(K, V)]) {
         case ((k, _), (_, u)) ⇒
           k → u
       }
+  }
 
   def scanRightValuesInclusive(implicit m: Monoid[V]): Iterator[(K, V)] =
     scanRightValuesInclusive(
@@ -85,9 +87,9 @@ class ScanValues[K, V](it: Iterator[(K, V)]) {
       m.combine
     )
 
-  protected var k: K = _
   def scanRightValuesInclusive[U](identity: U,
-                                  combine: (V, U) ⇒ U): Iterator[(K, U)] =
+                                  combine: (V, U) ⇒ U): Iterator[(K, U)] = {
+    val k: K = null.asInstanceOf[K]  // unused
     it
       .scanRight(
         k → identity
@@ -97,4 +99,5 @@ class ScanValues[K, V](it: Iterator[(K, V)]) {
             combine(v, u)
       }
       .dropRight(1)
+  }
 }

@@ -2,10 +2,10 @@ package org.hammerlab.iterator.sorted
 
 import hammerlab.either._
 import hammerlab.iterator._
-import hammerlab.iterator.macros.IteratorWrapper
+import hammerlab.iterator.macros.IteratorOps
 import org.hammerlab.iterator.SimpleIterator
 
-@IteratorWrapper
+@IteratorOps
 class OrZip[T](l: BufferedIterator[T]) {
   def sortedOrZip[U, V](other: Iterable[U])(
       implicit

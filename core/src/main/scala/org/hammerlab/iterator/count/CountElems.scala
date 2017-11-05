@@ -1,10 +1,10 @@
 package org.hammerlab.iterator.count
 
-import hammerlab.iterator.macros.IteratorWrapper
+import hammerlab.iterator.macros.IteratorOps
 
 import scala.collection.mutable
 
-@IteratorWrapper
+@IteratorOps
 class CountElems[T](it: Iterator[T]) {
   def countElems: Map[T, Int] = {
     val counts = mutable.Map[T, Int]()

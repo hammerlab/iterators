@@ -1,6 +1,6 @@
 package org.hammerlab.iterator.group
 
-import hammerlab.iterator.macros.IteratorWrapper
+import hammerlab.iterator.macros.IteratorOps
 import spire.implicits._
 import spire.math.Integral
 
@@ -10,7 +10,7 @@ import spire.math.Integral
  *
  * See RunLengthIteratorTest for examples.
  */
-@IteratorWrapper
+@IteratorOps
 class RunLength[K](it: BufferedIterator[K]) {
   def runLengthEncode(implicit ord: Ordering[K]): Iterator[(K, Int)] =
     runLengthEncode(ord.equiv(_, _))
@@ -31,9 +31,9 @@ class RunLength[K](it: BufferedIterator[K]) {
     }
 }
 
-@IteratorWrapper
-class RunLengthReencode[K, V: Integral](it: BufferedIterator[(K, V)]) {
-  def reencode: Iterator[(K, V)] =
+@IteratorOps
+class RunLengthReencode[K, V](it: BufferedIterator[(K, V)]) {
+  def reencode(implicit ev: Integral[V]): Iterator[(K, V)] =
     new Iterator[(K, V)] {
       override def hasNext: Boolean = it.hasNext
 

@@ -1,10 +1,10 @@
 package org.hammerlab.iterator.sorted
 
 import hammerlab.iterator._
-import hammerlab.iterator.macros.IteratorWrapper
+import hammerlab.iterator.macros.IteratorOps
 import org.hammerlab.iterator.SimpleIterator
 
-@IteratorWrapper
+@IteratorOps
 class EitherZip[T](l: BufferedIterator[T]) {
   def sortedEitherZip[U, V](other: Iterable[U])(
       implicit

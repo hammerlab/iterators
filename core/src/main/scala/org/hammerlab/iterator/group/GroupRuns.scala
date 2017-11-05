@@ -1,6 +1,6 @@
 package org.hammerlab.iterator.group
 
-import hammerlab.iterator.macros.IteratorWrapper
+import hammerlab.iterator.macros.IteratorOps
 import org.hammerlab.iterator.SimpleIterator
 
 /**
@@ -12,7 +12,7 @@ import org.hammerlab.iterator.SimpleIterator
  *
  * See GroupRunsIteratorTest for more examples.
  */
-@IteratorWrapper
+@IteratorOps
 class GroupRuns[T](it: BufferedIterator[T]) {
 
   def groupRuns(pred: T ⇒ Boolean): Iterator[Iterator[T]] =

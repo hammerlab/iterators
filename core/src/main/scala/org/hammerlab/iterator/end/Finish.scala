@@ -1,9 +1,9 @@
 package org.hammerlab.iterator.end
 
-import hammerlab.iterator.macros.IteratorWrapper
+import hammerlab.iterator.macros.IteratorOps
 import org.hammerlab.iterator.SimpleIterator
 
-@IteratorWrapper
+@IteratorOps
 class Finish[T](it: Iterator[T]) {
   def finish(fn: ⇒ Unit): Iterator[T] =
     new SimpleIterator[T] {
