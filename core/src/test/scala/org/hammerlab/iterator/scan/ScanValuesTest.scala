@@ -1,7 +1,7 @@
 package org.hammerlab.iterator.scan
 
 import cats.implicits.catsKernelStdMonoidForString
-import hammerlab.iterators.scan._
+import hammerlab.iterator.scan._
 import hammerlab.monoid._
 import org.hammerlab.test.Suite
 

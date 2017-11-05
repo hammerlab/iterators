@@ -2,7 +2,7 @@ package org.hammerlab.iterator.scan
 
 import cats.Monoid
 import hammerlab.iterator.macros.IteratorWrapper
-import org.hammerlab.iterator.sliding.Sliding2Iterator._
+import hammerlab.iterator.sliding._
 import org.hammerlab.iterator.{ MapValuesWithStateIterator, SimpleBufferedIterator }
 import org.hammerlab.iterator.DropRightIterator._
 

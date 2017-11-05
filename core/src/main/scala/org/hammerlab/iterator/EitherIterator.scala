@@ -1,6 +1,6 @@
 package org.hammerlab.iterator
 
-import hammerlab.iterators.bulk._
+import hammerlab.iterator.bulk._
 import scala.collection.mutable.ArrayBuffer
 
 case class EitherIterator[T, U](it: BufferedIterator[Either[T, U]]) {

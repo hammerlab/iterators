@@ -1,11 +1,13 @@
 package org.hammerlab.iterator.sliding
 
+import hammerlab.iterator.macros.IteratorWrapper
 import org.hammerlab.iterator.{ NextOptionIterator, SimpleBufferedIterator }
 
 /**
  * Given an [[Iterator[T]]], emit each element sandwiched between its preceding and succeeding elements.
  */
-case class Sliding3Iterator[T](it: BufferedIterator[T]) {
+@IteratorWrapper
+class Sliding3Iterator[T](it: BufferedIterator[T]) {
 
   def sliding3: Iterator[(T, T, T)] =
     sliding3Opt
@@ -63,7 +65,7 @@ case class Sliding3Iterator[T](it: BufferedIterator[T]) {
     }
 }
 
-object Sliding3Iterator {
-  implicit def makeSliding3Iterator[T](it: Iterator[T]): Sliding3Iterator[T] = Sliding3Iterator(it.buffered)
-  implicit def makeSliding3Iterator[T](it: Iterable[T]): Sliding3Iterator[T] = Sliding3Iterator(it.iterator.buffered)
-}
+//object Sliding3Iterator {
+//  implicit def makeSliding3Iterator[T](it: Iterator[T]): Sliding3Iterator[T] = Sliding3Iterator(it.buffered)
+//  implicit def makeSliding3Iterator[T](it: Iterable[T]): Sliding3Iterator[T] = Sliding3Iterator(it.iterator.buffered)
+//}

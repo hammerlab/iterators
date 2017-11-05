@@ -29,13 +29,15 @@ class IteratorWrapper
               )
           }
 
+        println(s"param: $param ${param.getClass}")
+
         q"""trait $name {
               class $ops[..$ts]($param) {
                 ..$body
               }
-              implicit def $makeName[..$ts](it: scala.Iterator[$tn]): $ops[..$tns] = new $opsCtor(it)
-              implicit def $makeName[..$ts](it: scala.Iterable[$tn]): $ops[..$tns] = new $opsCtor(it.iterator)
-              implicit def $makeName[..$ts](it: scala.Array[$tn]): $ops[..$tns] = new $opsCtor(it.iterator)
+              implicit def $makeName[..$ts](it: scala.Iterator[$tn]): $ops[..$tns] = new $opsCtor(it.buffered)
+              implicit def $makeName[..$ts](it: scala.Iterable[$tn]): $ops[..$tns] = new $opsCtor(it.iterator.buffered)
+              implicit def $makeName[..$ts](it: scala.Array[$tn]): $ops[..$tns] = new $opsCtor(it.iterator.buffered)
             }
           """
       case _ =>

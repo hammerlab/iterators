@@ -1,6 +1,6 @@
 package org.hammerlab.iterator.sliding
 
-import org.hammerlab.iterator.sliding.SlidingIterator._
+import hammerlab.iterator.sliding._
 import org.hammerlab.test.Suite
 
 class SlidingIteratorTest

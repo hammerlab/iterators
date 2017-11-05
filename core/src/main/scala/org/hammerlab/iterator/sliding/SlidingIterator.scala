@@ -1,14 +1,16 @@
 package org.hammerlab.iterator.sliding
 
+import hammerlab.iterator.macros.IteratorWrapper
 import org.hammerlab.iterator.SimpleBufferedIterator
 
 import scala.collection.mutable.ArrayBuffer
 
-case class SlidingIterator[T](it: Iterator[T]) {
+@IteratorWrapper
+class SlidingIterator[T](it: Iterator[T]) {
   def slide(n: Int): Iterator[Seq[T]] =
     new SimpleBufferedIterator[Seq[T]] {
       var bufferOpt: Option[ArrayBuffer[T]] = None
-      override protected def _advance: Option[Seq[T]] = {
+      override protected def _advance: Option[Seq[T]] =
         bufferOpt match {
           case Some(buffer) ⇒
             val newBuffer = buffer.drop(1)
@@ -33,10 +35,9 @@ case class SlidingIterator[T](it: Iterator[T]) {
             bufferOpt = Some(buffer)
             _advance
         }
-      }
     }
 }
 
-object SlidingIterator {
-  implicit def makeSlidingIterator[T](it: Iterator[T]): SlidingIterator[T] = SlidingIterator(it)
-}
+//object SlidingIterator {
+//  implicit def makeSlidingIterator[T](it: Iterator[T]): SlidingIterator[T] = SlidingIterator(it)
+//}
