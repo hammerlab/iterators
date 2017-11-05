@@ -1,41 +1,41 @@
-package org.hammerlab.iterator
+package org.hammerlab.iterator.level
 
+import hammerlab.iterator.level._
 import org.hammerlab.test.Suite
-import FlatteningIterator._
 
-class FlatteningIteratorTest
+class LevelTest
   extends Suite {
 
   test("empty") {
-    Iterator().smush[Nothing, Iterator[Nothing]].toList should be(Nil)
+    Iterator().level[Nothing, Iterator[Nothing]].toList should be(Nil)
   }
 
   test("one empty") {
-    Iterator(Iterator()).smush.toList should be(Nil)
+    Iterator(Iterator()).level.toList should be(Nil)
   }
 
   test("two empties") {
-    Iterator(Iterator(), Iterator()).smush.toList should be(Nil)
+    Iterator(Iterator(), Iterator()).level.toList should be(Nil)
   }
 
   test("one empty one elem") {
-    makeFlatmapIterator(Iterator(Iterator(), Iterator(1))).smush.toList should be(List(1))
+    Iterator(Iterator(), Iterator(1)).level.toList should be(List(1))
   }
 
   test("one empty two elems") {
-    Iterator(Iterator(), Iterator(1, 2)).smush.toList should be(List(1, 2))
+    Iterator(Iterator(), Iterator(1, 2)).level.toList should be(List(1, 2))
   }
 
   test("one elem one empty") {
-    Iterator(Iterator(1), Iterator()).smush.toList should be(List(1))
+    Iterator(Iterator(1), Iterator()).level.toList should be(List(1))
   }
 
   test("two elems one empty") {
-    Iterator(Iterator(1, 2), Iterator()).smush.toList should be(List(1, 2))
+    Iterator(Iterator(1, 2), Iterator()).level.toList should be(List(1, 2))
   }
 
   test("two ones") {
-    Iterator(Iterator(1), Iterator(2)).smush.toList should be(List(1, 2))
+    Iterator(Iterator(1), Iterator(2)).level.toList should be(List(1, 2))
   }
 
   test("many elems") {
@@ -48,14 +48,14 @@ class FlatteningIteratorTest
       Iterator(),
       Iterator(10)
     )
-    .smush
+    .level
     .toList should be(
       1 to 10
     )
   }
 
   /**
-   * Dummy [[Iterator]] implementation used for validating [[FlatteningIterator.cur]] book-keeping.
+   * Dummy [[Iterator]] implementation used for validating [[LevelingIterator.cur]] book-keeping.
    */
   case class Run(start: Int, end: Int)
     extends Iterator[Int] {
@@ -76,7 +76,7 @@ class FlatteningIteratorTest
         Run(10, 15),
         Run(20, 25)
       )
-      .smush
+      .level
 
     it.cur should be(Some(Run(1, 5)))
     it.next should be(1)

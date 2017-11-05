@@ -25,6 +25,10 @@ trait group
      with Split
 object group extends group
 
+import iterator.level._
+trait level extends Level
+object level extends level
+
 import iterator.range._
 trait range
   extends OverlappingRanges

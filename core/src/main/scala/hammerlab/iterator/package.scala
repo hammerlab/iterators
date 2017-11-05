@@ -5,6 +5,7 @@ package object iterator
      with end
      with iterator.either
      with group
+     with level
      with range
      with sample
      with scan
