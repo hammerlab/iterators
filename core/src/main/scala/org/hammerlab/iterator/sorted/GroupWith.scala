@@ -1,7 +1,6 @@
 package org.hammerlab.iterator.sorted
 
-import hammerlab.iterator.start._
-import hammerlab.iterator.HeadOption
+import hammerlab.iterator._
 
 /**
  * Group one sorted iterator with another, emitting an iterator of the latter's elements for each of the former's

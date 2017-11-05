@@ -3,7 +3,7 @@ package org.hammerlab.iterator.start
 import hammerlab.iterator.start._
 import org.hammerlab.test.Suite
 
-class TakeEagerIteratorTest
+class TakeEagerTest
   extends Suite {
 
   test("empty") {

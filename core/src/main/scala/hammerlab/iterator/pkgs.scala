@@ -65,7 +65,10 @@ object sorted extends sorted
 
 import iterator.start._
 trait start
-  extends Bulk
-     with Head
-     with Drop
+  extends BufferedOps
+     with DropEager
+     with DropRight
+     with HeadOption
+     with NextOption
+     with TakeEager
 object start extends start
