@@ -1,4 +1,4 @@
-package org.hammerlab.iterator
+package org.hammerlab.iterator.start
 
 import hammerlab.iterator._
 import org.hammerlab.test.Suite

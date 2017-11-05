@@ -1,15 +1,16 @@
-package org.hammerlab.iterator
+package org.hammerlab.iterator.group
 
 import hammerlab.iterator._
-import org.hammerlab.iterator.CappedCostGroupsIterator.{ ElementTooCostlyException, ElementTooCostlyStrategy }
+import hammerlab.iterator.macros.IteratorOps
 
-case class CappedCostGroupsIterator[T](it: BufferedIterator[T]) {
+@IteratorOps
+class CappedCost[T](it: BufferedIterator[T]) {
 
   def cappedCostGroup[N: Numeric](withCosts: BufferedIterator[(T, N)], costFn: T ⇒ N, limit: N)(
       implicit elementTooCostlyStrategy: ElementTooCostlyStrategy
   ): Iterator[T] = {
 
-    import org.hammerlab.iterator.CappedCostGroupsIterator.ElementTooCostlyStrategy._
+    import ElementTooCostlyStrategy._
 
     new SimpleIterator[T] {
       val numeric = implicitly[Numeric[N]]
@@ -68,26 +69,20 @@ case class CappedCostGroupsIterator[T](it: BufferedIterator[T]) {
   }
 }
 
-object CappedCostGroupsIterator extends Serializable {
+sealed trait ElementTooCostlyStrategy
 
-  sealed trait ElementTooCostlyStrategy
+case class ElementTooCostlyException[T, N: Numeric](elem: T, limit: N, cost: N)
+  extends Exception(
+    s"Element $elem's cost $cost exceeds limit $limit"
+  )
 
-  case class ElementTooCostlyException[T, N: Numeric](elem: T, limit: N, cost: N)
-    extends Exception(
-      s"Element $elem's cost $cost exceeds limit $limit"
-    )
+object ElementTooCostlyStrategy {
+  // Throw away elements that are too costly and start groups over on the other side of such elements
+  implicit case object Discard extends ElementTooCostlyStrategy
 
-  object ElementTooCostlyStrategy {
-    // Throw away elements that are too costly and start groups over on the other side of such elements
-    implicit case object Discard extends ElementTooCostlyStrategy
+  // Emit elements that exceed the cost limit in groups by themselves
+  implicit case object EmitAlone extends ElementTooCostlyStrategy
 
-    // Emit elements that exceed the cost limit in groups by themselves
-    implicit case object EmitAlone extends ElementTooCostlyStrategy
-
-    // Throw an exception when encountering elements that exceed the per-group cost limit
-    implicit case object Throw extends ElementTooCostlyStrategy
-  }
-
-  implicit def makeRunningCostSumIterator[T](it: Iterator[T]): CappedCostGroupsIterator[T] =
-    CappedCostGroupsIterator(it.buffered)
+  // Throw an exception when encountering elements that exceed the per-group cost limit
+  implicit case object Throw extends ElementTooCostlyStrategy
 }

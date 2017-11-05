@@ -24,7 +24,7 @@ class Scan[T](it: Iterator[T]) {
     if (includeCurrentValue)
       scanned.drop(1)
     else
-      scanned.dropRight(1)
+      scanned.dropright(1)
   }
 
   def scanR(implicit m: Monoid[T]): Iterator[T] = scanR(includeCurrentValue = false)
@@ -42,7 +42,7 @@ class Scan[T](it: Iterator[T]) {
         )
 
     if (includeCurrentValue)
-      scanned.dropRight(1)
+      scanned.dropright(1)
     else
       scanned.drop(1)
   }

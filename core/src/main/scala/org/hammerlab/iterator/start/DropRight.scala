@@ -6,7 +6,7 @@ import scala.collection.mutable
 
 @IteratorOps
 class DropRight[T](it: Iterator[T]) {
-  def dropRight(n: Int): Iterator[T] =
+  def dropright(n: Int): Iterator[T] =
     if (n == 0)
       it
     else if (n < 0)

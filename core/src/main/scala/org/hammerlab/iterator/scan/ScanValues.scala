@@ -98,6 +98,6 @@ class ScanValues[K, V](it: Iterator[(K, V)]) {
           k →
             combine(v, u)
       }
-      .dropRight(1)
+      .dropright(1)
   }
 }

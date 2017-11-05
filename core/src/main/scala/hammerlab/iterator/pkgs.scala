@@ -19,7 +19,8 @@ object end extends end
 
 import iterator.group._
 trait group
-  extends GroupRuns
+  extends CappedCost
+     with GroupRuns
      with RunLength
      with RunLengthReencode
      with Split

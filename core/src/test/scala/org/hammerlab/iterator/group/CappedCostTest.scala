@@ -1,10 +1,9 @@
-package org.hammerlab.iterator
+package org.hammerlab.iterator.group
 
-import org.hammerlab.iterator.CappedCostGroupsIterator._
+import hammerlab.iterator._
 import org.hammerlab.test.Suite
-import org.hammerlab.iterator.CappedCostGroupsIterator.ElementTooCostlyStrategy
 
-trait CappedCostGroupsIteratorTest
+trait CappedCostTest
   extends Suite {
 
   def check(it: Seq[Int],
@@ -28,7 +27,7 @@ trait CappedCostGroupsIteratorTest
 }
 
 class DiscardElementTooCostlyTest
-  extends CappedCostGroupsIteratorTest {
+  extends CappedCostTest {
 
   import ElementTooCostlyStrategy.Discard
 
@@ -88,7 +87,7 @@ class DiscardElementTooCostlyTest
 }
 
 class EmitAloneElementTooCostlyTest
-  extends CappedCostGroupsIteratorTest {
+  extends CappedCostTest {
 
   import ElementTooCostlyStrategy.EmitAlone
 
@@ -126,7 +125,7 @@ class EmitAloneElementTooCostlyTest
 }
 
 class ThrowOnTooCostlyElementTest
-  extends CappedCostGroupsIteratorTest {
+  extends CappedCostTest {
   import ElementTooCostlyStrategy.Throw
 
   test("empty") {
