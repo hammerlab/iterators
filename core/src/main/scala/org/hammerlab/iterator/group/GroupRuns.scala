@@ -1,7 +1,7 @@
 package org.hammerlab.iterator.group
 
 import hammerlab.iterator.macros.IteratorOps
-import org.hammerlab.iterator.SimpleIterator
+import org.hammerlab.iterator.util.SimpleIterator
 
 /**
  * Given an iterator and a predicate function, emit iterators containing maximal runs of sequential elements that all

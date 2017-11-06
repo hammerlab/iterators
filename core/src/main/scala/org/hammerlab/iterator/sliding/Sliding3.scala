@@ -2,7 +2,7 @@ package org.hammerlab.iterator.sliding
 
 import hammerlab.iterator._
 import hammerlab.iterator.macros.IteratorOps
-import org.hammerlab.iterator.SimpleIterator
+import org.hammerlab.iterator.util.SimpleIterator
 
 /**
  * Given an [[Iterator[T]]], emit each element sandwiched between its preceding and succeeding elements.

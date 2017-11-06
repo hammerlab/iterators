@@ -1,6 +1,7 @@
 package org.hammerlab.iterator.level
 
 import hammerlab.iterator._
+import org.hammerlab.iterator.util.SimpleIterator
 
 /**
  * "Flatmap" over an [[Iterator]] of [[Iterator]]s, exposing the inner [[Iterator]] along the way

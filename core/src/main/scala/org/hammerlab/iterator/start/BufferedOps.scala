@@ -1,7 +1,7 @@
 package org.hammerlab.iterator.start
 
 import hammerlab.iterator.macros.IteratorOps
-import org.hammerlab.iterator.SimpleIterator
+import org.hammerlab.iterator.util.SimpleIterator
 
 import scala.collection.mutable
 import scala.reflect.ClassTag

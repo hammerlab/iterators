@@ -3,7 +3,7 @@ package org.hammerlab.iterator.scan
 import cats.Monoid
 import hammerlab.iterator._
 import hammerlab.iterator.macros.IteratorOps
-import org.hammerlab.iterator.util.MapValuesWithStateIterator
+import org.hammerlab.iterator.util.{ MapValuesWithStateIterator, SimpleIterator }
 
 @IteratorOps
 class ScanValues[K, V](it: Iterator[(K, V)]) {

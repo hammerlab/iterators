@@ -1,7 +1,7 @@
 package org.hammerlab.iterator.sliding
 
 import hammerlab.iterator.macros.IteratorOps
-import org.hammerlab.iterator.SimpleIterator
+import org.hammerlab.iterator.util.SimpleIterator
 
 @IteratorOps
 class Sliding2[T](it: BufferedIterator[T]) {

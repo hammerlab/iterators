@@ -1,7 +1,7 @@
 package org.hammerlab.iterator.sliding
 
 import hammerlab.iterator.macros.IteratorOps
-import org.hammerlab.iterator.SimpleIterator
+import org.hammerlab.iterator.util.SimpleIterator
 
 import scala.collection.mutable.ArrayBuffer
 

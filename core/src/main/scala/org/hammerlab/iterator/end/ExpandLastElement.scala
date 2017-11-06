@@ -1,7 +1,7 @@
 package org.hammerlab.iterator.end
 
 import hammerlab.iterator.macros.IteratorOps
-import org.hammerlab.iterator.SimpleIterator
+import org.hammerlab.iterator.util.SimpleIterator
 
 @IteratorOps
 class ExpandLastElement[T](it: Iterator[T]) {

@@ -12,7 +12,7 @@ lazy val core = project.settings(
   deps ++= Seq(
     cats,
     spire,
-    types % "1.0.0"
+    types % "1.0.1-SNAPSHOT"
   )
 ).dependsOn(macros)
 

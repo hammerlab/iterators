@@ -8,13 +8,15 @@ trait count
      with CountByKey
 object count extends count
 
-trait either extends iterator.EitherIterator
+import iterator.either.EitherIterator
+trait either extends EitherIterator
 object either extends either
 
 import iterator.end._
 trait end
   extends Finish
      with ExpandLastElement
+     with DropRight
 object end extends end
 
 import iterator.group._
@@ -30,6 +32,17 @@ import iterator.level._
 trait level extends Level
 object level extends level
 
+trait map extends iterator.map.MapValues
+object map extends map
+
+import iterator.ordered._
+trait ordered
+  extends EitherMerge
+     with LeftMerge
+     with OrMerge
+     with Merge
+object ordered extends ordered
+
 import iterator.range._
 trait range
   extends OverlappingRanges
@@ -38,7 +51,8 @@ trait range
 }
 object range extends range
 
-trait sample extends iterator.Sample
+import iterator.sample.Sample
+trait sample extends Sample
 object sample extends sample
 
 import iterator.scan._
@@ -47,7 +61,7 @@ trait scan
      with ScanValues
 object scan extends scan
 
-trait slice extends iterator.Slice
+trait slice extends Slice
 object slice extends slice
 
 import iterator.sliding._
@@ -57,18 +71,10 @@ trait sliding
      with Sliding
 object sliding extends sliding
 
-import iterator.sorted._
-trait sorted
-  extends EitherZip
-     with OrZip
-     with Zip
-object sorted extends sorted
-
 import iterator.start._
 trait start
   extends BufferedOps
      with DropEager
-     with DropRight
      with HeadOption
      with NextOption
      with TakeEager

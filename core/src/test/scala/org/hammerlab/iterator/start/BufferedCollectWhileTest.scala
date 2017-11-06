@@ -1,7 +1,7 @@
 package org.hammerlab.iterator.start
 
 import hammerlab.iterator.start._
-import org.hammerlab.iterator.EitherIteratorTest._
+import org.hammerlab.iterator.either.EitherIteratorTest._
 import org.hammerlab.test.Suite
 
 class BufferedCollectWhileTest
