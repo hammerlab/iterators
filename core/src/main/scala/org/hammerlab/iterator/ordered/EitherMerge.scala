@@ -8,25 +8,22 @@ import org.hammerlab.iterator.util.SimpleIterator
 class EitherMerge[T](l: BufferedIterator[T]) {
   def eitherMerge[U, V](other: Iterable[U])(
       implicit
-      tv: View[T, V],
-      uv: View[U, V],
-      ord: Ordering[V]
+      ctx: Context[T, U, V]
   ): SimpleIterator[Either[T, U]] =
     eitherMerge(other.iterator)
 
   def eitherMerge[U, V](other: Iterator[U])(
       implicit
-      tv: View[T, V],
-      uv: View[U, V],
-      ord: Ordering[V]
+      ctx: Context[T, U, V]
   ): SimpleIterator[Either[T, U]] = {
+    import ctx._
     val r = other.buffered
     val ≤ = ord.lteq _
     new SimpleIterator[Either[T, U]] {
       override protected def _advance: Option[Either[T, U]] =
         (l.headOption, r.headOption) match {
           case (Some(t), Some(u)) ⇒
-            if (≤(tv(t), uv(u))) {
+            if (≤(t, u)) {
               l.next
               Some(Left(t))
             } else {

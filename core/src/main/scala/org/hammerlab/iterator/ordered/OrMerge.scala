@@ -9,18 +9,15 @@ import org.hammerlab.iterator.util.SimpleIterator
 class OrMerge[T](l: BufferedIterator[T]) {
   def orMerge[U, V](other: Iterable[U])(
       implicit
-      tv: View[T, V],
-      uv: View[U, V],
-      ord: Ordering[V]
+      ctx: Context[T, U, V]
   ): SimpleIterator[Or[T, U]] =
     orMerge(other.iterator)
 
   def orMerge[U, V](other: Iterator[U])(
       implicit
-      tv: View[T, V],
-      uv: View[U, V],
-      ord: Ordering[V]
+      ctx: Context[T, U, V]
   ): SimpleIterator[Or[T, U]] = {
+    import ctx._
     val r = other.buffered
     new SimpleIterator[Or[T, U]] {
       override protected def _advance: Option[Or[T, U]] =

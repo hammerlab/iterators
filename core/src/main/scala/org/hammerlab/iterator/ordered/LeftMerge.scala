@@ -10,18 +10,15 @@ import hammerlab.iterator.macros.IteratorOps
 class LeftMerge[T](it: BufferedIterator[T]) {
   def leftMerge[U, V](other: Iterable[U])(
       implicit
-      tv: View[T, V],
-      uv: View[U, V],
-      ord: Ordering[V]
+      ctx: Context[T, U, V]
   ): Iterator[(T, Iterator[U])] =
     leftMerge(other.iterator)
 
   def leftMerge[U, V](other: Iterator[U])(
       implicit
-      tv: View[T, V],
-      uv: View[U, V],
-      ord: Ordering[V]
+      ctx: Context[T, U, V]
   ): Iterator[(T, Iterator[U])] = {
+    import ctx._
     val o = other.buffered
     val ≥ = ord.gteq _
     it.map {
