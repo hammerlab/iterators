@@ -149,23 +149,61 @@ it.cur
  
 ### [`ordered`](src/main/scala/org/hammerlab/iterator/ordered)
 
-Merge two ordered sequences using `Either`s to preserve provenance:
+A variety of merge operations are available for sequences that are mutually ordered (possibly with respect to some 3rd type that each of their elements can be converted to).
+
+#### `.eitherMerge`
+
+Merge two ordered sequences using `Either`s to preserve provenance (or handle the case that the sequences' elements are not the same type):
 
 ```scala
-Seq(1, 3, 4).eitherMerge(Seq(2, 5, 6))
-// Iterator(Left(1), Right(2), Left(3), Left(4), Right(5), Right(6))
+Seq(1, 3, 4).eitherMerge(Seq(2, 3, 5, 6))
+// Iterator(L(1), R(2), L(3), R(3), L(4), R(5), R(6))
 ```
+
+#### `.orMerge`
 
 Merge two ordered sequences using `Or`s:
 
 ```scala
-Seq(1, 3, 4).eitherMerge(Seq(2, 5, 6))
-// Iterator(Left(1), Right(2), Left(3), Left(4), Right(5), Right(6))
+Seq(1, 3, 4).orMerge(Seq(2, 3, 5, 6))
+// Iterator(L(1), R(2), Both(3, 3), L(4), R(5), R(6))
 ```
 
-### [`range`](src/main/scala/org/hammerlab/iterator/range): index-slicing, overlapping-range merging
+#### `.leftMerge`
 
-`sliceOpt`, given a `start` and `length`
+Collecting right-side elements for each left-side element:
+
+```scala
+Seq(1, 3, 4).leftMerge(Seq(2, 3, 5, 6))
+// Iterator((1,Iterator(2)), (3,Iterator(3)), (4,Iterator(5, 6)))
+```
+
+#### `.merge`
+
+```scala
+Seq(1, 3, 4).merge(Seq(2, 3, 5, 6))
+// Iterator(1, 2, 3, 3, 4, 5, 6)
+```
+
+#### Merging with a 3rd type
+
+Instances of the `View` type-class let merges use a type other than that of the elements being merged:
+
+```scala
+// Rank a (Symbol,Int) pair using its Int value
+implicit val view = ordered.View[(Symbol, Int), Int](_._2)
+
+Seq('a→1, 'b→3).merge('c→2)
+// Iterator('a→1, 'c→2, 'b→3)
+
+Seq('a → 1, 'b → 3).eitherMerge(2)
+// Iterator(L('a→1), R(2), L('b→3))
+```
+
+
+### [`range`](src/main/scala/org/hammerlab/iterator/range)
+
+`sliceOpt`, given a `start` and `length`:
 ```scala
 (0 to 9).sliceOpt(0,  5)
 // 0 to 4

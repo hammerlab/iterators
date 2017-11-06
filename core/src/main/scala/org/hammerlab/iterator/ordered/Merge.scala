@@ -8,16 +8,15 @@ import org.hammerlab.iterator.util.SimpleIterator
 class Merge[T](l: BufferedIterator[T]) {
   def merge[V](other: Iterable[T])(
       implicit
-      ord: Ordering[V],
-      tv: T ⇒ V
+      ctx: Context[T, T, V]
   ): SimpleIterator[T] =
     merge[V](other.iterator)
 
   def merge[V](other: Iterator[T])(
       implicit
-      ord: Ordering[V],
-      tv: T ⇒ V
+      ctx: Context[T, T, V]
   ): SimpleIterator[T] = {
+    import ctx.{ord, tv}
     val r = other.buffered
     val ≤ = ord.lteq _
     new SimpleIterator[T] {

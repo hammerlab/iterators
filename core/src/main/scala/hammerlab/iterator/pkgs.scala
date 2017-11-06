@@ -40,7 +40,10 @@ trait ordered
   extends EitherMerge
      with LeftMerge
      with OrMerge
-     with Merge
+     with Merge {
+  type View[-From, +To] = iterator.ordered.View[From, To]
+  val View = iterator.ordered.View
+}
 object ordered extends ordered
 
 import iterator.range._

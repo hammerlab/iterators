@@ -56,7 +56,6 @@ class SimpleTest
         1, 2, 3, 3, 4, 5, 6
       )
     )
-
   }
 
   val s1 = Seq('a → 1, 'b → 3, 'c → 4)
@@ -84,6 +83,18 @@ class SimpleTest
         'a → 1 → Seq(2),
         'b → 3 → Seq(3),
         'c → 4 → Seq(5, 6)
+      )
+    )
+
+    s1.merge(Seq('d → 2, 'e → 3, 'f → 5, 'g → 6)).toList should be(
+      List(
+        'a → 1,
+        'd → 2,
+        'b → 3,
+        'e → 3,
+        'c → 4,
+        'f → 5,
+        'g → 6
       )
     )
   }
