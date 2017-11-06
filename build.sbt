@@ -1,12 +1,10 @@
 name := "iterator"
 
-version := "2.0.0-SNAPSHOT"
-
 addScala212
 
 lazy val core = project.settings(
   name := "iterator",
-  version := "2.0.0-SNAPSHOT",
+  version := "2.0.0",
   scalameta,
   skipDoc,  // docs-JAR packaging crashes due to macro-expansions
   deps ++= Seq(
@@ -18,7 +16,7 @@ lazy val core = project.settings(
 
 lazy val macros = project.settings(
   name := "iterator-macros",
-  version := "1.0.0-SNAPSHOT",
+  version := "1.0.0",
   scalameta
 )
 
