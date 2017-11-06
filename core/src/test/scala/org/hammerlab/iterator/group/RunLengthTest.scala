@@ -73,7 +73,7 @@ class RunLengthTest extends Suite {
   {
     test("re-encode") {
       Iterator('a' → 2, 'a' → 1, 'b' → 3, 'a' → 4, 'c' → 1, 'c' → 1, 'c' → 2, 'a' → 1)
-        .reencode
+        .runLengthReencode
         .toList should be(
         List(
           'a' → 3,

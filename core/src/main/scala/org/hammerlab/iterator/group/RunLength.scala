@@ -33,7 +33,7 @@ class RunLength[K](it: BufferedIterator[K]) {
 
 @IteratorOps
 class RunLengthReencode[K, V](it: BufferedIterator[(K, V)]) {
-  def reencode(implicit ev: Integral[V]): Iterator[(K, V)] =
+  def runLengthReencode(implicit ev: Integral[V]): Iterator[(K, V)] =
     new Iterator[(K, V)] {
       override def hasNext: Boolean = it.hasNext
 
