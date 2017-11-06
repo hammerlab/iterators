@@ -27,7 +27,7 @@ Methods are defined in [`org.hammerlab.iterator`](core/src/main/scala/org/hammer
 
 by package:
 
-### [`count`](src/main/scala/org/hammerlab/iterator/count)
+### [`count`](core/src/main/scala/org/hammerlab/iterator/count)
 
 ```scala
 Array(1, 2, 1, 3).countElems
@@ -37,7 +37,7 @@ Iterator("a"→1, "b"→2, "a"→10, "c"→3).countByKey
 // Map("a"→11, "b"→2, "c"→3)
 ```
 
-### [`either`](src/main/scala/org/hammerlab/iterator/either)
+### [`either`](core/src/main/scala/org/hammerlab/iterator/either)
 
 ```scala
 def L[T](t: T) = Left(t)
@@ -61,7 +61,7 @@ Iterator(
 // List((1,bc), (2,""), (3,d))
 ```
 
-### [`end`](src/main/scala/org/hammerlab/iterator/end)
+### [`end`](core/src/main/scala/org/hammerlab/iterator/end)
 
 `.finish`: run a closure when the iterator is finished traversing:
 
@@ -87,7 +87,7 @@ Iterator(1 to 10: _*).dropright(4)
 // Iterator(1, 2, 3, 4, 5, 6)
 ```
 
-### [`group`](src/main/scala/org/hammerlab/iterator/group)
+### [`group`](core/src/main/scala/org/hammerlab/iterator/group)
 
 Group runs of elements that satisfy a predicate or equivalence relation:
 
@@ -110,7 +110,7 @@ Iterator(1 to 6: _*).cappedCostGroups(costFn = x⇒x, limit = 10)
 // Iterator(Iterator(1, 2, 3, 4), Iterator(5), Iterator(6))
 ```
 
-### [`level`](src/main/scala/org/hammerlab/iterator/level)
+### [`level`](core/src/main/scala/org/hammerlab/iterator/level)
 
 Flatten a nested iterator but retain access to a cursor into unflattened version:
 
@@ -147,7 +147,7 @@ it.cur
 // None
 ```
  
-### [`ordered`](src/main/scala/org/hammerlab/iterator/ordered)
+### [`ordered`](core/src/main/scala/org/hammerlab/iterator/ordered)
 
 A variety of merge operations are available for sequences that are mutually ordered (possibly with respect to some 3rd type that each of their elements can be converted to).
 
@@ -191,7 +191,7 @@ Instances of the `View` type-class let merges use a type other than that of the 
 
 ```scala
 // Rank a (Symbol,Int) pair using its Int value
-implicit val view = ordered.View[(Symbol, Int), Int](_._2)
+implicit val view = View[(Symbol, Int), Int](_._2)
 
 Seq('a→1, 'b→3).merge('c→2)
 // Iterator('a→1, 'c→2, 'b→3)
@@ -201,7 +201,7 @@ Seq('a → 1, 'b → 3).eitherMerge(2)
 ```
 
 
-### [`range`](src/main/scala/org/hammerlab/iterator/range)
+### [`range`](core/src/main/scala/org/hammerlab/iterator/range)
 
 `sliceOpt`, given a `start` and `length`:
 ```scala
@@ -218,7 +218,9 @@ Seq('a → 1, 'b → 3).eitherMerge(2)
 // 2 to 2
 ```
 
-### [`sample`](src/main/scala/org/hammerlab/iterator/sample): reservoir-sample
+Also, [`.joinOverlaps`](core/src/main/scala/org/hammerlab/iterator/range/OverlappingRanges.scala) left-merges sequences of [`Range`s](core/src/main/scala/org/hammerlab/iterator/range/Range.scala), sorted by start-coordinate, based on overlaps.
+
+### [`sample`](core/src/main/scala/org/hammerlab/iterator/sample): reservoir-sample
 
 Reservoir-sample:
 
@@ -227,7 +229,7 @@ Iterator(1 to 100: _*).sample(5)
 Array(15, 18, 55, 63, 98)
 ```
 
-### [`scan`](src/main/scala/org/hammerlab/iterator/scan)
+### [`scan`](core/src/main/scala/org/hammerlab/iterator/scan)
 
 - scanL, scanR
 - in terms of [`cats.Monoid`](https://typelevel.org/cats/typeclasses/monoid.html)
@@ -265,7 +267,7 @@ Seq('a'→1, 'b'→2, 'c'→3, 'd'→4).scanRightValuesInclusive
 // Iterator((a,10), (b,9), (c,7), (d,4))
 ```
 
-### [`sliding`](src/main/scala/org/hammerlab/iterator/sliding)
+### [`sliding`](core/src/main/scala/org/hammerlab/iterator/sliding)
 
 Windows of size 2, including an optional next or previous element:
 
@@ -300,11 +302,7 @@ Seq(1, 2, 3, 4, 5).slide(4)
 // Iterator(Seq(1, 2, 3, 4), Seq(2, 3, 4, 5), Seq(3, 4, 5), Seq(4, 5), Seq(5))
 ```
 
-### [`start`](src/main/scala/org/hammerlab/iterator/start)
+### [`start`](core/src/main/scala/org/hammerlab/iterator/start)
 
 - `take`s, `drop`s, `collect`s with deterministic semantics around the iterator that was operated on
 - `headOption`, `nextOption`
-
-```scala
-
-```

@@ -43,9 +43,9 @@ class OverlappingRangesTest
 
   test("stable right-side ordering") {
     check(
-      2 → 4,
-      5 → 7,
-      8
+       2 → 4,
+       5 → 7,
+       8
     )(
        0 →  2,
        1 →  3,

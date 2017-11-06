@@ -6,6 +6,10 @@ import org.hammerlab.iterator.util.SimpleIterator
 
 import scala.collection.mutable
 
+/**
+ * Given two sequences of [[Range]]s, each ordered by increasing [[Range.start start]], emit a tuple for each left-side
+ * range that contains all overlapping right-side ranges (as well as their original indices in the right-side sequence).
+ */
 @IteratorOps
 class OverlappingRanges[T](it: BufferedIterator[Range[T]]) {
 

@@ -49,10 +49,15 @@ object ordered extends ordered
 import iterator.range._
 trait range
   extends OverlappingRanges
-     with Contiguous {
+     with Contiguous
+object range extends range {
+  /**
+   * Leave these aliases out of the [[range]] trait above (which gets mixed into [[hammerlab.iterator]]) because we want
+   * to minimize chances of conflict with [[scala.Range]]
+   */
   type Range[T] = iterator.range.Range[T]
+  val Range = iterator.range.Range
 }
-object range extends range
 
 import iterator.sample.Sample
 trait sample extends Sample

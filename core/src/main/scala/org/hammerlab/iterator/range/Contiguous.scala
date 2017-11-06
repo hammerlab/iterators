@@ -9,7 +9,7 @@ import hammerlab.iterator.macros.IteratorOps
  * For example, given an input [2, 3, 1, 4, 5, 6, 5, 6, 8], this would emit [[Range]]s (in half-open notation): [2, 4),
  * [1, 2), [4, 7), [5, 7), [8, 9).
  *
- * See RangeAccruingIteratorTest for more examples.
+ * See `ContiguousTest` for more examples.
  */
 @IteratorOps
 class Contiguous(it: Iterator[Int]) {
