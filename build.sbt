@@ -6,7 +6,8 @@ lazy val core = project.settings(
   name := "iterator",
   version := "2.0.0",
   scalameta,
-  skipDoc,  // docs-JAR packaging crashes due to macro-expansions
+  // Skip compilation during doc-generation; otherwise it fails due to macro-annotations not being expanded
+  sources in (Compile, doc) := Seq(),
   deps ++= Seq(
     cats,
     spire,
