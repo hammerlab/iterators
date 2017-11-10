@@ -1,42 +1,35 @@
 package hammerlab.iterator
 
+import hammerlab.iterator.macros.obj
 import org.hammerlab.iterator
 
 import iterator.count._
-trait count
+@obj trait count
   extends CountElems
      with CountByKey
-object count extends count
 
-import iterator.either.EitherIterator
-trait either extends EitherIterator
-object either extends either
+@obj trait either extends iterator.either.EitherIterator
 
 import iterator.end._
-trait end
+@obj trait end
   extends Finish
      with ExpandLastElement
      with DropRight
-object end extends end
 
 import iterator.group._
-trait group
+@obj trait group
   extends CappedCost
      with GroupRuns
      with RunLength
      with RunLengthReencode
      with Split
-object group extends group
 
-import iterator.level._
-trait level extends Level
-object level extends level
+@obj trait level extends iterator.level.Level
 
-trait map extends iterator.map.MapValues
-object map extends map
+@obj trait map extends iterator.map.MapValues
 
 import iterator.ordered._
-trait ordered
+@obj trait ordered
   extends EitherMerge
      with LeftMerge
      with OrMerge
@@ -44,13 +37,12 @@ trait ordered
   type View[-From, +To] = iterator.ordered.View[From, To]
   val View = iterator.ordered.View
 }
-object ordered extends ordered
 
 import iterator.range._
-trait range
+@obj trait range
   extends OverlappingRanges
      with Contiguous
-object range extends range {
+object range {
   /**
    * Leave these aliases out of the [[range]] trait above (which gets mixed into [[hammerlab.iterator]]) because we want
    * to minimize chances of conflict with [[scala.Range]]
@@ -59,31 +51,25 @@ object range extends range {
   val Range = iterator.range.Range
 }
 
-import iterator.sample.Sample
-trait sample extends Sample
-object sample extends sample
+@obj trait sample extends iterator.sample.Sample
 
 import iterator.scan._
-trait scan
+@obj trait scan
   extends Scan
      with ScanValues
-object scan extends scan
 
-trait slice extends Slice
-object slice extends slice
+@obj trait slice extends Slice
 
 import iterator.sliding._
-trait sliding
+@obj trait sliding
   extends Sliding2
      with Sliding3
      with Sliding
-object sliding extends sliding
 
 import iterator.start._
-trait start
+@obj trait start
   extends BufferedOps
      with DropEager
      with HeadOption
      with NextOption
      with TakeEager
-object start extends start
