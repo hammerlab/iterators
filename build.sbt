@@ -1,7 +1,3 @@
-name := "iterator"
-
-addScala212
-
 lazy val core = project.settings(
   name := "iterator",
   version := "2.1.0-SNAPSHOT",
@@ -20,5 +16,7 @@ lazy val macros = project.settings(
   version := "1.1.0",
   scalameta
 )
+
+addScala212
 
 lazy val root = rootProject("iterators-root", core, macros)
