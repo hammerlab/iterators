@@ -3,7 +3,7 @@ lazy val core = project.settings(
   version := "2.1.0-SNAPSHOT",
   scalameta,
   // Skip compilation during doc-generation; otherwise it fails due to macro-annotations not being expanded
-  sources in (Compile, doc) := Seq(),
+  emptyDocJar,
   deps ++= Seq(
     cats,
     spire,
