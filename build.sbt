@@ -17,6 +17,4 @@ lazy val macros = project.settings(
   scalameta
 )
 
-addScala212
-
-lazy val root = rootProject("iterators", core, macros)
+lazy val iterators = rootProject("iterators", core, macros)
