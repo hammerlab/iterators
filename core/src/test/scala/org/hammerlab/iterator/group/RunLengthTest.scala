@@ -6,12 +6,12 @@ import org.hammerlab.test.Suite
 class RunLengthTest extends Suite {
 
   {
-    def check[T](elems: T*)(expected: (T, Int)*): Unit = {
-      elems.runLengthEncode().toSeq should be(expected)
+    def check[T: Cmp](elems: T*)(expected: (T, Int)*): Unit = {
+      elems.runLengthEncode.toSeq should be(expected)
     }
 
     test("empty") {
-      check()()
+      check[Int]()()
     }
 
     test("single") {
@@ -44,11 +44,11 @@ class RunLengthTest extends Suite {
   }
 
   {
-    val parityOrdering =
+    implicit val parityOrdering =
       Ordering.by[Int, Int](_ % 2)
 
     def check(elems: Int*)(expected: (Int, Int)*): Unit = {
-      elems.runLengthEncode(parityOrdering).toSeq should be(expected)
+      elems.runLengthEncode.toSeq should be(expected)
     }
 
     test("evens and odds") {
