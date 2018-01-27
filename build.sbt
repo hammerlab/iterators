@@ -1,4 +1,4 @@
-lazy val core = project.settings(
+lazy val core = crossProject.settings(
   name := "iterator",
   v"2.1.0",
   scalameta,
@@ -7,14 +7,22 @@ lazy val core = project.settings(
   dep(
     cats,
     spire,
-    types % "1.0.1"
+    types % "1.0.2".snapshot
   )
 ).dependsOn(macros)
+lazy val coreJS  = core.js
+lazy val coreJVM = core.jvm
 
-lazy val macros = project.settings(
+lazy val macros = crossProject.settings(
   name := "iterator-macros",
   r"1.1.0",
   scalameta
 )
+lazy val macrosJS  = macros.js
+lazy val macrosJVM = macros.jvm
 
-lazy val iterators = rootProject("iterators", core, macros)
+lazy val iterators = rootProject(
+  "iterators",
+  coreJS, coreJVM,
+  macrosJS, macrosJVM
+)
