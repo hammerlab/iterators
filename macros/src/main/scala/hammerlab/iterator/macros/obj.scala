@@ -27,6 +27,14 @@ class obj
             trait $name extends $template with ..$mixins { ..$body }
             object $objName extends $ctor with Serializable { ..$comp }
          """
+      case q"trait $name { ..$body }" ⇒
+        // Given an existing companion object, add mix-ins of the trait and Serializable
+        val objName = Term.Name(s"$name")
+        val ctor = Ctor.Ref.Name(s"$name")
+        q"""
+            trait $name { ..$body }
+            object $objName extends $ctor with Serializable {}
+         """
       case _ ⇒
         abort("Expected trait definition")
     }

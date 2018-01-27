@@ -23,6 +23,7 @@ import iterator.group._
      with RunLength
      with RunLengthReencode
      with Split
+     with Subsets
 
 @obj trait level extends iterator.level.Level
 
