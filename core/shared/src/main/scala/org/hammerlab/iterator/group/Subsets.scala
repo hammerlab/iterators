@@ -1,60 +1,47 @@
 package org.hammerlab.iterator.group
 
 import hammerlab.iterator.macros.obj
-import org.hammerlab.iterator.util.SimpleIterator
-
-import scala.annotation.tailrec
-import scala.collection.mutable
+import org.hammerlab.iterator.group.Subsets.makeSubsetOps
 
 class SubsetOps[T](val s: Seq[T]) extends AnyVal {
-  final def unorderedSubsetsWithReplacement(n: Int): Iterator[Seq[(T, Int)]] =
-    if (s.isEmpty || n == 0)
+  final def unorderedSubsetsWithReplacement(k: Int): Iterator[List[(T, Int)]] =
+    if (k == 0)
       Iterator(Nil)
     else
-      new SimpleIterator[Seq[(T, Int)]] {
-        var cur: mutable.Stack[(Int, Int)] = _
-        val ssize = s.size
-        override protected def _advance: Option[Seq[(T, Int)]] = adv()
-
-        @tailrec
-        private def adv(numToPlace: Int = 0): Option[Seq[(T, Int)]] = {
-          if (cur == null) {
-            cur = mutable.Stack(0 → n)
-            Some(Vector(s.head → n))
-          } else {
-            val (last, count) = cur.pop()
-            if (last + 1 == ssize)
-              if (cur.isEmpty)
-                None
-              else
-                adv(count)
-            else {
-              if (count > 1) {
-                cur.push(
-                  (
-                    last,
-                    count - 1
-                  )
-                )
-              }
-              cur.push(
-                (
-                  last + 1,
-                  numToPlace + 1
-                )
-              )
-              Some(
-                cur.foldLeft[List[(T, Int)]](Nil) {
-                  case (l, (idx, count)) ⇒
-                    (s(idx), count) :: l
-                }
-              )
-            }
-          }
-        }
+      s match {
+        case Seq(e) ⇒ Iterator(List(e → k))
+        case Seq(head, tail @ _*) ⇒
+          (
+            for {
+              n ← (k to 1 by -1).iterator
+              subset ← tail.unorderedSubsetsWithReplacement(k - n)
+            } yield
+              (head, n) :: subset
+          ) ++
+          tail.unorderedSubsetsWithReplacement(k)
+        case _ ⇒ Iterator()
       }
 
-  final def orderedSubsetsWithReplacement(n: Int): Iterator[Seq[T]] =
+  /**
+   * Like [[scala.collection.SeqLike.combinations]], but doesn't dedupe elements; returned iterator has size nCk, where
+   * `n` is the size of the input sequence ([[s]]) and `k` is the parameter to this function
+   */
+  def unorderedSubsets(k: Int): Iterator[List[T]] =
+    if (k == 0)
+      Iterator(Nil)
+    else if (k > s.size)
+      Iterator()
+    else {
+      val (head, tail) = (s.head, s.tail)
+      tail
+        .unorderedSubsets(k - 1)
+        .map {
+          subset ⇒ head :: subset
+        } ++
+      tail.unorderedSubsets(k)
+    }
+
+  final def orderedSubsetsWithReplacement(n: Int): Iterator[List[T]] =
     if (s.isEmpty || n == 0)
       Iterator(Nil)
     else
@@ -66,5 +53,5 @@ class SubsetOps[T](val s: Seq[T]) extends AnyVal {
 }
 
 @obj trait Subsets {
-  implicit def make[T](s: Seq[T]): SubsetOps[T] = new SubsetOps(s)
+  implicit def makeSubsetOps[T](s: Seq[T]): SubsetOps[T] = new SubsetOps(s)
 }

@@ -6,105 +6,76 @@ import org.hammerlab.Suite
 class UnorderedSubsetsTest
   extends Suite {
 
-  def binomial(n: Int, k: Int): Long =
-    if (k > n - k)
-      binomial(n, n - k)
-    else {
-      var b = 1
-      var i = 1
-      var m = n
-      while (i <= k) {
-        b = b * m / i
-        i += 1
-        m -= 1
-      }
-      b
-    }
-
-  def check[T](elems: T*)(expecteds: Seq[Seq[(T, Int)]]*): Unit =
+  def check[T](elems: T*)(expecteds: Seq[Seq[T]]*): Unit =
     for {
-      (expected, n) ← expecteds.zipWithIndex
+      (expected, k) ← expecteds.zipWithIndex
     } {
-      withClue(s"n: $n: ") {
+      withClue(s"k: $k: ") {
         val actual =
           elems
-            .unorderedSubsetsWithReplacement(n)
+            .unorderedSubsets(k)
             .toList
 
+        actual should be(expected)
         actual.size should be(
-          binomial(
-            elems.size + n - 1,
-            n
+          Binomial(
+            elems.size,
+            k
           )
         )
-        actual should be(expected)
       }
     }
 
   test("empty") {
-    check()(Seq(Nil), Seq(Nil), Seq(Nil), Seq(Nil))
+    check()(Seq(Nil), Nil, Nil, Nil)
   }
 
-  test("singleton") {
+  test("1 element") {
     check('a)(
       Seq(Nil),
-      Seq(Seq('a → 1)),
-      Seq(Seq('a → 2)),
-      Seq(Seq('a → 3))
+      Seq(Seq('a)),
+      Nil
     )
   }
 
-  test("2 elems") {
+  test("2 elements") {
     check('a, 'b)(
       Seq(Nil),
-      Seq(Seq('a → 1), Seq(        'b → 1)),
-      Seq(Seq('a → 2), Seq('a → 1, 'b → 1), Seq(        'b → 2)),
-      Seq(Seq('a → 3), Seq('a → 2, 'b → 1), Seq('a → 1, 'b → 2), Seq(        'b → 3)),
-      Seq(Seq('a → 4), Seq('a → 3, 'b → 1), Seq('a → 2, 'b → 2), Seq('a → 1, 'b → 3), Seq('b → 4))
+      Seq(Seq('a), Seq('b)),
+      Seq(Seq('a, 'b)),
+      Nil
     )
   }
 
-  test("3 elems") {
+  test("3 elements") {
     check('a, 'b, 'c)(
       Seq(Nil),
-      Seq(Seq('a → 1), Seq('b → 1), Seq('c → 1)),
-      Seq(
-        Seq('a → 2),
-        Seq('a → 1, 'b → 1), Seq('a → 1, 'c → 1),
-        Seq('b → 2), Seq('b → 1, 'c → 1), Seq('c → 2)),
-      Seq(
-        Seq('a → 3),
-        Seq('a → 2, 'b → 1), Seq('a → 2, 'c → 1),
-        Seq('a → 1, 'b → 2), Seq('a → 1, 'b → 1, 'c → 1), Seq('a → 1, 'c → 2),
-        Seq(        'b → 3), Seq('b → 2, 'c → 1), Seq('b → 1, 'c → 2),
-        Seq('c → 3)
-      ),
-      Seq(
-        Seq('a → 4),
-        Seq('a → 3, 'b → 1), Seq('a → 3, 'c → 1),
-        Seq('a → 2, 'b → 2), Seq('a → 2, 'b → 1, 'c → 1), Seq('a → 2, 'c → 2),
-        Seq('a → 1, 'b → 3), Seq('a → 1, 'b → 2, 'c → 1), Seq('a → 1, 'b → 1, 'c → 2), Seq('a → 1, 'c → 3),
-        Seq('b → 4), Seq('b → 3, 'c → 1), Seq('b → 2, 'c → 2), Seq('b → 1, 'c → 3),
-        Seq('c → 4)
-      )
+      Seq(Seq('a), Seq('b), Seq('c)),
+      Seq(Seq('a, 'b), Seq('a, 'c), Seq('b, 'c)),
+      Seq(Seq('a, 'b, 'c)),
+      Nil
     )
   }
 
-  test("larger sizes") {
-    for {
-      n ← 1 to 10
-      k ← 0 to 10
-    } {
-      withClue(s"($n,$k): ") {
-        val list = (1 to n).unorderedSubsetsWithReplacement(k).toList
-        val expected =
-          binomial(
-            n + k - 1,
-            k
-          )
-        list.size should be(expected)
-        list.toSet.size should be(expected)
-      }
-    }
+  test("4 elements") {
+    check('a, 'b, 'c, 'd)(
+      Seq(Nil),
+      Seq(Seq('a), Seq('b), Seq('c), Seq('d)),
+      Seq(Seq('a, 'b), Seq('a, 'c), Seq('a, 'd), Seq('b, 'c), Seq('b, 'd), Seq('c, 'd)),
+      Seq(Seq('a, 'b, 'c), Seq('a, 'b, 'd), Seq('a, 'c, 'd), Seq('b, 'c, 'd)),
+      Seq(Seq('a, 'b, 'c, 'd)),
+      Nil
+    )
+  }
+
+  test("2 and 2") {
+    check('a, 'a, 'b, 'b)(
+      Seq(Nil),
+      Seq(Seq('a), Seq('a), Seq('b), Seq('b)),
+      Seq(Seq('a, 'a), Seq('a, 'b), Seq('a, 'b), Seq('a, 'b), Seq('a, 'b), Seq('b, 'b)),
+      Seq(Seq('a, 'a, 'b), Seq('a, 'a, 'b), Seq('a, 'b, 'b), Seq('a, 'b, 'b)),
+      Seq(Seq('a, 'a, 'b, 'b)),
+      Nil
+    )
   }
 }

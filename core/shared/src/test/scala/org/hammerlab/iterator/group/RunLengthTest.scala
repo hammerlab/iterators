@@ -48,6 +48,12 @@ class RunLengthTest extends Suite {
       Ordering.by[Int, Int](_ % 2)
 
     def check(elems: Int*)(expected: (Int, Int)*): Unit = {
+      /**
+       * Take out the inherited [[cats.Eq Eq[Int] ]] the instance by making it ambiguous
+       *
+       * `runLengthEncode` will take a [[cats.Eq Eq]] if present, and falls back to an [[Ordering]]
+       */
+      implicit val intEq = intOrder
       elems.runLengthEncode.toSeq should be(expected)
     }
 

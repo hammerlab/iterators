@@ -7,6 +7,7 @@ import iterator.count._
 @obj trait count
   extends CountElems
      with CountByKey
+     with UnorderedIntegerPartitions
 
 @obj trait either extends iterator.either.EitherIterator
 

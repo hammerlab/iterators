@@ -9,13 +9,15 @@ lazy val core = crossProject.settings(
     spire,
     types % "1.0.2".snapshot
   )
-).dependsOn(macros)
+).dependsOn(
+  macros
+)
 lazy val coreJS  = core.js
 lazy val coreJVM = core.jvm
 
 lazy val macros = crossProject.settings(
   name := "iterator-macros",
-  r"1.1.0",
+  v"1.2.0",
   scalameta
 )
 lazy val macrosJS  = macros.js
