@@ -1,8 +1,10 @@
 package org.hammerlab.iterator.group
 
 import hammerlab.iterator.group._
+import hammerlab.math.binomial
 import org.hammerlab.Suite
-import math.max
+
+import scala.math.max
 
 class UnorderedSubsetsWithReplacementTest
   extends Suite {
@@ -18,7 +20,7 @@ class UnorderedSubsetsWithReplacementTest
             .toList
 
         actual.size should be(
-          Binomial(
+          binomial(
             max(0, elems.size + k - 1),
             k
           )
@@ -84,7 +86,7 @@ class UnorderedSubsetsWithReplacementTest
       withClue(s"($n,$k): ") {
         val list = (1 to n).unorderedSubsetsWithReplacement(k).toList
         val expected =
-          Binomial(
+          binomial(
             n + k - 1,
             k
           )

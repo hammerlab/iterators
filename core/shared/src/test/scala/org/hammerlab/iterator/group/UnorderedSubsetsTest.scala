@@ -1,6 +1,7 @@
 package org.hammerlab.iterator.group
 
 import hammerlab.iterator.group._
+import hammerlab.math.binomial
 import org.hammerlab.Suite
 
 class UnorderedSubsetsTest
@@ -18,7 +19,7 @@ class UnorderedSubsetsTest
 
         actual should be(expected)
         actual.size should be(
-          Binomial(
+          binomial(
             elems.size,
             k
           )
