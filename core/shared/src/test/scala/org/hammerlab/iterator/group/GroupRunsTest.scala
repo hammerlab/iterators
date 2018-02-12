@@ -7,23 +7,23 @@ class GroupRunsPredicateTest extends Suite {
 
   def check(ints: Int*)(strs: String*): Unit =
     ints
-      .groupRuns((_: Int) % 2 == 0)
+      .groupRunsFn(_ % 2 == _ % 2)
       .map(_.mkString(","))
       .toList should be(strs)
 
-  test("end with run") {
+  test("end with a run") {
     check(
-      1, 3, 2, 5, 4, 6, 8
+      1, 2, 5, 4, 6, 8
     )(
-      "1", "3", "2", "5", "4,6,8"
+      "1", "2", "5", "4,6,8"
     )
   }
 
-  test("start with run") {
+  test("start and end with a run") {
     check(
       2, 4, 6, 8, 1, 10, 3, 5, 7
     )(
-      "2,4,6,8", "1", "10", "3", "5", "7"
+      "2,4,6,8", "1", "10", "3,5,7"
     )
   }
 
@@ -41,30 +41,27 @@ class GroupRunsPredicateTest extends Suite {
 
   test("no runs") {
     check(
-      1, 3, 5, 7
+      1, 2, 3, 4
     )(
-      "1", "3", "5", "7"
+      "1", "2", "3", "4"
     )
   }
 
-  test("true singleton") {
+  test("singleton") {
     check(2)("2")
-  }
-
-  test("false singleton") {
-    check(3)("3")
   }
 }
 
-class GroupRunsTest extends Suite {
+class GroupRunsTest
+  extends Suite {
 
-  implicit val ord = Ordering.by[(Int, Int), Int](_._1)
-
-  def check(tuples: (Int, Int)*)(strs: String*): Unit =
+  def check(tuples: (Int, Int)*)(strs: String*): Unit = {
+    implicit val intOrder = Ordering.by[(Int, Int), Int](_._1)
     tuples
       .groupRuns
       .map(_.map(t ⇒ s"${t._1},${t._2}").mkString(" "))
       .toList should be(strs.toList)
+  }
 
   test("empty") {
     check()()

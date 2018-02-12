@@ -1,9 +1,11 @@
 package org.hammerlab.iterator.group
 
+import cats.Eq
 import hammerlab.iterator.group._
 import org.hammerlab.Suite
 
-class RunLengthTest extends Suite {
+class RunLengthTest
+  extends Suite {
 
   {
     def check[T: Cmp](elems: T*)(expected: (T, Int)*): Unit = {
@@ -43,37 +45,76 @@ class RunLengthTest extends Suite {
     }
   }
 
-  {
-    implicit val parityOrdering =
-      Ordering.by[Int, Int](_ % 2)
+  val parityInts =
+    Seq(
+      1, 5, 3, 7,
+      2,
+      5, 5,
+      4, 6, 8,
+      1,
+      2
+    )
 
-    def check(elems: Int*)(expected: (Int, Int)*): Unit = {
-      /**
-       * Take out the inherited [[cats.Eq Eq[Int] ]] the instance by making it ambiguous
-       *
-       * `runLengthEncode` will take a [[cats.Eq Eq]] if present, and falls back to an [[Ordering]]
-       */
-      implicit val intEq = intOrder
-      elems.runLengthEncode.toSeq should be(expected)
-    }
+  val foldedLeft =
+    Seq(
+      1 → 4,
+      2 → 1,
+      5 → 2,
+      4 → 3,
+      1 → 1,
+      2 → 1
+    )
+
+  val foldedRight =
+    Seq(
+      7 → 4,
+      2 → 1,
+      5 → 2,
+      8 → 3,
+      1 → 1,
+      2 → 1
+    )
+
+  {
 
     test("evens and odds") {
-      check(
-        1, 5, 3, 7,
-        2,
-        5, 5,
-        4, 6, 8,
-        1,
-        2
-      )(
-        1 → 4,
-        2 → 1,
-        5 → 2,
-        4 → 3,
-        1 → 1,
-        2 → 1
-      )
+      {
+        /** Name overrides [[Suite.intOrder]] which would be used by default in this [[Suite]] instance */
+        implicit val intOrder =
+          new Eq[Int] {
+            override def eqv(x: Int, y: Int): Boolean = x % 2 == y % 2
+          }
+
+        parityInts.runLengthEncode.toSeq should be(foldedLeft)
+      }
+
+      {
+        /** Name overrides [[Suite.intOrder]] which would be used by default in this [[Suite]] instance */
+        implicit val intOrder = Ordering.by[Int, Int](_ % 2)
+        parityInts.runLengthEncode.toSeq should be(foldedLeft)
+      }
     }
+  }
+
+  test("partial function") {
+    parityInts
+      .runLengthPartial {
+        case (l, r) if l % 2 == r % 2 ⇒ r
+      }
+      .toList should be(
+        foldedRight
+      )
+  }
+
+  test("total function") {
+    parityInts
+      .runLengthFunction {
+        case (l, r) if l % 2 == r % 2 ⇒ Some(r)
+        case _ ⇒ None
+      }
+      .toList should be(
+        foldedRight
+      )
   }
 
   {

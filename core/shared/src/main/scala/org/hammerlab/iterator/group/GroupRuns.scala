@@ -1,5 +1,6 @@
 package org.hammerlab.iterator.group
 
+import hammerlab.iterator._
 import hammerlab.iterator.macros.IteratorOps
 import org.hammerlab.iterator.util.SimpleIterator
 
@@ -15,26 +16,20 @@ import org.hammerlab.iterator.util.SimpleIterator
 @IteratorOps
 class GroupRuns[T](it: BufferedIterator[T]) {
 
-  def groupRuns(pred: T ⇒ Boolean): Iterator[Iterator[T]] =
+  def groupRunsFn(pred: (T, T) ⇒ Boolean): Iterator[Iterator[T]] =
     new Iterator[Iterator[T]] {
-
       override def hasNext: Boolean = it.hasNext
-
       override def next(): Iterator[T] = {
-        if (!pred(it.head))
-          Iterator(it.next())
-        else
-          new SimpleIterator[T] {
-            override protected def _advance: Option[T] =
-              if (it.hasNext && pred(it.head))
-                Some(it.next())
-              else
-                None
+        it
+          .sliding2Prev
+          .takewhile {
+            case (prevOpt, cur) ⇒ !prevOpt.exists(!pred(_, cur))
           }
+          .map(_._2)
       }
     }
 
-  def groupRuns(implicit ord: Ordering[T]): Iterator[Iterator[T]] = {
+  def groupRuns(implicit cmp: Cmp[T]): Iterator[Iterator[T]] = {
     new Iterator[Iterator[T]] {
       var prevOpt: Option[T] = None
       override def hasNext: Boolean = it.hasNext
@@ -43,7 +38,7 @@ class GroupRuns[T](it: BufferedIterator[T]) {
         Iterator(n) ++
           new SimpleIterator[T] {
             override protected def _advance: Option[T] =
-              if (it.hasNext && ord.compare(n, it.head) == 0)
+              if (it.hasNext && cmp(n, it.head))
                 Some(it.next)
               else
                 None

@@ -1,23 +1,8 @@
 package org.hammerlab.iterator.group
 
-import cats.Eq
 import hammerlab.iterator.macros.IteratorOps
 import spire.implicits._
 import spire.math.Integral
-
-trait Cmp[T] {
-  def apply(l: T, r: T): Boolean
-}
-trait LowPriCmp {
-  def apply[T](fn: (T, T) ⇒ Boolean): Cmp[T] =
-    new Cmp[T] {
-      @inline override def apply(l: T, r: T): Boolean = fn(l, r)
-    }
-  implicit def fromOrd[T](implicit o: Ordering[T]): Cmp[T] = Cmp(o.equiv)
-}
-object Cmp extends LowPriCmp {
-  implicit def fromEq[T](implicit e: Eq[T]): Cmp[T] = Cmp(e.eqv)
-}
 
 /**
  * Run-length encode an input iterator, replacing contiguous runs of identical elements with pairs consisting of the
@@ -27,16 +12,37 @@ object Cmp extends LowPriCmp {
  */
 @IteratorOps
 class RunLength[K](it: BufferedIterator[K]) {
+  /**
+   * Augment elements with an [[Int]] value representing the number of succeeding elements they are equivalent to (as
+   * dictated by an implicit [[cats.Eq]] (if present; falls back to [[Ordering]]))
+   */
   def runLengthEncode(implicit cmp: Cmp[K]): Iterator[(K, Int)] =
-    runLengthEncode(
-      ((cur: K), (next: K)) ⇒
-        if (cmp(cur, next))
-          Some(cur)
+    runLengthPartial {
+      case (cur, next)
+        if (cmp(cur, next)) ⇒
+        cur
+    }
+
+  /**
+   * Fold succeeding runs of consecutive elements according to the provided partial-function.
+   *
+   * Anywhere `pf` is defined, the two adjacent input elements will be replaced with its value.
+   */
+  def runLengthPartial(pf: PartialFunction[(K, K), K]): Iterator[(K, Int)] =
+    runLengthFunction(
+      (l, r) ⇒
+        if (pf.isDefinedAt((l, r)))
+          Some(pf.apply((l, r)))
         else
           None
     )
 
-  def runLengthEncode(cmpFn: (K, K) ⇒ Option[K]): Iterator[(K, Int)] =
+  /**
+   * Fold succeeding runs of consecutive elements according to the provided function.
+   *
+   * Anywhere it returns [[Some]], the two adjacent input elements will be replaced with the returned value.
+   */
+  def runLengthFunction(cmpFn: (K, K) ⇒ Option[K]): Iterator[(K, Int)] =
     new Iterator[(K, Int)] {
       override def hasNext: Boolean = it.hasNext
       override def next(): (K, Int) = {

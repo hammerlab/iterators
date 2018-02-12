@@ -6,14 +6,14 @@ import org.hammerlab.iterator.util.SimpleIterator
 @IteratorOps
 class Sliding2[T](it: BufferedIterator[T]) {
   def sliding2Prev: Iterator[(Option[T], T)] =
-    new Iterator[(Option[T], T)] {
+    new BufferedIterator[(Option[T], T)] {
       var prevOpt: Option[T] = None
-      override def hasNext: Boolean = it.hasNext
-      override def next(): (Option[T], T) = {
-        val cur = it.next()
-        val ret = (prevOpt, cur)
-        prevOpt = Some(cur)
-        ret
+      def hasNext: Boolean = it.hasNext
+      def head: (Option[T], T) = (prevOpt, it.head)
+      def next(): (Option[T], T) = {
+        val r = (prevOpt, it.next())
+        prevOpt = Some(r._2)
+        r
       }
     }
 
