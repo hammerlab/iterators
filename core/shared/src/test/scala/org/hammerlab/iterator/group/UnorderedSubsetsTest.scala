@@ -1,7 +1,7 @@
 package org.hammerlab.iterator.group
 
 import hammerlab.iterator.group._
-import hammerlab.math.binomial
+import hammerlab.math.utils._
 import org.hammerlab.Suite
 
 class UnorderedSubsetsTest

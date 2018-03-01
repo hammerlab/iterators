@@ -4,7 +4,6 @@ import hammerlab.iterator.ordered._
 import hammerlab.or._
 import org.hammerlab.iterator.ordered
 import org.hammerlab.iterator.ordered.ConvertToInt
-import org.hammerlab.test.matchers.seqs.SeqMatcher.seqMatch
 
 abstract class Suite
   extends ordered.Suite
