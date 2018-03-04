@@ -1,24 +1,33 @@
-name := "iterator"
 
-addScala212
-
-lazy val core = project.settings(
+lazy val core = crossProject.settings(
   name := "iterator",
-  version := "2.1.0-SNAPSHOT",
-  scalameta,
+  v"2.1.0",
   // Skip compilation during doc-generation; otherwise it fails due to macro-annotations not being expanded
-  sources in (Compile, doc) := Seq(),
-  deps ++= Seq(
-    cats,
-    spire,
-    types % "1.0.1"
+  emptyDocJar,
+  dep(
+          cats,
+    math.utils % "2.2.0",
+         spire,
+         types % "1.1.0"
   )
-).dependsOn(macros)
-
-lazy val macros = project.settings(
-  name := "iterator-macros",
-  version := "1.1.0",
-  scalameta
+).dependsOn(
+  macros
 )
+lazy val coreJS  = core.js
+lazy val coreJVM = core.jvm
 
-lazy val root = rootProject("iterators-root", core, macros)
+lazy val macros = crossProject.settings(
+  group("org.hammerlab.macros"),
+  name := "iterators",
+  v"1.0.0"
+)
+lazy val macrosJS  = macros.js
+lazy val macrosJVM = macros.jvm
+
+default(scalameta)
+
+lazy val iterators = rootProject(
+  "iterators",
+    coreJS,   coreJVM,
+  macrosJS, macrosJVM
+)
