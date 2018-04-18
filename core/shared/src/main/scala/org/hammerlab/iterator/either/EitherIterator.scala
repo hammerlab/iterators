@@ -1,6 +1,6 @@
 package org.hammerlab.iterator.either
 
-import hammerlab.iterator._
+import hammerlab.iterator.start._
 import hammerlab.iterator.macros.IteratorOps
 import org.hammerlab.iterator.util.SimpleIterator
 

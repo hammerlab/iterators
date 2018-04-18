@@ -2,8 +2,9 @@ package hammerlab.iterator
 
 import hammerlab.iterator.macros.obj
 import org.hammerlab.iterator
-
 import iterator.count._
+import org.hammerlab.iterator.util
+
 @obj trait count
   extends CountElems
      with CountByKey
@@ -75,3 +76,21 @@ import iterator.start._
      with HeadOption
      with NextOption
      with TakeEager
+
+@obj
+trait all
+  extends count
+     with end
+     with either
+     with group
+     with level
+     with map
+     with ordered
+     with range
+     with sample
+     with scan
+     with slice
+     with sliding
+     with start {
+  type SimpleIterator[+T] = util.SimpleIterator[T]
+}
