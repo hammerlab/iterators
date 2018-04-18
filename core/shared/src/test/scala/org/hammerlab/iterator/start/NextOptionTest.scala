@@ -1,7 +1,7 @@
 package org.hammerlab.iterator.start
 
 import hammerlab.iterator._
-import org.hammerlab.Suite
+import hammerlab.Suite
 
 class NextOptionTest extends Suite {
   test("empty") {
