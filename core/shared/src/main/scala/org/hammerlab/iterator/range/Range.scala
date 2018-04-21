@@ -18,6 +18,8 @@ object Range {
   def apply[T](start: T, end: T): Range[T] = Range(start, Some(end))
   def apply[T](start: T): Range[T] = Range(start, None)
 
+  implicit def fromPair[T](t: (T, T)): Range[T] = Range(t._1, t._2)
+
   implicit def endOptOrdering[T](implicit ord: Ordering[T]): Ordering[Option[T]] =
     new Ordering[Option[T]] {
       override def compare(x: Option[T], y: Option[T]): Int =
