@@ -6,14 +6,15 @@ import org.hammerlab.Suite
 class CountElemsTest
   extends Suite {
   test("empty") {
-    Iterator().countElems should be(Map())
+    ==(Iterator().countElems, Map())
   }
 
   test("one") {
-    Iterator(
-      "a"
-    )
-    .countElems should be(
+    ==(
+      Iterator(
+        "a"
+      )
+      .countElems,
       Map(
         "a" → 1
       )
@@ -21,11 +22,12 @@ class CountElemsTest
   }
 
   test("two") {
-    Iterator(
-      "a",
-      "b"
-    )
-    .countElems should be(
+    ==(
+      Iterator(
+        "a",
+        "b"
+      )
+      .countElems,
       Map(
         "a" → 1,
         "b" → 1
@@ -34,16 +36,17 @@ class CountElemsTest
   }
 
   test("many") {
-    Iterator(
-      "a",
-      "b",
-      "a",
-      "a",
-      "c",
-      "b",
-      "a"
-    )
-    .countElems should be(
+    ==(
+      Iterator(
+        "a",
+        "b",
+        "a",
+        "a",
+        "c",
+        "b",
+        "a"
+      )
+      .countElems,
       Map(
         "a" → 4,
         "b" → 2,

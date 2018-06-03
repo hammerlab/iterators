@@ -12,8 +12,8 @@ class BufferedTakeWhileTest
       implicit elems: Seq[Int]
   ): Unit = {
     val it = Iterator(elems: _*).buffered
-    it.takewhile(fn).toList should be(expectedElems)
-    it.toList should be(expectedRemainingElems)
+    ==(it.takewhile(fn).toList, expectedElems)
+    ==(it.toList, expectedRemainingElems)
   }
 
   {

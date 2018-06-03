@@ -18,18 +18,19 @@ class OverlappingRangesTest
   implicit def makeHalfOpenJoinedRangesElem(t: ((Int, Int), Seq[Range[Int]])): (Range[Int], Seq[Range[Int]]) =
     (t._1: Range[Int]) → t._2
 
-  def check(left: Range[Int]*)(right: Range[Int]*)(expected: Seq[(Range[Int], Int)]*): Unit = {
-    left
-      .iterator
-      .joinOverlaps(
-        right
-          .iterator
-          .buffered
-      )
-      .toList should be(
-      left.zip(expected)
+  def check(left: Range[Int]*)(right: Range[Int]*)(expected: Seq[(Range[Int], Int)]*): Unit =
+    ==(
+      left
+        .iterator
+        .joinOverlaps(
+          right
+            .iterator
+            .buffered
+        )
+        .toList,
+      left
+        .zip(expected)
     )
-  }
 
   test("trivial case") {
     check(

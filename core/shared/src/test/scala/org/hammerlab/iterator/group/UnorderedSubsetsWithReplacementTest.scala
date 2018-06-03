@@ -9,7 +9,7 @@ import scala.math.max
 class UnorderedSubsetsWithReplacementTest
   extends Suite {
 
-  def check[T](elems: T*)(expecteds: Seq[Seq[(T, Int)]]*): Unit =
+  def check[T: org.hammerlab.test.Cmp](elems: T*)(expecteds: Seq[Seq[(T, Int)]]*): Unit =
     for {
       (expected, k) ← expecteds.zipWithIndex
     } {
@@ -19,13 +19,14 @@ class UnorderedSubsetsWithReplacementTest
             .unorderedSubsetsWithReplacement(k)
             .toList
 
-        actual.size should be(
+        ==(
+          actual.size,
           binomial(
             max(0, elems.size + k - 1),
             k
           )
         )
-        actual should be(expected)
+        ==(actual, expected)
       }
     }
 
@@ -90,8 +91,9 @@ class UnorderedSubsetsWithReplacementTest
             n + k - 1,
             k
           )
-        list.size should be(expected)
-        list.toSet.size should be(expected)
+
+        ==(list      .size, expected)
+        ==(list.toSet.size, expected)
       }
     }
   }

@@ -4,6 +4,7 @@ import cats.implicits.catsKernelStdMonoidForString
 import hammerlab.iterator.scan._
 import hammerlab.monoid._
 import org.hammerlab.Suite
+import org.hammerlab.test.Cmp
 
 abstract class ScanTest
   extends Suite {
@@ -23,9 +24,8 @@ abstract class ScanTest
   def strings: Seq[String]
   def foos: Seq[Foo]
 
-  def check[T](it: Iterator[T], expected: Seq[T]): Unit = {
-    it.toList should be(expected)
-  }
+  def check[T: Cmp](it: Iterator[T], expected: Seq[T]): Unit =
+    ==(it.toList, expected)
 }
 
 abstract class ScanLeftTest(includeCurrentValue: Boolean)

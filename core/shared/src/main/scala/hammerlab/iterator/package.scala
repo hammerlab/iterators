@@ -1,7 +1,5 @@
 package hammerlab
 
-import org.hammerlab.iterator.util
-
 /**
  * Mix-in all this module's implicits, so that all functionality can enabled via:
  *

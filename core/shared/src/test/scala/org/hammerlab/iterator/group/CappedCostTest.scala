@@ -14,16 +14,17 @@ trait CappedCostTest
       implicit
       strategy: ElementTooCostlyStrategy
   ): Unit =
-    it
-      .iterator
-      .cappedCostGroups(
-        costFn,
-        limit
-      )
-      .map(_.toList)
-      .toList should be(
-        expected
-      )
+    ==(
+      it
+        .iterator
+        .cappedCostGroups(
+          costFn,
+          limit
+        )
+        .map(_.toList)
+        .toList,
+      expected
+    )
 }
 
 class DiscardElementTooCostlyTest
@@ -140,22 +141,21 @@ class ThrowOnTooCostlyElementTest
       1 to 10,
       10
     )(
-      (
-        (1 to 4) ::
-          (5 to 10)
-            .map(Seq(_))
-            .toList
-        ): _*
+      (1 to 4) ::
+      (5 to 10)
+      .map(Seq(_))
+      .toList: _*
     )
   }
 
   test("1-10 9") {
-    intercept[ElementTooCostlyException[Int, Int]] {
-      check(
-        1 to 10,
-        9
-      )()
-    } should be(
+    ==(
+      intercept[ElementTooCostlyException[Int, Int]] {
+        check(
+          1 to 10,
+          9
+        )()
+      },
       ElementTooCostlyException(
         10, 9, 10
       )
@@ -163,12 +163,13 @@ class ThrowOnTooCostlyElementTest
   }
 
   test("random") {
-    intercept[ElementTooCostlyException[Int, Int]] {
-      check(
-        Seq(11, 1, 11, 12, 2, 8, 10, 11, 1),
-        10
-      )()
-    } should be(
+    ==(
+      intercept[ElementTooCostlyException[Int, Int]] {
+        check(
+          Seq(11, 1, 11, 12, 2, 8, 10, 11, 1),
+          10
+        )()
+      },
       ElementTooCostlyException(
         11,
         10,

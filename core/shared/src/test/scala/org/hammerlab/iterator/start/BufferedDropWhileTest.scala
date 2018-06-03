@@ -13,7 +13,7 @@ class BufferedDropWhileTest
     //Seq(1,2,3).iterator.take(3)
     val it = Iterator(elems: _*).buffered
     it.dropwhile(fn)
-    it.toList should be(expectedRemainingElems)
+    ==(it.toList, expectedRemainingElems)
   }
 
   {

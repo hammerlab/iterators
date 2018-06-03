@@ -21,25 +21,24 @@ class UnorderedIntegerPartitionsTest
         }
     }
 
-  def check(n: Int): Unit = {
+  def check(n: Int): Unit =
     withClue(s"n: $n: ") {
       val actual = n.unorderedPartitions.toList
-      actual.foreach(_.sum should be(n))       // all add up to `n`
-      actual.toSet.size should be(actual.size) // all distinct
-      actual.sorted.reverse should be(actual)  // descending order
+      actual.foreach(a ⇒ ==(a.sum, n))    // all add up to `n`
+      ==(actual.toSet.size, actual.size)  // all distinct
+      ==(actual.sorted.reverse, actual)   // descending order
     }
-  }
 
   test("simple") {
 
-    def chk(n: Int, expected: String): Unit = {
-      n.unorderedPartitions.map(_.mkString(",")).mkString("\n") should be(
+    def chk(n: Int, expected: String): Unit =
+      ==(
+        n.unorderedPartitions.map(_.mkString(",")).mkString("\n"),
         expected.stripMargin
       )
-    }
 
-    0.unorderedPartitions.toList should be(Seq(Nil))
-    1.unorderedPartitions.toList should be(Seq(Seq(1)))
+    ==(0.unorderedPartitions.toSeq, Seq(Nil))
+    ==(1.unorderedPartitions.toSeq, Seq(Seq(1)))
     chk(
       2,
       """2
@@ -83,6 +82,7 @@ class UnorderedIntegerPartitionsTest
         |2,1,1,1,1
         |1,1,1,1,1,1"""
     )
-    0 to 10 foreach(check)
+
+    0 to 10 foreach check
   }
 }

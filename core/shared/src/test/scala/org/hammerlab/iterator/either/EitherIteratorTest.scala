@@ -9,9 +9,11 @@ class FindLeftTest
 
   implicit def intOpt(n: Int): Option[Int] = Some(n)
 
-  def check(elems: Either[Int, String]*)(expected: Option[Int] = None): Unit = {
-    eithers(elems).findLeft should be(expected)
-  }
+  def check(elems: Either[Int, String]*)(expected: Option[Int] = None): Unit =
+    ==(
+      eithers(elems).findLeft,
+      expected
+    )
 
   test("findleft") {
     check(4, 5, "abc", 6)(4)
@@ -28,14 +30,15 @@ class GroupByLeftTest
   extends Suite {
 
   def check(elems: Either[Int, String]*)(expected: (Int, String)*): Unit =
-    eithers(elems)
-      .groupByLeft
-      .map {
-        case (num, strings) ⇒
-          num →
-            strings.mkString("")
-      }
-      .toList should be(
+    ==(
+      eithers(elems)
+        .groupByLeft
+        .map {
+          case (num, strings) ⇒
+            num →
+              strings.mkString("")
+        }
+        .toList,
       expected
     )
 
@@ -69,25 +72,26 @@ class GroupByLeftTest
   }
 
   test("rights not consumed") {
-    eithers(
-      Seq(
-        1, "a", "b", "c",
-        2,
-        3, "d",
-        4, "e", "f",
-        5
+    ==(
+      eithers(
+        Seq(
+          1, "a", "b", "c",
+          2,
+          3, "d",
+          4, "e", "f",
+          5
+        )
       )
-    )
-    .groupByLeft
-    .map {
-      case (num, strings) ⇒
-        num →
-          strings
-            .buffered
-            .headOption
-            .getOrElse("???")
-    }
-    .toList should be(
+      .groupByLeft
+      .map {
+        case (num, strings) ⇒
+          num →
+            strings
+              .buffered
+              .headOption
+              .getOrElse("???")
+      }
+      .toList,
       Seq(
         1 → "a",
         2 → "???",
@@ -102,9 +106,13 @@ class GroupByLeftTest
 class RoundUpRightTest
   extends Suite {
 
-  def check(elems: Either[Int, String]*)(expected: (Seq[Int], String)*): Unit = {
-    eithers(elems).roundUpRight.toList should be(expected)
-  }
+  def check(elems: Either[Int, String]*)(expected: (Seq[Int], String)*): Unit =
+    ==(
+      eithers(elems)
+        .roundUpRight
+        .toList,
+      expected
+    )
 
   test("mixed") {
     check(

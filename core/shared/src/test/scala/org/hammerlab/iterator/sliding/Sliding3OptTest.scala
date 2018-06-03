@@ -11,11 +11,12 @@ class Sliding3OptTest extends Suite {
       .toList
 
   test("empty") {
-    slidingList() should be(Nil)
+    ==(slidingList(), Nil)
   }
 
   test("one") {
-    slidingList("a") should be(
+    ==(
+      slidingList("a"),
       List(
         (None, "a", None)
       )
@@ -23,7 +24,8 @@ class Sliding3OptTest extends Suite {
   }
 
   test("two") {
-    slidingList("a", "b") should be(
+    ==(
+      slidingList("a", "b"),
       List(
         (None, "a", Some("b")),
         (Some("a"), "b", None)
@@ -32,7 +34,8 @@ class Sliding3OptTest extends Suite {
   }
 
   test("three") {
-    slidingList("a", "b", "c") should be(
+    ==(
+      slidingList("a", "b", "c"),
       List(
         (None, "a", Some("b")),
         (Some("a"), "b", Some("c")),
@@ -42,7 +45,8 @@ class Sliding3OptTest extends Suite {
   }
 
   test("four") {
-    slidingList("a", "b", "c", "d") should be(
+    ==(
+      slidingList("a", "b", "c", "d"),
       List(
         (None, "a", Some("b")),
         (Some("a"), "b", Some("c")),
@@ -53,7 +57,8 @@ class Sliding3OptTest extends Suite {
   }
 
   test("five") {
-    slidingList("a", "b", "c", "d", "e") should be(
+    ==(
+      slidingList("a", "b", "c", "d", "e"),
       List(
         (None, "a", Some("b")),
         (Some("a"), "b", Some("c")),

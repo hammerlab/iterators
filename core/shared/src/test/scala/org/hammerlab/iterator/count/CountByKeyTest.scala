@@ -6,14 +6,19 @@ import org.hammerlab.Suite
 class CountByKeyTest
   extends Suite {
   test("empty") {
-    Iterator[(String, Int)]().countByKey should be(Map())
+    ==(
+      Iterator[(String, Int)]().countByKey
+    )(
+      Map()
+    )
   }
 
   test("one") {
-    Iterator(
-      "a" → true
-    )
-    .countByKey should be(
+    ==(
+      Iterator(
+        "a" → true
+      )
+      .countByKey,
       Map(
         "a" → 1
       )
@@ -21,11 +26,12 @@ class CountByKeyTest
   }
 
   test("two") {
-    Iterator(
-      "a" → true,
-      "b" → false
-    )
-    .countByKey should be(
+    ==(
+      Iterator(
+        "a" → true,
+        "b" → false
+      )
+      .countByKey,
       Map(
         "a" → 1,
         "b" → 1
@@ -34,16 +40,17 @@ class CountByKeyTest
   }
 
   test("many") {
-    Iterator(
-      "a" → true,
-      "b" → false,
-      "a" → false,
-      "a" → true,
-      "c" → false,
-      "b" → true,
-      "a" → false
-    )
-    .countByKey should be(
+    ==(
+      Iterator(
+        "a" → true,
+        "b" → false,
+        "a" → false,
+        "a" → true,
+        "c" → false,
+        "b" → true,
+        "a" → false
+      )
+      .countByKey,
       Map(
         "a" → 4,
         "b" → 2,

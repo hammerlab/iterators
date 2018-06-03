@@ -4,6 +4,7 @@ import cats.implicits.catsKernelStdMonoidForString
 import hammerlab.iterator.scan._
 import hammerlab.monoid._
 import org.hammerlab.Suite
+import org.hammerlab.test.Cmp
 
 trait ScanValuesTest
   extends Suite {
@@ -14,9 +15,8 @@ trait ScanValuesTest
   def strings: Seq[(K, String)]
   def foos: Seq[(K, Foo)]
 
-  def check[T](it: Iterator[(K, T)], expected: Seq[(K, T)]): Unit = {
-    it.toList should be(expected)
-  }
+  def check[T: Cmp](it: Iterator[(K, T)], expected: Seq[(K, T)]): Unit =
+    ==(it.toList, expected)
 
   def intsInput =
     Array(

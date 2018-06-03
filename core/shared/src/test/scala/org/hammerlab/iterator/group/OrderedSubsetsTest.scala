@@ -6,13 +6,14 @@ import org.hammerlab.Suite
 class OrderedSubsetsTest
   extends Suite {
 
-  def check[T](elems: T*)(expecteds: Seq[Seq[T]]*): Unit =
+  def check[T: org.hammerlab.test.Cmp](elems: T*)(expecteds: Seq[Seq[T]]*): Unit =
     for {
       (expected, n) ← expecteds.zipWithIndex
     } {
-      elems
-        .orderedSubsetsWithReplacement(n)
-        .toList should be(
+      ==(
+        elems
+          .orderedSubsetsWithReplacement(n)
+          .toList,
         expected
       )
     }

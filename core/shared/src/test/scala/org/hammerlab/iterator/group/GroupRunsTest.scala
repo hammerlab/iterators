@@ -6,10 +6,13 @@ import org.hammerlab.Suite
 class GroupRunsPredicateTest extends Suite {
 
   def check(ints: Int*)(strs: String*): Unit =
-    ints
-      .groupRunsFn(_ % 2 == _ % 2)
-      .map(_.mkString(","))
-      .toList should be(strs)
+    ==(
+      ints
+        .groupRunsFn(_ % 2 == _ % 2)
+        .map(_.mkString(","))
+        .toList,
+      strs
+    )
 
   test("end with a run") {
     check(
@@ -57,10 +60,13 @@ class GroupRunsTest
 
   def check(tuples: (Int, Int)*)(strs: String*): Unit = {
     implicit val intOrder = Ordering.by[(Int, Int), Int](_._1)
-    tuples
-      .groupRuns
-      .map(_.map(t ⇒ s"${t._1},${t._2}").mkString(" "))
-      .toList should be(strs.toList)
+    ==(
+      tuples
+        .groupRuns
+        .map(_.map(t ⇒ s"${t._1},${t._2}").mkString(" "))
+        .toList,
+      strs
+    )
   }
 
   test("empty") {

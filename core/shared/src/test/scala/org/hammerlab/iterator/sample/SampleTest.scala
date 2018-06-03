@@ -13,7 +13,12 @@ class SampleTest
   }
 
   def check(numToSample: Int)(expected: Int*)(implicit numInputElems: Int): Unit = {
-    (1 to numInputElems).iterator.sample(numToSample) should be(expected)
+    ==(
+      (1 to numInputElems)
+        .iterator
+        .sample(numToSample),
+      expected
+    )
     Iterator(1,2,3)
   }
 
