@@ -11,7 +11,7 @@ class SimpleIteratorTest
     val it =
       new SimpleIterator[Int] {
         var elems = List(1, 2, 3)
-        override protected def _advance: Option[Int] = {
+        protected def _advance: Option[Int] = {
           elems.headOption match {
             case Some(elem) ⇒
               elems = elems.tail
@@ -26,14 +26,14 @@ class SimpleIteratorTest
         }
       }
 
-    it.next should be(1)
-    _done should be(false)
-    it.next should be(2)
-    _done should be(false)
-    it.next should be(3)
-    _done should be(false)
-    it.hasNext should be(false)
-    _done should be(true)
+    ==(it.next, 1)
+    ==(_done, false)
+    ==(it.next, 2)
+    ==(_done, false)
+    ==(it.next, 3)
+    ==(_done, false)
+    ==(it.hasNext, false)
+    ==(_done, true)
 
     intercept[NoSuchElementException] {
       it.head
@@ -45,38 +45,36 @@ class SimpleIteratorTest
   }
 
   test("buffer") {
-    Iterator().buffer.toList should be(Nil)
-    Iterator(1).buffer.toList should be(Seq(1))
-    Iterator(1, 2).buffer.toList should be(Seq(1, 2))
-    Iterator(1, 2, 3).buffer.toList should be(Seq(1, 2, 3))
-    Iterator(1, 2, 3, 4).buffer.toList should be(Seq(1, 2, 3, 4))
+    ==(Iterator().buffer.toList, Nil)
+    ==(Iterator(1).buffer.toList, Seq(1))
+    ==(Iterator(1, 2).buffer.toList, Seq(1, 2))
+    ==(Iterator(1, 2, 3).buffer.toList, Seq(1, 2, 3))
+    ==(Iterator(1, 2, 3, 4).buffer.toList, Seq(1, 2, 3, 4))
 
-    Iterator().buffer.buffer.toList should be(Nil)
-    Iterator(1).buffer.buffer.toList should be(Seq(1))
-    Iterator(1, 2).buffer.buffer.toList should be(Seq(1, 2))
-    Iterator(1, 2, 3).buffer.buffer.toList should be(Seq(1, 2, 3))
-    Iterator(1, 2, 3, 4).buffer.buffer.toList should be(Seq(1, 2, 3, 4))
+    ==(Iterator().buffer.buffer.toList, Nil)
+    ==(Iterator(1).buffer.buffer.toList, Seq(1))
+    ==(Iterator(1, 2).buffer.buffer.toList, Seq(1, 2))
+    ==(Iterator(1, 2, 3).buffer.buffer.toList, Seq(1, 2, 3))
+    ==(Iterator(1, 2, 3, 4).buffer.buffer.toList, Seq(1, 2, 3, 4))
   }
 
   implicit class Bufferer[T](it: Iterator[T]) {
-    def buffer: SimpleIterator[T] = {
+    def buffer: SimpleIterator[T] =
       it match {
         case sbi: SimpleIterator[T] ⇒ sbi
         case _ ⇒
           val buf = it.buffered
           new SimpleIterator[T] {
-            override protected def _advance: Option[T] = {
+            protected def _advance: Option[T] =
               buf
-                .headOption
-                .map {
-                  elem ⇒
-                    buf.next()
-                    elem
-                }
-            }
+              .headOption
+              .map {
+                elem ⇒
+                  buf.next()
+                  elem
+              }
           }
       }
-    }
   }
 
   case class TestIterator(elems: Int*)
@@ -88,31 +86,31 @@ class SimpleIteratorTest
 
   test("empty toString") {
     val it = TestIterator()
-    it.toString should be("TestIterator")
-    it.hasNext should be(false)
-    it.toString should be("TestIterator (empty)")
+    ==(it.toString, "TestIterator")
+    ==(it. hasNext,  false)
+    ==(it.toString, "TestIterator (empty)")
   }
 
   test("non-empty toString") {
     val it = TestIterator(1, 2, 3)
 
-    it.toString should be("TestIterator")
-    it.hasNext should be(true)
-    it.toString should be("TestIterator (head: 1)")
-    it.next should be(1)
+    ==(it.toString, "TestIterator")
+    ==(it.hasNext, true)
+    ==(it.toString, "TestIterator (head: 1)")
+    ==(it.next, 1)
 
-    it.toString should be("TestIterator")
-    it.hasNext should be(true)
-    it.toString should be("TestIterator (head: 2)")
-    it.next should be(2)
+    ==(it.toString, "TestIterator")
+    ==(it.hasNext, true)
+    ==(it.toString, "TestIterator (head: 2)")
+    ==(it.next, 2)
 
-    it.toString should be("TestIterator")
-    it.hasNext should be(true)
-    it.toString should be("TestIterator (head: 3)")
-    it.next should be(3)
+    ==(it.toString, "TestIterator")
+    ==(it.hasNext, true)
+    ==(it.toString, "TestIterator (head: 3)")
+    ==(it.next, 3)
 
-    it.toString should be("TestIterator")
-    it.hasNext should be(false)
-    it.toString should be("TestIterator (empty)")
+    ==(it.toString, "TestIterator")
+    ==(it.hasNext, false)
+    ==(it.toString, "TestIterator (empty)")
   }
 }

@@ -13,7 +13,7 @@ class SlidingIteratorTest
         .map(_.mkString(""))
         .mkString(" ")
 
-    actual should be(expected)
+    ==(actual, expected)
   }
 
   test("empty") {

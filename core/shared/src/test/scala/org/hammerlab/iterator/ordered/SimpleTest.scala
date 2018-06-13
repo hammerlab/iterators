@@ -15,7 +15,10 @@ class SimpleTest
   test("ints") {
     {
       import hammerlab.either._
-      l1.eitherMerge(l2).toList should be(
+      ===(
+        l1
+          .eitherMerge(l2)
+          .toList,
         List(
           L(1),
           R(2),
@@ -30,7 +33,10 @@ class SimpleTest
 
     {
       import hammerlab.or._
-      l1.orMerge(l2).toList should be(
+      ===(
+        l1
+          .orMerge(l2)
+          .toList,
         List(
           L(1),
           R(2),
@@ -42,7 +48,11 @@ class SimpleTest
       )
     }
 
-    l1.leftMerge(l2).mapValues(_.toList).toList should be(
+    ==(
+      l1
+        .leftMerge(l2)
+        .mapValues(_.toList)
+        .toList,
       List(
         1 → Seq(2),
         3 → Seq(3),
@@ -50,7 +60,10 @@ class SimpleTest
       )
     )
 
-    l1.merge(l2).toList should be(
+    ==(
+      l1
+        .merge(l2)
+        .toList,
       List(
         1, 2, 3, 3, 4, 5, 6
       )
@@ -64,7 +77,10 @@ class SimpleTest
 
     {
       import hammerlab.either._
-      s1.eitherMerge(l2).toList should be(
+      ===(
+        s1
+          .eitherMerge(l2)
+          .toList,
         List(
           L('a → 1),
           R(2),
@@ -77,7 +93,11 @@ class SimpleTest
       )
     }
 
-    s1.leftMerge(l2).mapValues(_.toList).toList should be(
+    ==(
+      s1
+        .leftMerge(l2)
+        .mapValues(_.toList)
+        .toList,
       List(
         'a → 1 → Seq(2),
         'b → 3 → Seq(3),
@@ -85,7 +105,10 @@ class SimpleTest
       )
     )
 
-    s1.merge(Seq('d → 2, 'e → 3, 'f → 5, 'g → 6)).toList should be(
+    ==(
+      s1
+        .merge(Seq('d → 2, 'e → 3, 'f → 5, 'g → 6))
+        .toList,
       List(
         'a → 1,
         'd → 2,

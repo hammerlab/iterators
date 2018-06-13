@@ -7,18 +7,18 @@ class Sliding2Test
   extends Suite {
 
   test("empty") {
-    Iterator().sliding2.toList should be(Nil)
+    ==(Iterator().sliding2.toList, Nil)
   }
 
   test("one") {
-    Iterator(1).sliding2.toSeq should be(Nil)
+    ==(Iterator(1).sliding2.toSeq, Nil)
   }
 
   test("two") {
-    Iterator(1, 2).sliding2.toSeq should be(Seq(1 → 2))
+    ==(Iterator(1, 2).sliding2.toSeq, Seq(1 → 2))
   }
 
   test("three") {
-    Iterator(1, 2, 3).sliding2.toSeq should be(Seq(1 → 2, 2 → 3))
+    ==(Iterator(1, 2, 3).sliding2.toSeq, Seq(1 → 2, 2 → 3))
   }
 }

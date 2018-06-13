@@ -33,8 +33,8 @@ by package:
 Array(1, 2, 1, 3).countElems
 // Map(1→2, 2→1, 3→1)
 
-Iterator("a"→1, "b"→2, "a"→10, "c"→3).countByKey
-// Map("a"→11, "b"→2, "c"→3)
+Iterator('a→1, 'b→2, 'a→10, 'c→3).countByKey
+// Map('a→2, 'b→1, 'c→1)
 ```
 
 ### [`either`](core/src/main/scala/org/hammerlab/iterator/either)
@@ -47,13 +47,13 @@ Iterator(R('a), R('b), L(4)).findLeft
 // Some(4)
 
 Iterator(
-  R('a'),
-  L(1),
-  R('b'),
-  R('c'),
-  L(2),
-  L(3),
-  R('d')
+  R('a),
+  L( 1),
+  R('b),
+  R('c),
+  L( 2),
+  L( 3),
+  R('d)
 )
 .groupByLeft
 .mapValues(_.mkString(""))

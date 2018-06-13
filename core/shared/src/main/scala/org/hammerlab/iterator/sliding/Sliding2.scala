@@ -31,10 +31,11 @@ class Sliding2[T](it: BufferedIterator[T]) {
     }
 
   def sliding2(pad: T): Iterator[(T, T)] =
-    sliding2Opt.map {
-      case (elem, succOpt) ⇒
-        elem → succOpt.getOrElse(pad)
-    }
+    sliding2Opt
+      .map {
+        case (elem, succOpt) ⇒
+          elem → succOpt.getOrElse(pad)
+      }
 
   def sliding2: Iterator[(T, T)] =
     new SimpleIterator[(T, T)] {

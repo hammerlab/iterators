@@ -13,8 +13,6 @@ class Finish[T](it: Iterator[T]) {
         else
           None
 
-      override protected def done(): Unit = {
-        fn
-      }
+      override protected def done(): Unit = fn
     }
 }

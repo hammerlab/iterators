@@ -1,6 +1,7 @@
 package org.hammerlab.iterator.group
 
-import hammerlab.iterator._
+import hammerlab.iterator.sliding._
+import hammerlab.iterator.start._
 import hammerlab.iterator.macros.IteratorOps
 import org.hammerlab.iterator.util.SimpleIterator
 
@@ -11,7 +12,7 @@ import org.hammerlab.iterator.util.SimpleIterator
  * For example, given an [[Iterator]] containing [[Int]]s [1, 2, 4, 3, 5, 6, 2, 8] and predicate function `_ % 2 == 0`,
  * [[GroupRuns]] would emit [[Iterator]]s containing [1], [2, 4], [3], [5], [6, 2, 8].
  *
- * See GroupRunsIteratorTest for more examples.
+ * See GroupRunsTest for more examples.
  */
 @IteratorOps
 class GroupRuns[T](it: BufferedIterator[T]) {
@@ -29,7 +30,7 @@ class GroupRuns[T](it: BufferedIterator[T]) {
       }
     }
 
-  def groupRuns(implicit cmp: Cmp[T]): Iterator[Iterator[T]] = {
+  def groupRuns(implicit cmp: Cmp[T]): Iterator[Iterator[T]] =
     new Iterator[Iterator[T]] {
       var prevOpt: Option[T] = None
       override def hasNext: Boolean = it.hasNext
@@ -45,5 +46,4 @@ class GroupRuns[T](it: BufferedIterator[T]) {
           }
       }
     }
-  }
 }

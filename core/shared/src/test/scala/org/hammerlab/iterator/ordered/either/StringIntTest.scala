@@ -5,7 +5,6 @@ import org.hammerlab.iterator.ordered
 class StringIntTest
   extends Suite
     with ordered.StringIntTest {
-
   override def expected: Seq[Either[L, R]] =
     Seq(
       L(""),

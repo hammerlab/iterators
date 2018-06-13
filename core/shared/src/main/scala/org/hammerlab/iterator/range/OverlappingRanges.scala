@@ -11,7 +11,7 @@ import scala.collection.mutable
  * range that contains all overlapping right-side ranges (as well as their original indices in the right-side sequence).
  */
 @IteratorOps
-class OverlappingRanges[T](it: BufferedIterator[Range[T]]) {
+class OverlappingRanges[T](it: Iterator[Range[T]]) {
 
   type RangeT = (T, Option[T])
 
@@ -21,7 +21,7 @@ class OverlappingRanges[T](it: BufferedIterator[Range[T]]) {
   ): Iterator[(Range[T], Vector[(Range[T], Int)])] =
     joinOverlaps(other.iterator.buffered)
 
-  def joinOverlaps(other: BufferedIterator[Range[T]])(
+  def joinOverlaps(other: Iterator[Range[T]])(
       implicit
       ord: Ordering[T]
   ): Iterator[(Range[T], Vector[(Range[T], Int)])] = {

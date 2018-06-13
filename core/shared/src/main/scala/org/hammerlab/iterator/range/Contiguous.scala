@@ -13,7 +13,6 @@ import hammerlab.iterator.macros.IteratorOps
  */
 @IteratorOps
 class Contiguous(it: Iterator[Int]) {
-
   def contiguousRanges: Iterator[scala.Range] =
     new Iterator[scala.Range] {
       var anchor = -1

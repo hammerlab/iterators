@@ -9,15 +9,16 @@ class LeftMergeTest
   implicit def stringToInt(s: String): Int = augmentString(s).toInt
 
   test("mixed") {
-    Iterator(2, 4, 6, 8, 10)
-      .leftMerge[String, Int](
-        Iterator("1", "2", "3", "4", "5", "5", "7", "11")
-      )
-      .toList
-      .map {
-        case (t, us) ⇒
-          t → us.toList
-      } should be(
+    ==(
+      Iterator(2, 4, 6, 8, 10)
+        .leftMerge[String, Int](
+          Iterator("1", "2", "3", "4", "5", "5", "7", "11")
+        )
+        .toList
+        .map {
+          case (t, us) ⇒
+            t → us.toList
+        },
       Seq(
          2 → Seq("1", "2", "3"),
          4 → Seq("4", "5", "5"),
@@ -29,15 +30,16 @@ class LeftMergeTest
   }
 
   test("left empty") {
-    Iterator[Int]()
-      .leftMerge[String, Int](
-        Iterator("1", "2", "3", "4", "5", "5", "7", "11")
-      )
-      .map {
-        case (t, us) ⇒
-          t → us.toList
-      }
-      .toList should be(
+    ==(
+      Iterator[Int]()
+        .leftMerge[String, Int](
+          Iterator("1", "2", "3", "4", "5", "5", "7", "11")
+        )
+        .map {
+          case (t, us) ⇒
+            t → us.toList
+        }
+        .toList,
       Nil
     )
   }

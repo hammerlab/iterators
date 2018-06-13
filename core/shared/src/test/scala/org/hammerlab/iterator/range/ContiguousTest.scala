@@ -5,11 +5,14 @@ import org.hammerlab.Suite
 
 class ContiguousTest extends Suite {
   test("empty") {
-    Iterator().contiguousRanges.toList should be(Nil)
+    ==(Iterator().contiguousRanges.toSeq, Nil)
   }
 
   test("simple") {
-    Iterator(2, 4, 5, 7, 8, 9).contiguousRanges.toList should be(
+    ==(
+      Iterator(2, 4, 5, 7, 8, 9)
+        .contiguousRanges
+        .toList,
       List(
         2 until 3,
         4 until 6,
@@ -19,7 +22,10 @@ class ContiguousTest extends Suite {
   }
 
   test("one range") {
-    Iterator(2, 3, 4, 5, 6, 7, 8, 9).contiguousRanges.toList should be(
+    ==(
+      Iterator(2, 3, 4, 5, 6, 7, 8, 9)
+        .contiguousRanges
+        .toList,
       List(
         2 until 10
       )
@@ -27,7 +33,10 @@ class ContiguousTest extends Suite {
   }
 
   test("no ranges") {
-    Iterator(2, 4, 6, 8).contiguousRanges.toList should be(
+    ==(
+      Iterator(2, 4, 6, 8)
+        .contiguousRanges
+        .toList,
       List(
         2 until 3,
         4 until 5,

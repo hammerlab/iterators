@@ -5,7 +5,12 @@ import org.hammerlab.Suite
 
 class SplitTest extends Suite {
   test("simple") {
-    "abc defg hij".iterator.splitBy(' ').map(_.mkString("")).toList should be(
+    ==(
+      "abc defg hij"
+        .iterator
+        .splitBy(' ')
+        .map(_.mkString(""))
+        .toList,
       List(
         "abc",
         "bc",
@@ -24,7 +29,12 @@ class SplitTest extends Suite {
   }
 
   test("double-space and trailing space") {
-    "abc defg  hij ".toIterator.splitBy(' ').map(_.mkString("")).toList should be(
+    ==(
+      "abc defg  hij "
+        .iterator
+        .splitBy(' ')
+        .map(_.mkString(""))
+        .toList,
       List(
         "abc",
         "bc",
@@ -45,7 +55,12 @@ class SplitTest extends Suite {
   }
 
   test("leading spaces, multiple-space, trailing spaces") {
-    "  abc defg    hij   ".toIterator.splitBy(' ').map(_.mkString("")).toList should be(
+    ==(
+      "  abc defg    hij   "
+        .iterator
+        .splitBy(' ')
+        .map(_.mkString(""))
+        .toList,
       List(
         "",
         "",

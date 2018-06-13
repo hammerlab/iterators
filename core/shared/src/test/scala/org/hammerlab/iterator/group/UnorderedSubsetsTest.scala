@@ -7,7 +7,7 @@ import org.hammerlab.Suite
 class UnorderedSubsetsTest
   extends Suite {
 
-  def check[T](elems: T*)(expecteds: Seq[Seq[T]]*): Unit =
+  def check[T: org.hammerlab.test.Cmp](elems: T*)(expecteds: Seq[Seq[T]]*): Unit =
     for {
       (expected, k) ← expecteds.zipWithIndex
     } {
@@ -17,8 +17,9 @@ class UnorderedSubsetsTest
             .unorderedSubsets(k)
             .toList
 
-        actual should be(expected)
-        actual.size should be(
+        ==(actual, expected)
+        ==(
+          actual.size,
           binomial(
             elems.size,
             k

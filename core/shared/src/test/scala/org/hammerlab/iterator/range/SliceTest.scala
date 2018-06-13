@@ -1,19 +1,31 @@
 package org.hammerlab.iterator.range
 
+import hammerlab.Suite
 import hammerlab.iterator.slice._
-import org.hammerlab.Suite
 
 class SliceTest
   extends Suite {
   test("10") {
-    (0 to 9).sliceOpt(0, 10).toList should be(0 to 9)
-    (0 to 9).sliceOpt(0,  1).toList should be(0 to 0)
-    (0 to 9).sliceOpt(0,  5).toList should be(0 to 4)
-    (0 to 9).sliceOpt(0, 11).toList should be(0 to 9)
-    (0 to 9).sliceOpt(2, 10).toList should be(2 to 9)
-    (0 to 9).sliceOpt(2,  1).toList should be(2 to 2)
-    (0 to 9).sliceOpt(2,  5).toList should be(2 to 6)
-    (0 to 9).sliceOpt(2    ).toList should be(2 to 9)
-    (0 to 9).sliceOpt(2, 11).toList should be(2 to 9)
+    for {
+      start ←     0 to 9
+        end ← start to 9
+    } {
+      ==(
+        (0 to 9).sliceOpt(start, end),
+        start until end iterator
+      )
+      ==(
+        (0 to 9).sliceOpt(Some(start), Some(end)),
+        start until end iterator
+      )
+      ==(
+        (0 to 9).sliceOpt(None, end).toList,
+        0 until end toList
+      )
+      ==(
+        (0 to 9).sliceOpt(start, None),
+        start until 10 iterator
+      )
+    }
   }
 }

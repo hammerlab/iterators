@@ -7,15 +7,15 @@ import org.hammerlab.Suite
 class BufferedCollectWhileTest
   extends Suite {
 
-  def check(elems: Either[Int, String]*)(expectedInts: Int*): Unit = {
-    eithers(elems)
-      .collectwhile {
-        case Left(n) ⇒ n
-      }
-      .toList should be(
+  def check(elems: Either[Int, String]*)(expectedInts: Int*): Unit =
+    ==(
+      eithers(elems)
+        .collectwhile {
+          case Left(n) ⇒ n
+        }
+        .toList,
       expectedInts
     )
-  }
 
   test("two") {
     check(
