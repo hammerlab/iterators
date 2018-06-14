@@ -7,7 +7,7 @@ lazy val core =
   crossProject
     .settings(
       name := "iterator",
-      v"2.1.0",
+      v"2.2.0",
       // Skip compilation during doc-generation; otherwise it fails due to macro-annotations not being expanded
       emptyDocJar,
       scalameta,
@@ -15,7 +15,7 @@ lazy val core =
               cats,
         math.utils % "2.2.0",
              spire,
-             types % "1.1.0"
+             types % "1.2.0"
       ),
       buildInfoKeys :=
         Seq[BuildInfoKey](
@@ -41,7 +41,7 @@ lazy val macros =
   crossProject
     .settings(
       subgroup("macros", "iterators"),
-      v"1.0.0",
+      r"1.0.0",
       scalameta,
       enableMacroParadise
     )
