@@ -7,7 +7,7 @@ lazy val core =
   cross
     .settings(
       name := "iterator",
-      v"2.2.0",
+      v"2.3.0",
       // Skip compilation during doc-generation; otherwise it fails due to macro-annotations not being expanded
       emptyDocJar,
       scalameta,

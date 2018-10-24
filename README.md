@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/hammerlab/iterators.svg?branch=master)](https://travis-ci.org/hammerlab/iterators)
 [![Coverage Status](https://coveralls.io/repos/github/hammerlab/iterators/badge.svg)](https://coveralls.io/github/hammerlab/iterators)
-[![Maven Central](https://img.shields.io/maven-central/v/org.hammerlab/iterator_2.11.svg?maxAge=1800)](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.hammerlab%22%20AND%20a%3A%22iterator_2.11%22)
+[![Maven Central](https://img.shields.io/maven-central/v/org.hammerlab/iterator_2.12.svg?maxAge=1800)](https://search.maven.org/search?q=g:org.hammerlab%20AND%20a:iterator_*)
 
 Enrichment-methods for Scala collections (`Iterator`s, `Iterable`s, and `Array`s):
 
