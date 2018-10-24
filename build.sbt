@@ -4,7 +4,7 @@ default(
 )
 
 lazy val core =
-  crossProject
+  cross
     .settings(
       name := "iterator",
       v"2.2.0",
@@ -13,9 +13,9 @@ lazy val core =
       scalameta,
       dep(
               cats,
-        math.utils % "2.2.0",
+        math.utils % "2.3.0",
              spire,
-             types % "1.2.0"
+             types % "1.4.0"
       ),
       buildInfoKeys :=
         Seq[BuildInfoKey](
@@ -33,21 +33,17 @@ lazy val core =
     .enablePlugins(
       BuildInfoPlugin
     )
-lazy val `core.js`  = core.js
-lazy val `core.jvm` = core.jvm
-lazy val `core-x`   = parent(`core.js`, `core.jvm`)
+lazy val `core-x` = core.x
 
 lazy val macros =
-  crossProject
+  cross
     .settings(
       subgroup("macros", "iterators"),
       r"1.0.0",
       scalameta,
       enableMacroParadise
     )
-lazy val `macros.js`  = macros.js
-lazy val `macros.jvm` = macros.jvm
-lazy val `macros-x`   = parent(`macros.js`, `macros.jvm`)
+lazy val `macros-x` = macros.x
 
 lazy val iterators =
   root(
